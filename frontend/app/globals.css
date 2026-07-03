@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cp-bg: #0b0f1a;
+  --cp-panel: #121829;
+  --cp-panel-light: #1a2338;
+  --cp-border: #26304a;
+  --cp-text: #e8ecf7;
+  --cp-text-dim: #9aa4c0;
+  --cp-accent: #6366f1;
+  --cp-accent-light: #818cf8;
+  --cp-good: #34d399;
+  --cp-warn: #fbbf24;
+  --cp-bad: #f87171;
+}
+
+html,
+body {
+  background-color: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background-color: var(--cp-accent);
+  color: white;
+}
+
+.cp-card {
+  background-color: var(--cp-panel);
+  border: 1px solid var(--cp-border);
+  border-radius: 1rem;
+}
+
+.cp-card-light {
+  background-color: var(--cp-panel-light);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.75rem;
+}
+
+.cp-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cp-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--cp-border);
+  border-radius: 999px;
+}
+
+.cp-gradient-text {
+  background: linear-gradient(90deg, #818cf8, #34d399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
