@@ -1,0 +1,117 @@
+CV
+SENA
+DEMIR
+
+40/B Şehitler Mahallesi Kadıköy,
+34734 İstanbul
+
+0100 567 8000
+
+
+ornekcv@cvmaker.com.tr
+Doğum tarihi
+
+23-06-1993
+Cinsiyet
+
+Kadın
+Sürücü ehliyeti
+
+B, AM
+LinkedIn
+
+www.linkedin.com/in/sena-
+demir
+Yazılım geliştirme ortamında 7 yıllık deneyime sahip hevesli ve kendini işine adamış kıdemli bir yazılımcıyım. Bilgisayar
+Bilimleri alanında lisans derecesine sahibim. Kariyerimi daha ileri bir noktaya taşımak için niteliklerimi ve becerilerimi
+geliştirmeyi amaçlıyorum. Şu anda liderlik becerilerimi geliştirmeye odaklanıyorum. Teknik bilgim, yazılım geliştirme yaşam
+döngüsünün tamamını kapsıyor. Çeşitli gömülü sistemler ve yazılım dillerinde yetkinliklerim bulunuyor. Bir sonraki ideal işim
+ekip liderliği ya da orta düzey yöneticilik olacak.
+API Development Uzman
+Angular Deneyimli
+AWS Deneyimli
+Azure Deneyimli
+C# / C#.net Uzman
+Cisco Yetenekli
+CSS Uzman
+HTML Uzman
+Java / Java script Deneyimli
+.Net / .Net core Uzman
+My SQL / SQL server Deneyimli
+React Yetenekli
+Senior Yazılımcı
+Anadolu Yazılım Şirketi, İstanbul
+Başlangıçta bu yazılım geliştirme şirketinde genç bir yazılım geliştirici olarak başladım ve senior yazılım
+geliştiriciliğine kadar ilerledim. Buradaki sorumluluklarım arasında şunlar bulunuyor:
+Kullanıcı hikayelerinde sistem kabul kriterlerini etkinleştirmek için kod yazma
+Kodun çalıştığından emin olmak için kodda yeterli testin yapılmasını sağlamak
+Pull request (PR) isteklerine katılarak meslektaşların kod kalitesini kontrol etme
+Geçici çözümlerin ve düzeltmelerin oluşturulmasına yol açan hataların teşhisi
+Test İlkelerinin Uygulanmasına bağlılığın teyit edilmesi
+İyi mimari modellerin özelliklere uygulandığından emin olmak için çözüm
+‑
+tasarım süreçlerine katılmak
+ve katkıda bulunmak
+Geliştiricilerin performansını ve sistem gereksinimlerini artırmak için kurum içi teknoloji yığınının
+geliştirilmesi
+Başarılar
+2019'da ekibim için en iyi geliştirme uygulamalarını oluşturdum ve o zamandan bu yana yazılımın
+yeniden çalışma süresini %22 oranında azalttım.
+Bir perakende müşterisinin müşteri sadakat programı için kullanıcı deneyimini geliştiren ve alımı %45
+oranında artıran bir kod yazdım.
+Haz 2018 - Halen
+Beceri Matrisi
+İş deneyimi
+Junior Yazılımcı
+Mikro Yazılım Şirketi, İstanbul
+Bu yazılım geliştirme şirketine daha önce herhangi bir iş deneyimi olmayan bir mezun olarak katıldım.
+Buradaki sorumluluklarım şunlardı:
+Yazılım tasarım önerilerinin geliştirilmesi ve belgelenmesi
+Yazılımın optimize edilmesi ve önleyici düzeltmelerin geliştirilmesi
+Yazılım ve kullanıcı sorunlarını giderme
+Altta yatan sorunları belirleme ve çözümler sunma
+Daha üst düzey deneyim gerektiren sorunların iletilmesi
+Uygulamaları test etmek ve hata ayıklamak için test ekibiyle işbirliği yapmak
+Müşteri isteklerini gerçekleştirmek ve işlevsel koda entegre etmek için ekiple birlikte çalışmak
+Mar 2017 - Ara 2017
+Liderlik ve Ekip Çalışması (Seviye 5)
+Online Eğitim Akademisi, İstanbul
+Şub 2020 - Eki 2020
+Bilgisayar Bilimleri Diploması
+İstanbul Üniversitesi, İstanbul
+Eyl 2011 - Haz 2015
+Yapay Zeka Yüksek Lisans Diploması
+Münih Teknik Üniversitesi, Münich
+Eyl 2015 - Haz 2017
+Kodlama yarışmalarına katılma (LeetCode ve HackerRank)
+Ayhan Demirci
+000 555 6000
+ayhan@ornek.com.tr
+Mikro Yazılım Şirketi
+Emre Işık
+010 600 7000
+emre@ornek.com.tr
+Anadolu Yazılım Şirketi
+Uyarlanabilirlik
+
+Gelişmiş analitik düşünme
+
+Agile metodolojiler
+
+Analiz ve test
+
+Programlama
+
+Yazılım mantığı
+
+Yazılım sorun giderme
+
+Ekip yönetimi
+
+Kullanıcı arayüzü/kullanıcı
+deneyimi
+
+Eğitim ve Nitelikler
+İlgi Alanları
+Referanslar
+Beceriler
