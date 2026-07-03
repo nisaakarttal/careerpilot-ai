@@ -143,8 +143,6 @@ careerpilot-ai/
 
 ---
 
-##  Ürün İş Listesi (Product Backlog)
-
 
 ## Ürün İş Listesi (Product Backlog)
 
