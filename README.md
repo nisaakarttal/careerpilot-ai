@@ -145,7 +145,7 @@ careerpilot-ai/
 
 ##  Ürün İş Listesi (Product Backlog)
 
-```markdown
+
 ## Ürün İş Listesi (Product Backlog)
 
 - PB-01: Kullanıcı kayıt (Register) modülünün geliştirilmesi.
