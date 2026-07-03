@@ -145,28 +145,31 @@ careerpilot-ai/
 
 ##  Ürün İş Listesi (Product Backlog)
 
-| ID | Kullanıcı Hikayesi | Öncelik | Story Point | Durum |
-|:--:|--------------------|:--------:|:-----------:|:------:|
-| PB-01 | Kullanıcı olarak sisteme kayıt olabilmeliyim. | Yüksek | 3 | Tamamlandı |
-| PB-02 | Kullanıcı olarak güvenli şekilde giriş yapabilmeliyim. | Yüksek | 3 | Tamamlandı |
-| PB-03 | Kullanıcı oturumlarının JWT ile güvenli şekilde yönetilmesini istiyorum. | Yüksek | 2 | Tamamlandı |
-| PB-04 | Kullanıcı ve CV verilerinin PostgreSQL veritabanında güvenli şekilde saklanmasını istiyorum. | Yüksek | 5 | Tamamlandı |
-| PB-05 | Proje için Docker tabanlı geliştirme ortamının oluşturulmasını istiyorum. | Orta | 3 | Tamamlandı |
-| PB-06 | Backend ve Frontend temel proje mimarisinin oluşturulmasını istiyorum. | Yüksek | 5 | Tamamlandı |
-| PB-07 | Kullanıcı olarak PDF veya DOCX formatındaki CV'mi sisteme yükleyebilmeliyim. | Yüksek | 5 | Temel Seviye |
-| PB-08 | Sistem yüklediğim CV'den metni otomatik olarak çıkarabilmeli. | Yüksek | 5 | Temel Seviye |
-| PB-09 | Yapay zekâ CV'mi analiz ederek güçlü ve geliştirilmesi gereken yönlerimi göstermeli. | Yüksek | 8 | Geliştiriliyor |
-| PB-10 | CV'min ATS uyumluluk puanını görebilmeliyim. | Yüksek | 5 | Planlandı |
-| PB-11 | Recruiter bakış açısıyla değerlendirme ve geri bildirim alabilmeliyim. | Orta | 5 | Planlandı |
-| PB-12 | Kariyer gelişimime yönelik kişiselleştirilmiş öneriler alabilmeliyim. | Orta | 5 | Planlandı |
-| PB-13 | Dashboard üzerinde analiz sonuçlarını grafiklerle görüntüleyebilmeliyim. | Yüksek | 8 | Geliştiriliyor |
-| PB-14 | Geçmiş CV analizlerime erişebilmeliyim. | Orta | 5 | Planlandı |
-| PB-15 | Yapay zekâ destekli mülakat simülasyonu yapabilmeliyim. | Orta | 5 | Planlandı |
-| PB-16 | CV'min iş ilanlarıyla semantik uyumunu görebilmeliyim. | Orta | 8 | Planlandı |
-| PB-17 | Mobil cihazlarda da sorunsuz çalışan responsive bir arayüz kullanabilmeliyim. | Düşük | 3 | Planlandı |
-| PB-18 | Sistemin Docker ile tek komutla çalıştırılabilmesini istiyorum. | Orta | 5 | Tamamlandı |
-| PB-19 | API dokümantasyonuna Swagger üzerinden erişebilmeliyim. | Düşük | 2 | Planlandı |
-| PB-20 | Hatalı dosya yüklemelerinde kullanıcıya anlamlı hata mesajları gösterilmesini istiyorum. | Orta | 3 | Planlandı |
+```markdown
+## Ürün İş Listesi (Product Backlog)
+
+- PB-01: Kullanıcı kayıt (Register) modülünün geliştirilmesi.
+- PB-02: Kullanıcı giriş (Login) ve JWT tabanlı kimlik doğrulama altyapısının geliştirilmesi.
+- PB-03: Kullanıcı oturum yönetimi ve yetkilendirme mekanizmasının oluşturulması.
+- PB-04: PostgreSQL veritabanı tasarımı ile User ve Resume tablolarının oluşturulması.
+- PB-05: Backend ve Frontend temel proje mimarisinin oluşturulması.
+- PB-06: Docker ve Docker Compose geliştirme ortamının yapılandırılması.
+- PB-07: CV yükleme (PDF/DOCX) altyapısının geliştirilmesi.
+- PB-08: CV dosyalarından metin çıkarma (Parser) servisinin geliştirilmesi.
+- PB-09: Yapay zekâ destekli CV analiz modülünün geliştirilmesi.
+- PB-10: ATS uyumluluk analiz modülünün geliştirilmesi.
+- PB-11: Recruiter değerlendirme ve geri bildirim modülünün geliştirilmesi.
+- PB-12: Kariyer koçu ve kişiselleştirilmiş öneri sisteminin geliştirilmesi.
+- PB-13: Dashboard ekranı ve veri görselleştirme bileşenlerinin geliştirilmesi.
+- PB-14: Analiz geçmişi yönetimi ve raporlama modülünün geliştirilmesi.
+- PB-15: Yapay zekâ destekli mülakat simülasyonu modülünün geliştirilmesi.
+- PB-16: CV ile iş ilanlarının semantik eşleştirme algoritmasının geliştirilmesi.
+- PB-17: Responsive kullanıcı arayüzünün geliştirilmesi.
+- PB-18: Swagger API dokümantasyonunun hazırlanması.
+- PB-19: Hata yönetimi ve kullanıcı bildirim mekanizmalarının geliştirilmesi.
+- PB-20: Sistem testleri, performans iyileştirmeleri ve son optimizasyonların gerçekleştirilmesi.
+```
+
 
 ---
 
