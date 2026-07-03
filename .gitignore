@@ -1,4 +1,13 @@
 __pycache__/
+.venv/
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+.env
+.env.*
+!.env.example
+!.env.local.example
 
 
 

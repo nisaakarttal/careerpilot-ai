@@ -8,10 +8,8 @@ from app.api.endpoints.auth import router as auth_router
 from app.api.endpoints.resume import router as resume_router
 from app.core.config import settings
 from app.core.database import init_db
-from cv_parser import process_all_cvs
 
-if __name__ == "__main__":
-    process_all_cvs()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
@@ -26,7 +24,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
