@@ -181,6 +181,10 @@ Sprint Planı:
 https://postamuedu-my.sharepoint.com/:x:/g/personal/hayrunnisakartal_posta_mu_edu_tr/IQBfLlNPr_i2S4UOm2ToqJJqAbj-WzZUvGZrkmldr05pG-I?e=2cLwLr
 (En başta hazırlandı ama bazı engellerden ötürü ilk sprintte buna uyulmadı.)
 
+##Proje Durumu
+Tüm ekran görüntüleri için: [assets klasörü](./assets)
+
+
 #### Proje Yönetimi
 
 - Trello board'u oluşturuldu.
