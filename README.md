@@ -144,7 +144,7 @@ careerpilot-ai/
 ---
 
 
-## Ürün İş Listesi (Product Backlog)
+ Ürün İş Listesi (Product Backlog)
 
 - PB-01: Kullanıcı kayıt (Register) modülünün geliştirilmesi.
 - PB-02: Kullanıcı giriş (Login) ve JWT tabanlı kimlik doğrulama altyapısının geliştirilmesi.
@@ -174,6 +174,9 @@ careerpilot-ai/
 ##  Sprint Planları ve Zaman Çizelgesi
 
 ###  İlk Sprint (19 Haziran 2026 - 5 Temmuz 2026)
+
+Trello:
+https://trello.com/invite/b/6a497c47e1be632667df4b7e/ATTI712073b993bc9c1e1e5a94df977193939D81A6B3/careerpilot
 
 #### Proje Yönetimi
 
