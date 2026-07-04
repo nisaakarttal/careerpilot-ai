@@ -187,9 +187,9 @@ careerpilot-ai/
 > İlk sprint için plan hazırlanmış ancak süreç içerisinde karşılaşılan teknik engeller nedeniyle bazı görevlerin kapsamı ve kişiler güncellenmiştir.
 
 ### Trello İş Planı
-![Trello İş Planı](assets/Trello.png)
+![Trello İş Planı](assets/trello.png)
 
-![Trello İş Planı](assets/Trello1.png)
+![Trello İş Planı](assets/trello1.png)
 
 ---
 
