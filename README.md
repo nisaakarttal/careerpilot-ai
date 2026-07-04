@@ -185,7 +185,7 @@ careerpilot-ai/
 - **Trello Board:** https://trello.com/invite/b/6a497c47e1be632667df4b7e/ATTI712073b993bc9c1e1e5a94df977193939D81A6B3/careerpilot
 - **Sprint Planı:** https://postamuedu-my.sharepoint.com/:x:/g/personal/hayrunnisakartal_posta_mu_edu_tr/IQBfLlNPr_i2S4UOm2ToqJJqAbj-WzZUvGZrkmldr05pG-I?e=2cLwLr
 
-> İlk sprint için plan hazırlanmış ancak süreç içerisinde karşılaşılan teknik engeller nedeniyle bazı görevlerin kapsamı güncellenmiştir.
+> İlk sprint için plan hazırlanmış ancak süreç içerisinde karşılaşılan teknik engeller nedeniyle bazı görevlerin kapsamı ve kişiler güncellenmiştir.
 
 ---
 
