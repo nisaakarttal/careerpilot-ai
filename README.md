@@ -1,4 +1,4 @@
-# CareerPilot
+# CareerPilot - Grup 79
 
 ## Yapay Zekâ Destekli Kariyer ve CV Asistanı
 
@@ -8,17 +8,17 @@ Platform, adayların işe alım süreçlerinde daha rekabetçi ve başarılı ol
 
 ---
 
-## Takım Bilgileri: CareerPilot Team
+## Takım Bilgileri: CareerPilot Team - Grup 79
 
 Ekibimiz Yapay Zeka ve Teknoloji Akademisi bünyesinde çapraz fonksiyonlu (Cross-Functional) olarak çalışmaktadır. Akademi kuralları gereği ekibimizde tek bir lider bulunmamakta; tüm üyeler eşit sorumlulukla hem süreç yönetiminde hem de ürünün geliştirilmesinde aktif rol oynamaktadır.
 
-*   **Scrum Master (İletişim Sorumlusu):** [İsim Soyisim] — Ekip içi koordinasyon, Scrum eventlerinin yönetimi, engellerin kaldırılması ve Full-Stack Geliştirme.
-*   **Product Owner (Yedek İletişim Sorumlusu):** [İsim Soyisim] — Product Backlog yönetimi, user story'lerin önceliklendirilmesi ve Full-Stack Geliştirme.
-*   **Developer:** [İsim Soyisim] — Full-Stack Geliştirme, Yapay Zeka Modelleri ve Veritabanı Mimarisi.
-*   **Developer:** [İsim Soyisim] — Full-Stack Geliştirme, UI/UX Tasarım ve API Entegrasyonları.
-*   **Developer:** [İsim Soyisim] — Full-Stack Geliştirme, Test, Dağıtım ve Sistem Optimizasyonu.
+*   **Scrum Master (İletişim Sorumlusu):** Hayrunnisa Kartal — Ekip içi koordinasyon, Scrum eventlerinin yönetimi, engellerin kaldırılması ve Full-Stack Geliştirme.
+*   **Product Owner (Yedek İletişim Sorumlusu):** Utku Akkuşoğlu — Product Backlog yönetimi, user story'lerin önceliklendirilmesi ve Full-Stack Geliştirme.
+*   **Developer:** Yiğit Emir Saatçi — Full-Stack Geliştirme, Yapay Zeka Modelleri ve Veritabanı Mimarisi.
+*   **Developer:** Yusuf Yıldırım — Full-Stack Geliştirme, UI/UX Tasarım ve API Entegrasyonları.
+*   **Developer:** Sati Bıldırcın — Full-Stack Geliştirme, Test, Dağıtım ve Sistem Optimizasyonu.
 
----
+--- 
 
 ## Problem ve Çözüm
 
@@ -192,6 +192,22 @@ careerpilot-ai/
 ![Trello İş Planı](assets/trello1.png)
 
 ---
+# Sprint Review
+
+- Proje klasör yapısı oluşturuldu.
+- Docker geliştirme ortamı hazırlandı.
+- Backend ve Frontend temel mimarisi oluşturuldu.
+- PostgreSQL veritabanı geliştirildi.
+- JWT Authentication sistemi tamamlandı.
+- CV Upload servisi geliştirildi.
+- Resume Parser geliştirildi.
+- OpenAI analiz altyapısı oluşturuldu.
+- Dashboard temel bileşenleri geliştirildi.
+- Landing, Login ve Register sayfaları geliştirildi.
+- Trello görev yönetim sistemi oluşturuldu.
+- Sprint planı hazırlandı.
+
+---
 
 #  Proje Durumu
 
@@ -209,7 +225,12 @@ careerpilot-ai/
 
 ---
 
-## 🏗️ Teknik Altyapı
+## Sprint Retrospective
+Sprint boyunca teknik hedeflerin büyük kısmı tamamlanmış olsa da takım içi iletişim istenilen seviyede sağlanamadı. Görev paylaşımı ve ilerleme durumlarının düzenli olarak aktarılmaması zaman zaman koordinasyon sorunlarına neden oldu. Bir sonraki sprintte daha düzenli iletişim kurulması, görev takibinin sıklaştırılması ve ekip üyeleri arasında daha etkin iş birliği sağlanması hedeflenmektedir.Daily Scrum toplantıları istenen şekilde gerçekleşmedi.
+
+
+
+## Teknik Altyapı
 
 ### Backend
 
@@ -244,22 +265,6 @@ careerpilot-ai/
 
 ---
 
-# ✅ Sprint 1 Tamamlanan Çalışmalar
-
-- Proje klasör yapısı oluşturuldu.
-- Docker geliştirme ortamı hazırlandı.
-- Backend ve Frontend temel mimarisi oluşturuldu.
-- PostgreSQL veritabanı geliştirildi.
-- JWT Authentication sistemi tamamlandı.
-- CV Upload servisi geliştirildi.
-- Resume Parser geliştirildi.
-- OpenAI analiz altyapısı oluşturuldu.
-- Dashboard temel bileşenleri geliştirildi.
-- Landing, Login ve Register sayfaları geliştirildi.
-- Trello görev yönetim sistemi oluşturuldu.
-- Sprint planı hazırlandı.
-
----
 
 ## Sprint 2
 
@@ -277,6 +282,6 @@ careerpilot-ai/
 
 ---
 
-# 📄 Lisans
+#  Lisans
 
 Bu proje **Yapay Zeka ve Teknoloji Akademisi 5. Dönem Bootcamp** kapsamında eğitim amacıyla geliştirilmektedir.
