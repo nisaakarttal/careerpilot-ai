@@ -1,0 +1,145 @@
+SPRINT 1 - DAILY SCRUM (GÜNLÜK DURUM RAPORLARI)
+
+Metodoloji Açıklaması
+---------------------
+Takım üyelerinin farklı çalışma saatleri, staj, iş ve mezuniyet süreçleri nedeniyle Daily Scrum toplantıları senkron olarak gerçekleştirilememiştir. Bu nedenle günlük durum paylaşımları WhatsApp üzerinden asenkron şekilde yürütülmüştür. Her ekip üyesi yaptığı çalışmaları, bir sonraki hedeflerini ve karşılaştığı durumları grup içerisinde paylaşarak ekip koordinasyonu sağlamıştır.
+
+=================================================================
+
+26 Haziran 2026 – Daily Scrum 1: Proje Seçimi ve Takım Organizasyonu
+
+Nisa Kartal (Scrum Master)
+
+Tamamlanan:
+- Ekip için üç farklı yapay zekâ destekli proje fikri (DarkShield AI, TeamFlow AI ve CareerPilot AI) hazırladı ve detaylı şekilde ekiple paylaştı.
+- Proje değerlendirme sürecini yönetti ve ekip içerisinde oylama başlattı.
+- Scrum Master görevini üstlendi.
+
+Utku Akkuşoğlu (Product Owner)
+
+Tamamlanan:
+- Proje fikirlerini değerlendirdi.
+- CareerPilot AI ve TeamFlow AI projeleri hakkında geri bildirim verdi.
+- Product Owner görevini üstlendi.
+
+Sati Bıldırcın (Developer)
+
+Tamamlanan:
+- CareerPilot AI fikrini destekledi.
+- Çalışma durumu nedeniyle sürece esnek katılım sağlayacağını belirtti.
+
+Yusuf Yıldırım (Developer)
+
+Tamamlanan:
+- CareerPilot AI projesinin uygulanabilir olduğunu belirterek projeyi destekledi.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
+- Takıma katıldı ve proje seçim sürecini takip etti.
+
+Günlük Özet:
+Ekip üyelerinin ortak değerlendirmesi sonucunda CareerPilot AI – Yapay Zekâ Destekli Kariyer ve CV Asistanı projesinin geliştirilmesine karar verilmiş, Scrum Master ve Product Owner rolleri belirlenmiştir.
+
+=================================================================
+
+26 Haziran 2026 – Daily Scrum 2: GitHub Kurulumu ve Proje Başlatılması
+
+Nisa Kartal (Scrum Master)
+
+Tamamlanan:
+- Projenin GitHub reposunu oluşturdu.
+- README.md dosyasının ilk sürümünü hazırladı.
+- Repo bağlantısını ekip ile paylaştı.
+- Bootcamp başvuru formunu doldurarak teslim etti.
+
+Sonraki Adımlar:
+- Sprint planlamasını hazırlamak.
+- Trello panosunu oluşturmak.
+
+Utku Akkuşoğlu (Product Owner)
+
+Tamamlanan:
+- Mezuniyet programı nedeniyle sürece asenkron olarak katıldı.
+- Form için gerekli bilgileri iletti.
+
+Sati Bıldırcın (Developer)
+
+Tamamlanan:
+- GitHub repo bağlantısını kontrol ederek erişimde herhangi bir sorun olmadığını doğruladı.
+
+Günlük Özet:
+GitHub deposu başarıyla oluşturulmuş, ekip organizasyonu tamamlanmış ve proje resmi olarak başlatılmıştır.
+
+=================================================================
+
+02 Temmuz 2026 – Daily Scrum 3: Sprint Planlama ve Görev Dağılımı
+
+Nisa Kartal (Scrum Master)
+
+Tamamlanan:
+- Sprint 1 teslim süreci hakkında ekibi bilgilendirdi.
+- Yapay zekâ desteğiyle hazırlanan görev dağılımını ekip üyeleriyle paylaştı.
+- Trello Sprint Board yapısını hazırlamaya başladı.
+
+Sonraki Adımlar:
+- Trello panosunu tamamlamak.
+- GitHub erişimlerini düzenlemek.
+
+Utku Akkuşoğlu (Product Owner)
+
+Tamamlanan:
+- README içeriğini inceleyerek geri bildirim verdi.
+- Sprint planlamasının hızlandırılması konusunda ekip koordinasyonuna katkı sağladı.
+
+Yusuf Yıldırım (Developer)
+
+Tamamlanan:
+- Görev dağılımını onayladı.
+- GitHub kullanıcı bilgisini paylaşarak projeye dahil oldu.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
+- Görev dağılımını onayladı.
+- GitHub kullanıcı adını paylaşarak projeye dahil oldu.
+
+Sati Bıldırcın (Developer)
+
+Tamamlanan:
+- GitHub kullanıcı adını paylaştı.
+- Yoğunluğu nedeniyle geliştirmelere sonraki günlerde aktif olarak katılacağını belirtti.
+
+Günlük Özet:
+Sprint 1 kapsamındaki görevler ekip üyelerine dengeli şekilde dağıtılmış, tüm ekip üyeleri GitHub reposuna eklenmiş ve Sprint Board hazırlıkları tamamlanmıştır.
+
+=================================================================
+
+03 Temmuz 2026 – Daily Scrum 4: Teknik Altyapı ve Sprint 1 Kapanışı
+
+Nisa Kartal (Scrum Master)
+
+Tamamlanan:
+- Backend ve frontend için temel proje mimarisini oluşturdu.
+- Trello Sprint Board'unu tamamladı.
+- Sprint Board ve ürün durumu ekran görüntülerini hazırladı.
+- WhatsApp üzerinden yürütülen asenkron toplantıları dokümante etti.
+- README.md dosyasını güncelledi ve Sprint 1 dokümantasyonunu tamamladı.
+
+Sonraki Adımlar:
+- Sprint raporunu son hâline getirerek teslim etmek.
+
+Utku Akkuşoğlu (Product Owner)
+
+Tamamlanan:
+- Ürün gereksinimleri ve Product Owner kapsamındaki dokümantasyon çalışmalarını tamamladı.
+- Hazırlanan içerikleri ekip incelemesine sundu.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
+- Kendisine atanan Sprint 1 görevlerini tamamladı.
+- Teknik altyapı hazırlıklarını ekip ile paylaştı.
+
+Günlük Özet:
+Sprint 1 kapsamında planlanan dokümantasyon çalışmaları, GitHub organizasyonu, Trello Sprint Board kurulumu, temel yazılım mimarisi ve ilk geliştirme hazırlıkları başarıyla tamamlanmıştır. Proje, Sprint 2 kapsamında AI CV Analyzer, ATS Analysis, Job Matching ve diğer temel modüllerin geliştirilmesine hazır hâle getirilmiştir.
