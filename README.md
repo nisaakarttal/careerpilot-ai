@@ -229,6 +229,9 @@ careerpilot-ai/
 Sprint boyunca teknik hedeflerin büyük kısmı tamamlanmış olsa da takım içi iletişim istenilen seviyede sağlanamadı. Görev paylaşımı ve ilerleme durumlarının düzenli olarak aktarılmaması zaman zaman koordinasyon sorunlarına neden oldu. Bir sonraki sprintte daha düzenli iletişim kurulması, görev takibinin sıklaştırılması ve ekip üyeleri arasında daha etkin iş birliği sağlanması hedeflenmektedir.Daily Scrum toplantıları istenen şekilde gerçekleşmedi.
 
 
+### Daily Scrum
+![Bootcamp - Grup 79 ile WhatsApp Sohbeti](assets/whatsApp.png)
+
 
 ## Teknik Altyapı
 
