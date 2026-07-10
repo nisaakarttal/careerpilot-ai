@@ -1,5 +1,7 @@
 from fastapi import HTTPException, status
-from openai import APIError, OpenAI, OpenAIError
+from google import genai
+from google.genai import types
+from google.genai.errors import APIError
 
 from app.core.config import settings
 from app.schemas.aioutputs import (
@@ -9,18 +11,21 @@ from app.schemas.aioutputs import (
     RecruiterReport,
 )
 
-_client: OpenAI | None = None
+_client: genai.Client | None = None
 
 
-def get_openai_client() -> OpenAI:
+def get_gemini_client() -> genai.Client:
     global _client
     if _client is None:
-        if not settings.OPENAI_API_KEY:
+        # Settings içindeki API key ismini projenize göre (örn: GEMINI_API_KEY) güncelleyebilirsiniz.
+        # Eğer hala OPENAI_API_KEY adını kullanıyorsanız settings.OPENAI_API_KEY olarak bırakın.
+        api_key = getattr(settings, "GEMINI_API_KEY", getattr(settings, "OPENAI_API_KEY", None))
+        if not api_key:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="OPENAI_API_KEY is not configured on the server.",
+                detail="Gemini API key is not configured on the server.",
             )
-        _client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        _client = genai.Client(api_key=api_key)
     return _client
 
 
@@ -67,31 +72,33 @@ def _build_user_prompt(resume_text: str) -> str:
 
 
 def _parse_structured(system_prompt: str, resume_text: str, response_model):
-    client = get_openai_client()
+    client = get_gemini_client()
+
+    # Model ismi için settings kontrolü (örn: gemini-2.5-flash veya gemini-2.5-pro)
+    model_name = getattr(settings, "GEMINI_MODEL", getattr(settings, "OPENAI_MODEL", "gemini-2.5-flash"))
+
     try:
-        completion = client.beta.chat.completions.parse(
-            model=settings.OPENAI_MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": _build_user_prompt(resume_text)},
-            ],
-            response_format=response_model,
+        # Gemini'de Structured Outputs için GenerateContentConfig kullanıyoruz
+        config = types.GenerateContentConfig(
+            system_instruction=system_prompt,
             temperature=0.4,
+            response_mime_type="application/json",
+            response_schema=response_model,
         )
-    except (APIError, OpenAIError) as exc:
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=_build_user_prompt(resume_text),
+            config=config,
+        )
+    except APIError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=f"AI analysis failed: {str(exc)}",
         ) from exc
 
-    message = completion.choices[0].message
-    if message.refusal:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"AI analysis was refused: {message.refusal}",
-        )
-
-    parsed = message.parsed
+    # SDK, response_schema verdiğimizde veriyi otomatik olarak parse eder ve .parsed attribute'una ekler
+    parsed = getattr(response, "parsed", None)
     if parsed is None:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

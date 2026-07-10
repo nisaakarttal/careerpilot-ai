@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
@@ -62,6 +63,8 @@ async def upload_resume(
         ats_analytics=ats_report.model_dump(),
         recruiter_analytics=recruiter_report.model_dump(),
         coach_analytics=coach_report.model_dump(),
+        # 2. Arka planın timezone'lu ezmesini engellemek için naive UTC veriyoruz
+        created_at=datetime.utcnow(),
     )
 
     session.add(resume)
