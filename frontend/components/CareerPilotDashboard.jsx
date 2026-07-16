@@ -1614,5 +1614,6 @@ export default function CareerPilotDashboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }
