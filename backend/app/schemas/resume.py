@@ -14,10 +14,10 @@ class ResumeAnalysisResponse(BaseModel):
     ats_score: float
     recruiter_score: float
     coach_score: float
-    cv_analytics: GeneralCVReport
-    ats_analytics: ATSReport
-    recruiter_analytics: RecruiterReport
-    coach_analytics: CoachReport
+    cv_analytics: GeneralCVReport | None = None
+    ats_analytics: ATSReport | None = None
+    recruiter_analytics: RecruiterReport | None = None
+    coach_analytics: CoachReport | None = None
     created_at: datetime
 
     class Config:

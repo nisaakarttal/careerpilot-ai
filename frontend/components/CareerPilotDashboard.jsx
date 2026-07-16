@@ -762,6 +762,33 @@ function JobMatchTab({ resume }) {
   );
 }
 
+
+function AnalysisProgressPanel({ progress, filename }) {
+  return (
+    <div className="cp-card p-6 space-y-4">
+      <div className="flex justify-between items-center text-sm">
+        <span className="font-medium text-[var(--cp-text-dim)]">
+          Özgeçmiş Analiz Ediliyor: <span className="text-white font-semibold">{filename}</span>
+        </span>
+        <span className="font-semibold text-[var(--cp-accent-light)]">{progress}%</span>
+      </div>
+      <div className="w-full h-2 rounded-full bg-[var(--cp-border)] overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      <p className="text-xs text-[var(--cp-text-dim)] italic text-center animate-pulse">
+        {progress < 25 && "Yapay zeka profilinizi inceliyor..."}
+        {progress >= 25 && progress < 50 && "Genel CV raporu tamamlandı. ATS uyumluluğu kontrol ediliyor..."}
+        {progress >= 50 && progress < 75 && "ATS uyumluluğu tamamlandı. İşe alım uzmanı gözüyle değerlendiriliyor..."}
+        {progress >= 75 && progress < 100 && "İşe alım uzmanı değerlendirmesi tamamlandı. Kariyer planı hazırlanıyor..."}
+        {progress === 100 && "Analiz başarıyla tamamlandı!"}
+      </p>
+    </div>
+  );
+}
+
 function HistorySidebar({ history, selectedId, onSelect }) {
   if (!history || history.length === 0) return null;
 
@@ -783,7 +810,11 @@ function HistorySidebar({ history, selectedId, onSelect }) {
               {h.original_filename || "İsimsiz Özgeçmiş"}
             </div>
             <div className="text-xs text-[var(--cp-text-dim)] mt-1 flex justify-between">
-              <span>Skor: <span className="font-semibold">{Math.round(h.overall_score)}</span></span>
+              {h.overall_score === 0 ? (
+                <span className="text-[var(--cp-accent-light)] animate-pulse font-semibold">Analiz Ediliyor...</span>
+              ) : (
+                <span>Skor: <span className="font-semibold">{Math.round(h.overall_score)}</span></span>
+              )}
               <span>{new Date(h.created_at).toLocaleDateString("tr-TR")}</span>
             </div>
           </button>
@@ -838,6 +869,8 @@ export default function CareerPilotDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedResume, setSelectedResume] = useState(null);
   const [loadingResume, setLoadingResume] = useState(false);
+  const [analyzingResumeId, setAnalyzingResumeId] = useState(null);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
 
   async function loadDashboard() {
     setLoading(true);
@@ -847,6 +880,17 @@ export default function CareerPilotDashboard() {
       setDashboard(data);
       if (data && data.latest) {
         setSelectedResume(data.latest);
+        // If the latest resume is still being analyzed
+        let isAnalyzing = !data.latest.cv_analytics || !data.latest.ats_analytics || !data.latest.recruiter_analytics || !data.latest.coach_analytics;
+        if (isAnalyzing) {
+          setAnalyzingResumeId(data.latest.id);
+          let progress = 0;
+          if (data.latest.cv_analytics) progress += 25;
+          if (data.latest.ats_analytics) progress += 25;
+          if (data.latest.recruiter_analytics) progress += 25;
+          if (data.latest.coach_analytics) progress += 25;
+          setAnalysisProgress(progress);
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -859,14 +903,79 @@ export default function CareerPilotDashboard() {
     loadDashboard();
   }, []);
 
+  // Poll for analyzing resume progress
+  useEffect(() => {
+    if (!analyzingResumeId) return;
+
+    let intervalId = setInterval(async () => {
+      try {
+        const data = await getResumeById(analyzingResumeId);
+        
+        let progress = 0;
+        if (data.cv_analytics) progress += 25;
+        if (data.ats_analytics) progress += 25;
+        if (data.recruiter_analytics) progress += 25;
+        if (data.coach_analytics) progress += 25;
+
+        setAnalysisProgress(progress);
+        setSelectedResume(data);
+
+        // Update in dashboard local state so history gets updated scores
+        setDashboard((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            history: prev.history.map((h) => {
+              if (h.id === data.id) {
+                return {
+                  ...h,
+                  overall_score: data.overall_score,
+                  ats_score: data.ats_score,
+                  recruiter_score: data.recruiter_score,
+                  coach_score: data.coach_score,
+                };
+              }
+              return h;
+            }),
+          };
+        });
+
+        if (progress === 100) {
+          setAnalyzingResumeId(null);
+          // Complete reload to make sure everything is in sync
+          const dashData = await getDashboard();
+          setDashboard(dashData);
+        }
+      } catch (err) {
+        console.error("Error polling resume progress:", err);
+        setAnalyzingResumeId(null);
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [analyzingResumeId]);
+
   async function handleSelectHistory(id) {
     setLoadingResume(true);
     setError("");
+    setAnalyzingResumeId(null); // Stop current polling if user clicks another CV
     try {
       const data = await getResumeById(id);
       setSelectedResume(data);
       setActiveTab("overview");
-      // Scroll to top of main content
+      
+      // If the selected CV is still being analyzed, start polling it
+      let isAnalyzing = !data.cv_analytics || !data.ats_analytics || !data.recruiter_analytics || !data.coach_analytics;
+      if (isAnalyzing) {
+        setAnalyzingResumeId(data.id);
+        let progress = 0;
+        if (data.cv_analytics) progress += 25;
+        if (data.ats_analytics) progress += 25;
+        if (data.recruiter_analytics) progress += 25;
+        if (data.coach_analytics) progress += 25;
+        setAnalysisProgress(progress);
+      }
+      
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(err.message);
@@ -883,10 +992,10 @@ export default function CareerPilotDashboard() {
             {
               id: resume.id,
               original_filename: resume.original_filename,
-              overall_score: resume.overall_score,
-              ats_score: resume.ats_score,
-              recruiter_score: resume.recruiter_score,
-              coach_score: resume.coach_score,
+              overall_score: 0.0,
+              ats_score: 0.0,
+              recruiter_score: 0.0,
+              coach_score: 0.0,
               created_at: resume.created_at,
             },
             ...prev.history,
@@ -895,15 +1004,17 @@ export default function CareerPilotDashboard() {
             {
               id: resume.id,
               original_filename: resume.original_filename,
-              overall_score: resume.overall_score,
-              ats_score: resume.ats_score,
-              recruiter_score: resume.recruiter_score,
-              coach_score: resume.coach_score,
+              overall_score: 0.0,
+              ats_score: 0.0,
+              recruiter_score: 0.0,
+              coach_score: 0.0,
               created_at: resume.created_at,
             },
           ],
     }));
     setSelectedResume(resume);
+    setAnalyzingResumeId(resume.id);
+    setAnalysisProgress(0);
     setActiveTab("overview");
   }
 
@@ -926,6 +1037,7 @@ export default function CareerPilotDashboard() {
   }
 
   const hasResume = selectedResume !== null;
+  const isSelectedResumeAnalyzing = selectedResume && (!selectedResume.cv_analytics || !selectedResume.ats_analytics || !selectedResume.recruiter_analytics || !selectedResume.coach_analytics);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -960,6 +1072,11 @@ export default function CareerPilotDashboard() {
             <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
               Henüz bir CV analizi yok. Başlamak için yukarıdan bir dosya yükleyin.
             </div>
+          ) : isSelectedResumeAnalyzing ? (
+            <AnalysisProgressPanel 
+              progress={analysisProgress} 
+              filename={selectedResume.original_filename} 
+            />
           ) : (
             <>
               <div className="flex gap-2 overflow-x-auto cp-scrollbar pb-1">
