@@ -13,9 +13,9 @@ export default function HomePage() {
           dört farklı uzman gözüyle analiz edin
         </h1>
         <p className="text-[var(--cp-text-dim)] text-lg max-w-2xl mx-auto mb-10">
-          CareerPilot AI; CV analisti, ATS optimizasyon uzmanı, ise alim
-          uzmani ve kariyer koçu perspektiflerini tek bir panelde birleştirir.
-          PDF veya DOCX formatinda CV'nizi yükleyin, kapsamlı raporunuzu aninda alin.
+          CareerPilot AI; CV analisti, ATS optimizasyon uzmanı, işe alım
+          uzmanı ve kariyer koçu perspektiflerini tek bir panelde birleştirir.
+          PDF veya DOCX formatında CV'nizi yükleyin, kapsamlı raporunuzu anında alın.
         </p>
         <div className="flex items-center justify-center gap-4">
           <a
@@ -43,8 +43,8 @@ export default function HomePage() {
               desc: "Ayrıştırma riski, anahtar kelime eksikleri, X-Y-Z formatında madde revizyonu.",
             },
             {
-              title: "İşe Alım Uzmanı Bakisi",
-              desc: "İlk izlenim, kıdem algısı, olası mülakat sorulari.",
+              title: "İşe Alım Uzmanı Bakışı",
+              desc: "İlk izlenim, kıdem algısı, olası mülakat soruları.",
             },
             {
               title: "Kariyer Koçu Planı",
