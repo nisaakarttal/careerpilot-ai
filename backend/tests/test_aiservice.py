@@ -56,7 +56,7 @@ def make_job_match_report() -> AIJobMatchDetail:
 
 
 class AIServiceTests(unittest.TestCase):
-    def test_openai_chat_model_is_integrated_through_langchain(self):
+    def test_chat_model_is_integrated_through_langchain(self):
         aiservice._chat_models.clear()
 
         with patch.object(
@@ -64,7 +64,8 @@ class AIServiceTests(unittest.TestCase):
             "OPENAI_API_KEY",
             "test-openai-key",
         ):
-            model = aiservice.get_openai_chat_model(temperature=0.1)
+            with patch.object(aiservice.settings, "AI_PROVIDER", "openai"):
+                model = aiservice.get_chat_model(temperature=0.1)
 
         self.assertIsInstance(model, ChatOpenAI)
         self.assertEqual(model.model_name, aiservice.settings.OPENAI_MODEL)
@@ -140,7 +141,7 @@ class AIServiceTests(unittest.TestCase):
             AIJobMatchDetail,
         )
         self.assertIn(
-            "OpenAI embedding kosinüs benzerliği: 80/100",
+            "AI embedding kosinüs benzerliği: 80/100",
             parse_structured.call_args.kwargs["user_prompt"],
         )
 
@@ -177,7 +178,7 @@ class AIServiceTests(unittest.TestCase):
         )
 
         with patch(
-            "app.services.aiservice.get_openai_chat_model",
+            "app.services.aiservice.get_chat_model",
             return_value=fake_model,
         ) as get_model:
             result = aiservice.generate_interview_chat_response(

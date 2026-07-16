@@ -6,6 +6,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from openai import APIError
 from pydantic import BaseModel
 
@@ -25,24 +26,42 @@ from app.services.matching import (
 )
 
 ReportT = TypeVar("ReportT", bound=BaseModel)
-_chat_models: dict[float, ChatOpenAI] = {}
+_chat_models: dict[str, Runnable] = {}
 
 
-def get_openai_chat_model(temperature: float = 0.4) -> ChatOpenAI:
-    if not settings.OPENAI_API_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="OPENAI_API_KEY sunucuda yapılandırılmamış.",
-        )
-
-    if temperature not in _chat_models:
-        _chat_models[temperature] = ChatOpenAI(
-            api_key=settings.OPENAI_API_KEY,
-            model=settings.OPENAI_MODEL,
-            temperature=temperature,
-            max_retries=2,
-        )
-    return _chat_models[temperature]
+def get_chat_model(temperature: float = 0.4) -> Runnable:
+    cache_key = f"{settings.AI_PROVIDER}_{temperature}"
+    if cache_key not in _chat_models:
+        if settings.AI_PROVIDER == "openai":
+            if not settings.OPENAI_API_KEY:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="OPENAI_API_KEY sunucuda yapılandırılmamış.",
+                )
+            _chat_models[cache_key] = ChatOpenAI(
+                api_key=settings.OPENAI_API_KEY,
+                model=settings.OPENAI_MODEL,
+                temperature=temperature,
+                max_retries=2,
+            )
+        elif settings.AI_PROVIDER == "gemini":
+            if not settings.GEMINI_API_KEY:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="GEMINI_API_KEY sunucuda yapılandırılmamış.",
+                )
+            _chat_models[cache_key] = ChatGoogleGenerativeAI(
+                google_api_key=settings.GEMINI_API_KEY,
+                model=settings.GEMINI_MODEL,
+                temperature=temperature,
+                max_retries=2,
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Bilinmeyen AI sağlayıcısı: {settings.AI_PROVIDER}",
+            )
+    return _chat_models[cache_key]
 
 
 GENERAL_ANALYST_SYSTEM_PROMPT = """Sen teknoloji, finans ve danışmanlık sektörlerindeki özgeçmişleri inceleyen \
@@ -141,7 +160,7 @@ def _build_job_match_user_prompt(
         "Aşağıdaki özgeçmiş metni ile iş ilanı açıklamasını karşılaştır. "
         "Önce gereksinimleri çıkar, sonra her puanı CV'deki kanıtlarla doğrula.\n\n"
         "----- LANGCHAIN SEMANTİK KARŞILAŞTIRMA -----\n"
-        f"OpenAI embedding kosinüs benzerliği: {semantic_similarity_score}/100\n"
+        f"AI embedding kosinüs benzerliği: {semantic_similarity_score}/100\n"
         f"Doğrulanan ortak yetkinlikler: {matched_keywords}\n"
         f"İlanda bulunup CV'de doğrulanamayan yetkinlikler: {missing_keywords}\n"
         "----- LANGCHAIN SEMANTİK KARŞILAŞTIRMA BİTİŞİ -----\n\n"
@@ -212,7 +231,7 @@ def build_json_analysis_chain(
         ]
     ).partial(format_instructions=parser.get_format_instructions())
 
-    chat_model = model or get_openai_chat_model(temperature)
+    chat_model = model or get_chat_model(temperature)
     return prompt | chat_model | parser
 
 
@@ -238,7 +257,7 @@ def _invoke_json_chain(
     except (APIError, OutputParserException) as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"OpenAI/LangChain analizi başarısız oldu: {str(exc)}",
+            detail=f"AI/LangChain analizi başarısız oldu: {str(exc)}",
         ) from exc
     except Exception as exc:
         raise HTTPException(
@@ -355,7 +374,7 @@ def generate_interview_chat_response(
     try:
         chain = (
             ChatPromptTemplate.from_messages(prompt_messages)
-            | get_openai_chat_model(temperature=0.7)
+            | get_chat_model(temperature=0.7)
         )
         response = chain.invoke({})
     except HTTPException:
@@ -363,7 +382,7 @@ def generate_interview_chat_response(
     except APIError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"OpenAI mülakat analizi başarısız oldu: {str(exc)}",
+            detail=f"AI mülakat analizi başarısız oldu: {str(exc)}",
         ) from exc
     except Exception as exc:
         raise HTTPException(

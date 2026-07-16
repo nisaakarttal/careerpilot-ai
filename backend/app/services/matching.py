@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from fastapi import HTTPException, status
 from langchain_core.embeddings import Embeddings
 from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 from app.core.config import settings
 
@@ -87,23 +88,38 @@ class MatchEvidence:
         return bool(self.matched_keywords or self.missing_keywords)
 
 
-_embeddings_client: OpenAIEmbeddings | None = None
+_embeddings_client: Embeddings | None = None
 
 
-def get_openai_embeddings() -> OpenAIEmbeddings:
+def get_embeddings_model() -> Embeddings:
     global _embeddings_client
 
-    if not settings.OPENAI_API_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="OPENAI_API_KEY sunucuda yapılandırılmamış.",
-        )
-
     if _embeddings_client is None:
-        _embeddings_client = OpenAIEmbeddings(
-            api_key=settings.OPENAI_API_KEY,
-            model=settings.OPENAI_EMBEDDING_MODEL,
-        )
+        if settings.AI_PROVIDER == "openai":
+            if not settings.OPENAI_API_KEY:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="OPENAI_API_KEY sunucuda yapılandırılmamış.",
+                )
+            _embeddings_client = OpenAIEmbeddings(
+                api_key=settings.OPENAI_API_KEY,
+                model=settings.OPENAI_EMBEDDING_MODEL,
+            )
+        elif settings.AI_PROVIDER == "gemini":
+            if not settings.GEMINI_API_KEY:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="GEMINI_API_KEY sunucuda yapılandırılmamış.",
+                )
+            _embeddings_client = GoogleGenerativeAIEmbeddings(
+                google_api_key=settings.GEMINI_API_KEY,
+                model=settings.GEMINI_EMBEDDING_MODEL,
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Bilinmeyen AI sağlayıcısı: {settings.AI_PROVIDER}",
+            )
     return _embeddings_client
 
 
@@ -197,7 +213,7 @@ def calculate_semantic_similarity(
     job_description: str,
     embeddings: Embeddings | None = None,
 ) -> int:
-    embedding_model = embeddings or get_openai_embeddings()
+    embedding_model = embeddings or get_embeddings_model()
     vectors = embedding_model.embed_documents([resume_text, job_description])
     if len(vectors) != 2:
         raise ValueError("Semantik karşılaştırma için iki embedding üretilmelidir.")

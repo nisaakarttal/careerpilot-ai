@@ -68,7 +68,7 @@ class JobMatchDetail(AIJobMatchDetail):
         default=0,
         ge=0,
         le=100,
-        description="LangChain OpenAI embeddings ile hesaplanan kosinüs benzerliği skoru (0-100)",
+        description="LangChain AI embeddings ile hesaplanan kosinüs benzerliği skoru (0-100)",
     )
     keyword_match_score: int = Field(
         default=0,
