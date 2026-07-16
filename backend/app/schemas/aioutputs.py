@@ -27,7 +27,11 @@ class RevisedBullet(BaseModel):
 
 
 class ATSReport(BaseModel):
-    ats_score: int = Field(description="0'dan 100'e kadar ATS uyumluluk puanı")
+    ats_score: int = Field(
+        ge=0,
+        le=100,
+        description="0'dan 100'e kadar ATS uyumluluk puanı",
+    )
     parsing_risk_level: str = Field(description="ATS ayrıştırma hatası risk seviyesi: düşük (low), orta (medium) veya yüksek (high)")
     formatting_issues: List[str] = Field(description="ATS ayrıştırmasını bozabilecek format sorunlarının listesi")
     keyword_gaps: List[str] = Field(description="CV'de eksik olan önemli sektör veya rol anahtar kelimeleri")
