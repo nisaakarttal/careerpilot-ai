@@ -16,13 +16,13 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { getDashboard, uploadResume } from "@/lib/api";
+import { getDashboard, uploadResume, getResumeById } from "@/lib/api";
 
 const TABS = [
-  { id: "overview", label: "Genel Bakis" },
+  { id: "overview", label: "Genel Bakış" },
   { id: "ats", label: "ATS Raporu" },
-  { id: "interview", label: "Mulakat Simulatoru" },
-  { id: "roadmap", label: "Kariyer Yol Haritasi" },
+  { id: "interview", label: "Mülakat Simülatörü" },
+  { id: "roadmap", label: "Kariyer Yol Haritası" },
 ];
 
 function scoreColor(score) {
@@ -117,16 +117,16 @@ function UploadPanel({ onUploaded }) {
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
       <div className="text-4xl mb-3">📄</div>
-      <p className="font-medium mb-1">CV'nizi yukleyin</p>
+      <p className="font-medium mb-1">CV'nizi yükleyin</p>
       <p className="text-sm text-[var(--cp-text-dim)] mb-4">
-        PDF veya DOCX formatinda dosyanizi surukleyip birakin ya da secin
+        PDF veya DOCX formatında dosyanızı sürükleyip bırakın ya da seçin
       </p>
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
         className="px-5 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 transition-colors text-sm font-medium"
       >
-        {uploading ? "Analiz Ediliyor..." : "Dosya Sec"}
+        {uploading ? "Analiz Ediliyor..." : "Dosya Seç"}
       </button>
       {error && (
         <div className="mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 inline-block">
@@ -148,12 +148,12 @@ function OverviewTab({ resume }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <KpiCard label="Genel Skor" value={resume.overall_score} />
         <KpiCard label="ATS Skoru" value={resume.ats_score} />
-        <KpiCard label="Ise Alim Uzmani Skoru" value={resume.recruiter_score} />
-        <KpiCard label="Kariyer Kocu Skoru" value={resume.coach_score} />
+        <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} />
+        <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} />
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-1">Aday Ozeti</h3>
+        <h3 className="font-semibold mb-1">Aday Özeti</h3>
         <p className="text-sm text-[var(--cp-text-dim)] mb-4">
           {resume.cv_analytics.candidate_summary}
         </p>
@@ -166,7 +166,7 @@ function OverviewTab({ resume }) {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-4">Bolum Skorlari</h3>
+          <h3 className="font-semibold mb-4">Bölüm Skorları</h3>
           <ResponsiveContainer width="100%" height={280}>
             <RadarChart data={radarData}>
               <PolarGrid stroke="var(--cp-border)" />
@@ -190,10 +190,10 @@ function OverviewTab({ resume }) {
         </div>
 
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-4">Guclu ve Zayif Yonler</h3>
+          <h3 className="font-semibold mb-4">Güçlü ve Zayıf Yönler</h3>
           <div className="mb-4">
             <p className="text-xs uppercase tracking-wide text-[var(--cp-text-dim)] mb-2">
-              Guclu Yonler
+              Güçlü Yönler
             </p>
             <div className="flex flex-wrap">
               {resume.cv_analytics.strengths.map((s, i) => (
@@ -205,7 +205,7 @@ function OverviewTab({ resume }) {
           </div>
           <div>
             <p className="text-xs uppercase tracking-wide text-[var(--cp-text-dim)] mb-2">
-              Zayif Yonler
+              Zayıf Yönler
             </p>
             <div className="flex flex-wrap">
               {resume.cv_analytics.weaknesses.map((w, i) => (
@@ -220,7 +220,7 @@ function OverviewTab({ resume }) {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Eksik Bolumler</h3>
+          <h3 className="font-semibold mb-3">Eksik Bölümler</h3>
           <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
             {resume.cv_analytics.missing_sections.map((m, i) => (
               <li key={i} className="flex items-start gap-2">
@@ -230,7 +230,7 @@ function OverviewTab({ resume }) {
           </ul>
         </div>
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Oncelikli Iyilestirmeler</h3>
+          <h3 className="font-semibold mb-3">Öncelikli İyileştirmeler</h3>
           <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
             {resume.cv_analytics.top_fixes.map((f, i) => (
               <li key={i} className="flex items-start gap-2">
@@ -259,7 +259,7 @@ function AtsTab({ resume }) {
         <KpiCard label="ATS Skoru" value={resume.ats_score} />
         <div className="cp-card p-5">
           <div className="text-sm text-[var(--cp-text-dim)] mb-2">
-            Ayristirma Riski
+            Ayrıştırma Riski
           </div>
           <Badge tone={riskTone}>{ats.parsing_risk_level.toUpperCase()}</Badge>
         </div>
@@ -274,7 +274,7 @@ function AtsTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-3">Bicimlendirme Sorunlari</h3>
+        <h3 className="font-semibold mb-3">Biçimlendirme Sorunları</h3>
         <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
           {ats.formatting_issues.map((issue, i) => (
             <li
@@ -300,7 +300,7 @@ function AtsTab({ resume }) {
 
       <div className="cp-card p-6">
         <h3 className="font-semibold mb-4">
-          Yeniden Yazilmis Madde Isaretleri (X-Y-Z Formulu)
+          Yeniden Yazılmış Madde İşaretleri (X-Y-Z Formülü)
         </h3>
         <div className="space-y-4">
           {ats.revised_bullets.map((b, i) => (
@@ -312,7 +312,7 @@ function AtsTab({ resume }) {
                 {b.original}
               </p>
               <p className="text-xs uppercase tracking-wide text-emerald-400 mb-1">
-                Revize Edilmis
+                Revize Edilmiş
               </p>
               <p className="text-sm mb-3">{b.revised}</p>
               <p className="text-xs text-[var(--cp-text-dim)] italic">
@@ -324,7 +324,7 @@ function AtsTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">ATS Optimizasyon Ozeti</h3>
+        <h3 className="font-semibold mb-2">ATS Optimizasyon Özeti</h3>
         <p className="text-sm text-[var(--cp-text-dim)]">
           {ats.ats_optimization_summary}
         </p>
@@ -341,16 +341,16 @@ function InterviewTab({ resume }) {
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-3 gap-4">
-        <KpiCard label="Ise Alim Uzmani Skoru" value={resume.recruiter_score} />
+        <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} />
         <div className="cp-card p-5">
           <div className="text-sm text-[var(--cp-text-dim)] mb-2">
-            Algilanan Kidem
+            Algılanan Kıdem
           </div>
           <Badge tone={seniorityTone}>{rec.perceived_seniority}</Badge>
         </div>
         <div className="cp-card p-5">
           <div className="text-sm text-[var(--cp-text-dim)] mb-2">
-            Ise Alim Riskleri
+            İşe Alım Riskleri
           </div>
           <div className="text-3xl font-bold text-red-400">
             {rec.hiring_risks.length}
@@ -359,7 +359,7 @@ function InterviewTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Ilk Izlenim</h3>
+        <h3 className="font-semibold mb-2">İlk İzlenim</h3>
         <p className="text-sm text-[var(--cp-text-dim)]">
           {rec.first_impression}
         </p>
@@ -367,7 +367,7 @@ function InterviewTab({ resume }) {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Ise Alim Riskleri</h3>
+          <h3 className="font-semibold mb-3">İşe Alım Riskleri</h3>
           <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
             {rec.hiring_risks.map((r, i) => (
               <li key={i} className="flex items-start gap-2">
@@ -377,7 +377,7 @@ function InterviewTab({ resume }) {
           </ul>
         </div>
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">One Cikan Sinyaller</h3>
+          <h3 className="font-semibold mb-3">Öne Çıkan Sinyaller</h3>
           <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
             {rec.standout_signals.map((s, i) => (
               <li key={i} className="flex items-start gap-2">
@@ -389,7 +389,7 @@ function InterviewTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-4">Olasi Mulakat Sorulari</h3>
+        <h3 className="font-semibold mb-4">Olası Mülakat Soruları</h3>
         <div className="space-y-2">
           {rec.interview_questions.map((q, i) => (
             <div key={i} className="cp-card-light overflow-hidden">
@@ -413,7 +413,7 @@ function InterviewTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Ise Alim Uzmani Ozeti</h3>
+        <h3 className="font-semibold mb-2">İşe Alım Uzmanı Özeti</h3>
         <p className="text-sm text-[var(--cp-text-dim)]">
           {rec.recruiter_summary}
         </p>
@@ -428,11 +428,11 @@ function RoadmapTab({ resume }) {
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-1 gap-4">
-        <KpiCard label="Kariyer Kocu Skoru" value={resume.coach_score} />
+        <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} />
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Kariyer Konumlandirma</h3>
+        <h3 className="font-semibold mb-2">Kariyer Konumlandırma</h3>
         <p className="text-sm text-[var(--cp-text-dim)]">
           {coach.career_positioning}
         </p>
@@ -440,7 +440,7 @@ function RoadmapTab({ resume }) {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Ozguven Artiricilar</h3>
+          <h3 className="font-semibold mb-3">Özgüven Artırıcılar</h3>
           <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
             {coach.confidence_boosters.map((c, i) => (
               <li key={i} className="flex items-start gap-2">
@@ -450,7 +450,7 @@ function RoadmapTab({ resume }) {
           </ul>
         </div>
         <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Gelisim Oncelikleri</h3>
+          <h3 className="font-semibold mb-3">Gelişim Öncelikleri</h3>
           <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
             {coach.development_priorities.map((d, i) => (
               <li key={i} className="flex items-start gap-2">
@@ -462,7 +462,7 @@ function RoadmapTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-3">Mulakat Hazirlik Plani</h3>
+        <h3 className="font-semibold mb-3">Mülakat Hazırlık Planı</h3>
         <ol className="space-y-2 text-sm text-[var(--cp-text-dim)]">
           {coach.interview_preparation_plan.map((p, i) => (
             <li key={i} className="flex items-start gap-2">
@@ -476,7 +476,7 @@ function RoadmapTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-4">Kariyer Yol Haritasi</h3>
+        <h3 className="font-semibold mb-4">Kariyer Yol Haritası</h3>
         <div className="relative pl-6 border-l-2 border-[var(--cp-border)] space-y-6">
           {coach.roadmap.map((item, i) => (
             <div key={i} className="relative">
@@ -494,10 +494,42 @@ function RoadmapTab({ resume }) {
       </div>
 
       <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Kariyer Kocu Ozeti</h3>
+        <h3 className="font-semibold mb-2">Kariyer Koçu Özeti</h3>
         <p className="text-sm text-[var(--cp-text-dim)]">
           {coach.coach_summary}
         </p>
+      </div>
+    </div>
+  );
+}
+
+
+function HistorySidebar({ history, selectedId, onSelect }) {
+  if (!history || history.length === 0) return null;
+
+  return (
+    <div className="cp-card p-5 h-full max-h-[800px] overflow-y-auto cp-scrollbar">
+      <h3 className="font-semibold mb-4 text-lg border-b border-[var(--cp-border)] pb-2">Geçmiş Özgeçmişler</h3>
+      <div className="space-y-3">
+        {history.map((h) => (
+          <button
+            key={h.id}
+            onClick={() => onSelect(h.id)}
+            className={`w-full text-left p-3 rounded-lg transition-colors border ${
+              selectedId === h.id
+                ? "bg-[var(--cp-accent)]/10 border-[var(--cp-accent)] text-[var(--cp-accent-light)]"
+                : "border-[var(--cp-border)] hover:bg-[var(--cp-panel-light)]"
+            }`}
+          >
+            <div className="font-medium text-sm truncate" title={h.original_filename || "Özgeçmiş"}>
+              {h.original_filename || "İsimsiz Özgeçmiş"}
+            </div>
+            <div className="text-xs text-[var(--cp-text-dim)] mt-1 flex justify-between">
+              <span>Skor: <span className="font-semibold">{Math.round(h.overall_score)}</span></span>
+              <span>{new Date(h.created_at).toLocaleDateString("tr-TR")}</span>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -516,7 +548,7 @@ function HistoryChart({ history }) {
 
   return (
     <div className="cp-card p-6">
-      <h3 className="font-semibold mb-4">Gecmis Performans</h3>
+      <h3 className="font-semibold mb-4">Geçmiş Performans</h3>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--cp-border)" />
@@ -546,6 +578,8 @@ export default function CareerPilotDashboard() {
   const [error, setError] = useState("");
   const [dashboard, setDashboard] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [loadingResume, setLoadingResume] = useState(false);
 
   async function loadDashboard() {
     setLoading(true);
@@ -553,6 +587,9 @@ export default function CareerPilotDashboard() {
     try {
       const data = await getDashboard();
       setDashboard(data);
+      if (data && data.latest) {
+        setSelectedResume(data.latest);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -563,6 +600,22 @@ export default function CareerPilotDashboard() {
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  async function handleSelectHistory(id) {
+    setLoadingResume(true);
+    setError("");
+    try {
+      const data = await getResumeById(id);
+      setSelectedResume(data);
+      setActiveTab("overview");
+      // Scroll to top of main content
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingResume(false);
+    }
+  }
 
   function handleUploaded(resume) {
     setDashboard((prev) => ({
@@ -592,13 +645,14 @@ export default function CareerPilotDashboard() {
             },
           ],
     }));
+    setSelectedResume(resume);
     setActiveTab("overview");
   }
 
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-16 text-center text-[var(--cp-text-dim)]">
-        Panel yukleniyor...
+        Panel yükleniyor...
       </div>
     );
   }
@@ -613,59 +667,71 @@ export default function CareerPilotDashboard() {
     );
   }
 
-  const hasResume = dashboard && dashboard.latest;
+  const hasResume = selectedResume !== null;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Kariyer Paneli</h1>
-          <p className="text-sm text-[var(--cp-text-dim)]">
-            CV analizlerinizi goruntuleyin ve yeni bir analiz baslatin.
-          </p>
-        </div>
-      </div>
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Sidebar */}
+        {dashboard && dashboard.history && dashboard.history.length > 0 && (
+          <div className="w-full md:w-1/4 shrink-0">
+            <HistorySidebar 
+              history={dashboard.history} 
+              selectedId={selectedResume?.id} 
+              onSelect={handleSelectHistory} 
+            />
+          </div>
+        )}
 
-      <UploadPanel onUploaded={handleUploaded} />
-
-      {!hasResume ? (
-        <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
-          Henuz bir CV analizi yok. Baslamak icin yukaridan bir dosya yukleyin.
-        </div>
-      ) : (
-        <>
-          <div className="flex gap-2 overflow-x-auto cp-scrollbar pb-1">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
-                    ? "bg-[var(--cp-accent)] text-white"
-                    : "cp-card-light text-[var(--cp-text-dim)] hover:text-white"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+        {/* Main Content */}
+        <div className="flex-1 space-y-8 min-w-0">
+          <div>
+            <h1 className="text-2xl font-semibold">Kariyer Paneli</h1>
+            <p className="text-sm text-[var(--cp-text-dim)]">
+              CV analizlerinizi görüntüleyin ve yeni bir analiz başlatın.
+            </p>
           </div>
 
-          {activeTab === "overview" && (
-            <OverviewTab resume={dashboard.latest} />
-          )}
-          {activeTab === "ats" && <AtsTab resume={dashboard.latest} />}
-          {activeTab === "interview" && (
-            <InterviewTab resume={dashboard.latest} />
-          )}
-          {activeTab === "roadmap" && (
-            <RoadmapTab resume={dashboard.latest} />
-          )}
+          <UploadPanel onUploaded={handleUploaded} />
 
-          {dashboard.history.length > 1 && (
-            <HistoryChart history={dashboard.history} />
+          {loadingResume ? (
+            <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
+              Seçilen CV yükleniyor...
+            </div>
+          ) : !hasResume ? (
+            <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
+              Henüz bir CV analizi yok. Başlamak için yukarıdan bir dosya yükleyin.
+            </div>
+          ) : (
+            <>
+              <div className="flex gap-2 overflow-x-auto cp-scrollbar pb-1">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                      activeTab === tab.id
+                        ? "bg-[var(--cp-accent)] text-white"
+                        : "cp-card-light text-[var(--cp-text-dim)] hover:text-white"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
+              {activeTab === "ats" && <AtsTab resume={selectedResume} />}
+              {activeTab === "interview" && <InterviewTab resume={selectedResume} />}
+              {activeTab === "roadmap" && <RoadmapTab resume={selectedResume} />}
+
+              {dashboard && dashboard.history.length > 1 && (
+                <HistoryChart history={dashboard.history} />
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
