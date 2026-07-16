@@ -143,3 +143,30 @@ Tamamlanan:
 
 Günlük Özet:
 Sprint 1 kapsamında planlanan dokümantasyon çalışmaları, GitHub organizasyonu, Trello Sprint Board kurulumu, temel yazılım mimarisi ve ilk geliştirme hazırlıkları başarıyla tamamlanmıştır. Proje, Sprint 2 kapsamında AI CV Analyzer, ATS Analysis, Job Matching ve diğer temel modüllerin geliştirilmesine hazır hâle getirilmiştir.
+
+=================================================================
+
+16 Temmuz 2026 – Daily Scrum 5: AI Analiz ve Semantik Eşleştirme Geliştirmeleri
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
+- OpenAI ve LangChain SDK entegrasyonunu tamamladı.
+- CV analizi için 100 puanlık değerlendirme sistemine sahip v1 system prompt hazırladı.
+- Yapay zekâ yanıtlarının doğrulanması için JSON Output Parser entegrasyonunu gerçekleştirdi.
+- ATS analizi için 100 puanlık ayrıntılı değerlendirme rubriği oluşturdu.
+- ATS skorlarını şema seviyesinde 0–100 aralığıyla sınırlandırdı.
+- CV ve iş ilanlarının OpenAI Embeddings ile vektörleştirilmesini sağladı.
+- Kosinüs benzerliğine dayalı semantik eşleştirme algoritmasını geliştirdi.
+- Açıklanabilir anahtar kelime ve yetkinlik karşılaştırması ekledi.
+- AI, embedding ve yetkinlik örtüşmesi skorlarını birleştiren değerlendirme sistemi oluşturdu.
+- Recruiter değerlendirmesini ATS ve iş eşleştirme sonuçlarını kullanan bir LangChain zincirine dönüştürdü.
+- Geliştirmeler için hazırlanan 16 backend testinin tamamını başarıyla çalıştırdı.
+- Son ekip değişiklikleriyle kodları birleştirerek güncel main dalına aktardı.
+
+Sonraki Adımlar:
+- Gerçek OpenAI API anahtarıyla uçtan uca canlı analiz testlerini gerçekleştirmek.
+- Entegre edilen AI modüllerinin uygulama içerisindeki sonuçlarını kontrol etmek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
