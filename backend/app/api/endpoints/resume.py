@@ -54,7 +54,10 @@ async def analyze_resume_task(resume_id: UUID, resume_text: str):
 
     # 3. Recruiter analysis
     try:
-        recruiter_report = generate_recruiter_report(resume_text)
+        recruiter_report = generate_recruiter_report(
+            resume_text,
+            ats_report=ats_report,
+        )
         async with AsyncSessionLocal() as session:
             result = await session.execute(select(Resume).where(Resume.id == resume_id))
             resume = result.scalar_one_or_none()
