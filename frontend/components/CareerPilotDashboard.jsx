@@ -758,6 +758,18 @@ function JobMatchTab({ resume }) {
 
   useEffect(() => {
     fetchJobs();
+
+    const handleClickOutside = (e) => {
+      const dropdown = document.getElementById('job-dropdown');
+      const button = document.getElementById('job-dropdown-button');
+      if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (!dropdown.contains(e.target) && button && !button.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, [resume.id]);
 
   async function handleCreateJob(e) {
@@ -892,6 +904,7 @@ function JobMatchTab({ resume }) {
               ) : (
                 <div className="relative">
                   <button 
+                    id="job-dropdown-button"
                     type="button" 
                     onClick={() => {
                        const dd = document.getElementById('job-dropdown');
@@ -914,7 +927,7 @@ function JobMatchTab({ resume }) {
                             setMatchResult(null); 
                             document.getElementById('job-dropdown').classList.add('hidden');
                           }}
-                          className={`px-4 py-3 cursor-pointer text-sm transition-colors border-b border-[var(--cp-border)] last:border-0 ${
+                          className={`px-4 py-3 cursor-pointer text-sm transition-colors border-b border-b-[var(--cp-border)] last:border-b-0 ${
                             selectedJobId === job.id 
                               ? "bg-gradient-to-r from-[#10b981]/15 to-[#06b6d4]/15 border-l-2 border-l-[#10b981] text-white" 
                               : "hover:bg-[var(--cp-panel)] text-[var(--cp-text-dim)] hover:text-white border-l-2 border-l-transparent"
