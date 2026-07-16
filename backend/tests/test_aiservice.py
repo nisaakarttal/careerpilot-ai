@@ -1,6 +1,11 @@
 import unittest
 from unittest.mock import patch
 
+from langchain_core.language_models.fake_chat_models import FakeListChatModel
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.runnables import RunnableSequence
+from langchain_openai import ChatOpenAI
+
 from app.schemas.aioutputs import ATSReport, RecruiterReport
 from app.schemas.job import (
     AIJobMatchDetail,
@@ -51,6 +56,49 @@ def make_job_match_report() -> AIJobMatchDetail:
 
 
 class AIServiceTests(unittest.TestCase):
+    def test_openai_chat_model_is_integrated_through_langchain(self):
+        aiservice._chat_models.clear()
+
+        with patch.object(
+            aiservice.settings,
+            "OPENAI_API_KEY",
+            "test-openai-key",
+        ):
+            model = aiservice.get_openai_chat_model(temperature=0.1)
+
+        self.assertIsInstance(model, ChatOpenAI)
+        self.assertEqual(model.model_name, aiservice.settings.OPENAI_MODEL)
+        aiservice._chat_models.clear()
+
+    def test_sprint_one_v1_prompt_uses_100_point_scoring(self):
+        prompt = aiservice.GENERAL_ANALYST_SYSTEM_PROMPT
+
+        self.assertIn("v1 sürümüdür", prompt)
+        self.assertIn("100 puanlık rubriğe", prompt)
+        self.assertIn("overall_score", prompt)
+
+    def test_json_output_parser_parses_pydantic_report(self):
+        parser = aiservice.build_json_output_parser(ATSReport)
+
+        self.assertIsInstance(parser, PydanticOutputParser)
+        result = parser.parse(make_ats_report().model_dump_json())
+        self.assertEqual(result.ats_score, 72)
+
+    def test_langchain_lcel_chain_runs_prompt_model_and_json_parser(self):
+        fake_model = FakeListChatModel(
+            responses=[make_ats_report().model_dump_json()]
+        )
+        chain = aiservice.build_json_analysis_chain(
+            system_prompt=aiservice.ATS_EXPERT_SYSTEM_PROMPT,
+            response_model=ATSReport,
+            temperature=0.2,
+            model=fake_model,
+        )
+
+        self.assertIsInstance(chain, RunnableSequence)
+        result = chain.invoke({"user_prompt": "Python geliştirici özgeçmişi"})
+        self.assertEqual(result.ats_score, 72)
+
     @patch("app.services.aiservice._parse_structured")
     def test_ats_report_uses_weighted_scoring_prompt(self, parse_structured):
         parse_structured.return_value = make_ats_report()
@@ -64,10 +112,15 @@ class AIServiceTests(unittest.TestCase):
         self.assertIn("Python geliştirici özgeçmişi", call_kwargs["user_prompt"])
         self.assertEqual(call_kwargs["temperature"], 0.2)
 
+    @patch(
+        "app.services.aiservice.calculate_semantic_similarity",
+        return_value=80,
+    )
     @patch("app.services.aiservice._parse_structured")
-    def test_job_match_combines_ai_and_local_semantic_evidence(
+    def test_job_match_combines_langchain_embeddings_and_ai(
         self,
         parse_structured,
+        calculate_similarity,
     ):
         parse_structured.return_value = make_job_match_report()
 
@@ -76,30 +129,64 @@ class AIServiceTests(unittest.TestCase):
             "Python, FastAPI ve Docker bilen geliştirici.",
         )
 
+        calculate_similarity.assert_called_once()
+        self.assertEqual(result.semantic_similarity_score, 80)
         self.assertEqual(result.keyword_match_score, 67)
         self.assertEqual(result.matched_keywords, ["FastAPI", "Python"])
         self.assertEqual(result.missing_keywords, ["Docker"])
-        self.assertEqual(result.match_score, 70)
+        self.assertEqual(result.match_score, 72)
         self.assertIs(
             parse_structured.call_args.kwargs["response_model"],
             AIJobMatchDetail,
         )
-
-    @patch("app.services.aiservice._parse_structured")
-    def test_recruiter_prompt_receives_ats_chain_context(self, parse_structured):
-        parse_structured.return_value = make_recruiter_report()
-        ats_report = make_ats_report()
-
-        result = aiservice.generate_recruiter_report(
-            "Python geliştirici özgeçmişi",
-            ats_report=ats_report,
+        self.assertIn(
+            "OpenAI embedding kosinüs benzerliği: 80/100",
+            parse_structured.call_args.kwargs["user_prompt"],
         )
 
+    def test_recruiter_chain_is_langchain_runnable_sequence(self):
+        fake_model = FakeListChatModel(
+            responses=[make_recruiter_report().model_dump_json()]
+        )
+
+        chain = aiservice.build_recruiter_chain(model=fake_model)
+
+        self.assertIsInstance(chain, RunnableSequence)
+
+    def test_recruiter_chain_receives_ats_context(self):
+        fake_model = FakeListChatModel(
+            responses=[make_recruiter_report().model_dump_json()]
+        )
+        chain = aiservice.build_recruiter_chain(model=fake_model)
+        ats_report = make_ats_report()
+
+        with patch(
+            "app.services.aiservice.build_recruiter_chain",
+            return_value=chain,
+        ):
+            result = aiservice.generate_recruiter_report(
+                "Python geliştirici özgeçmişi",
+                ats_report=ats_report,
+            )
+
         self.assertEqual(result.recruiter_score, 75)
-        user_prompt = parse_structured.call_args.kwargs["user_prompt"]
-        self.assertIn("ATS ÖN ANALİZİ", user_prompt)
-        self.assertIn('"ats_score": 72', user_prompt)
-        self.assertIn("Python geliştirici özgeçmişi", user_prompt)
+
+    def test_interview_simulator_uses_langchain_chat_model(self):
+        fake_model = FakeListChatModel(
+            responses=["Özgeçmişinizi inceledim. İlk projenizi nasıl geliştirdiniz?"]
+        )
+
+        with patch(
+            "app.services.aiservice.get_openai_chat_model",
+            return_value=fake_model,
+        ) as get_model:
+            result = aiservice.generate_interview_chat_response(
+                "Python ve FastAPI projeleri geliştirdim.",
+                history=[],
+            )
+
+        self.assertIn("İlk projenizi", result)
+        get_model.assert_called_once_with(temperature=0.7)
 
     @patch("app.services.aiservice.generate_recruiter_report")
     @patch("app.services.aiservice.generate_job_match_report")
@@ -112,7 +199,11 @@ class AIServiceTests(unittest.TestCase):
     ):
         ats_report = make_ats_report()
         job_match_report = JobMatchDetail.model_validate(
-            make_job_match_report().model_dump()
+            {
+                **make_job_match_report().model_dump(),
+                "semantic_similarity_score": 80,
+                "keyword_match_score": 67,
+            }
         )
         recruiter_report = make_recruiter_report()
         generate_ats_report.return_value = ats_report

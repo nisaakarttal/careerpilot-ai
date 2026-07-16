@@ -59,6 +59,7 @@ if not exist "backend\.env" (
     >> "backend\.env" echo ACCESS_TOKEN_EXPIRE_MINUTES=1440
     >> "backend\.env" echo OPENAI_API_KEY=
     >> "backend\.env" echo OPENAI_MODEL=gpt-4o-2024-08-06
+    >> "backend\.env" echo OPENAI_EMBEDDING_MODEL=text-embedding-3-small
     >> "backend\.env" echo CORS_ORIGINS=http://localhost:3000
     >> "backend\.env" echo MAX_UPLOAD_SIZE_MB=10
     echo Created backend\.env

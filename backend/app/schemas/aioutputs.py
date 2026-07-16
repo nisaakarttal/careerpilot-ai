@@ -5,14 +5,22 @@ from pydantic import BaseModel, Field
 
 class SectionScore(BaseModel):
     section_name: str = Field(description="Özgeçmiş bölümünün adı, örn. Deneyim, Eğitim, Yetenekler")
-    score: int = Field(description="Bu bölüm için 0'dan 100'e kadar puan")
+    score: int = Field(
+        ge=0,
+        le=100,
+        description="Bu bölüm için 0'dan 100'e kadar puan",
+    )
     comment: str = Field(description="Puan için kısa gerekçe")
 
 
 class GeneralCVReport(BaseModel):
     candidate_summary: str = Field(description="Aday profilinin iki ila üç cümlelik özeti")
     job_title_fit: List[str] = Field(description="Bu CV'nin en uygun olduğu iş unvanlarının listesi")
-    overall_score: int = Field(description="0'dan 100'e kadar genel CV kalite puanı")
+    overall_score: int = Field(
+        ge=0,
+        le=100,
+        description="0'dan 100'e kadar genel CV kalite puanı",
+    )
     section_scores: List[SectionScore] = Field(description="CV bölümü başına puan dağılımı")
     strengths: List[str] = Field(description="CV'de tespit edilen temel güçlü yönler")
     weaknesses: List[str] = Field(description="CV'de tespit edilen temel zayıf yönler")
@@ -45,7 +53,11 @@ class InterviewQuestion(BaseModel):
 
 
 class RecruiterReport(BaseModel):
-    recruiter_score: int = Field(description="0'dan 100'e kadar genel işe alım uzmanı çekiciliğini temsil eden puan")
+    recruiter_score: int = Field(
+        ge=0,
+        le=100,
+        description="0'dan 100'e kadar genel işe alım uzmanı çekiciliğini temsil eden puan",
+    )
     first_impression: str = Field(description="Bir işe alım uzmanının bu CV'yi taradığı ilk 6 saniyede ne düşüneceği")
     perceived_seniority: str = Field(description="Algılanan kıdem seviyesi: junior, mid, senior, lead, executive")
     hiring_risks: List[str] = Field(description="Bir işe alım uzmanının algılayabileceği kırmızı bayraklar veya riskler")
@@ -61,7 +73,11 @@ class RoadmapItem(BaseModel):
 
 
 class CoachReport(BaseModel):
-    coach_score: int = Field(description="0'dan 100'e kadar genel kariyer koçluğu hazırlık puanı")
+    coach_score: int = Field(
+        ge=0,
+        le=100,
+        description="0'dan 100'e kadar genel kariyer koçluğu hazırlık puanı",
+    )
     career_positioning: str = Field(description="Önerilen kariyer konumlandırması ve anlatı stratejisi")
     confidence_boosters: List[str] = Field(description="Adayın özgüvenini artıracak cesaret verici, spesifik noktalar")
     development_priorities: List[str] = Field(description="Adayın geliştirmesi gereken öncelikli beceriler veya deneyimler")
