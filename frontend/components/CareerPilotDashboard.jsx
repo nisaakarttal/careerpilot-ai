@@ -127,7 +127,7 @@ function UploadPanel({ onUploaded }) {
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="px-5 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 transition-colors text-sm font-medium"
+        className="cp-btn-primary"
       >
         {uploading ? "Analiz Ediliyor..." : "Dosya Seç"}
       </button>
@@ -474,7 +474,7 @@ function InterviewSimulator({ resume, onBack }) {
                 <div
                   className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
                     isUser
-                      ? "bg-[var(--cp-accent)] text-white rounded-br-none"
+                      ? "bg-gradient-to-br from-emerald-500 to-cyan-600 text-white rounded-br-none"
                       : "bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white rounded-bl-none"
                   }`}
                 >
@@ -512,7 +512,7 @@ function InterviewSimulator({ resume, onBack }) {
         <button
           type="submit"
           disabled={loading || sending || !inputText.trim() || !session}
-          className="px-5 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 text-sm font-medium transition-colors"
+          className="cp-btn-primary"
         >
           Gönder
         </button>
@@ -805,7 +805,7 @@ function JobMatchTab({ resume }) {
             setShowForm(!showForm);
             setMatchResult(null);
           }}
-          className="px-4 py-2 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] text-sm font-medium transition-colors"
+          className="cp-btn-primary"
         >
           {showForm ? "İlan Seçimine Dön" : "Yeni İş İlanı Ekle"}
         </button>
@@ -909,7 +909,7 @@ function JobMatchTab({ resume }) {
             <button
               onClick={handleMatch}
               disabled={matching || !selectedJobId}
-              className="px-6 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 text-sm font-medium transition-colors whitespace-nowrap"
+              className="cp-btn-primary whitespace-nowrap"
             >
               {matching ? "Eşleştiriliyor..." : "Özgeçmişle Eşleştir"}
             </button>
@@ -1249,7 +1249,7 @@ function ProfileTab() {
           <button
             type="submit"
             disabled={updating}
-            className="w-full py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] text-white font-medium text-sm transition-colors disabled:opacity-60"
+            className="cp-btn-primary w-full"
           >
             {updating ? "Güncelleniyor..." : "Profil Bilgilerini Güncelle"}
           </button>
@@ -1267,6 +1267,7 @@ export default function CareerPilotDashboard() {
   const [selectedResume, setSelectedResume] = useState(null);
   const [loadingResume, setLoadingResume] = useState(false);
   const [analyzingResumeId, setAnalyzingResumeId] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, resumeId: null });
   const [analysisProgress, setAnalysisProgress] = useState(0);
 
   async function loadDashboard() {
@@ -1352,12 +1353,14 @@ export default function CareerPilotDashboard() {
     return () => clearInterval(intervalId);
   }, [analyzingResumeId]);
 
-  async function handleDeleteResume(resumeId, e) {
+  function handleDeleteResume(resumeId, e) {
     if (e) e.stopPropagation();
-    
-    if (!window.confirm("Bu özgeçmişi ve mülakat geçmişi, iş ilan eşleşmeleri dahil tüm ilişkili verilerini silmek istediğinize emin misiniz?")) {
-      return;
-    }
+    setDeleteConfirm({ open: true, resumeId });
+  }
+
+  async function confirmDeleteResume() {
+    const resumeId = deleteConfirm.resumeId;
+    setDeleteConfirm({ open: false, resumeId: null });
 
     try {
       await deleteResume(resumeId);
@@ -1514,7 +1517,7 @@ export default function CareerPilotDashboard() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                     activeTab === tab.id
-                      ? "bg-[var(--cp-accent)] text-white font-semibold"
+                      ? "cp-tab-active"
                       : "cp-card-light text-[var(--cp-text-dim)] hover:text-white"
                   }`}
                 >

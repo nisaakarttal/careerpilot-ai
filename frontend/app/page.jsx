@@ -20,13 +20,13 @@ export default function HomePage() {
         <div className="flex items-center justify-center gap-4">
           <a
             href="/register"
-            className="px-6 py-3 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] transition-colors font-medium"
+            className="cp-btn-primary px-6 py-3"
           >
             Ücretsiz Başla
           </a>
           <a
             href="/login"
-            className="px-6 py-3 rounded-lg cp-card-light hover:border-[var(--cp-accent)] transition-colors font-medium"
+            className="cp-btn-secondary px-6 py-3"
           >
             Giriş Yap
           </a>

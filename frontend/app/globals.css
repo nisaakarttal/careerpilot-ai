@@ -9,8 +9,8 @@
   --cp-border: #26304a;
   --cp-text: #e8ecf7;
   --cp-text-dim: #9aa4c0;
-  --cp-accent: #6366f1;
-  --cp-accent-light: #818cf8;
+  --cp-accent: #10b981;
+  --cp-accent-light: #34d399;
   --cp-good: #34d399;
   --cp-warn: #fbbf24;
   --cp-bad: #f87171;
@@ -55,8 +55,150 @@ body {
 }
 
 .cp-gradient-text {
-  background: linear-gradient(90deg, #818cf8, #34d399);
+  background: linear-gradient(135deg, #34d399, #06b6d4);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* ─── Premium Button System ─── */
+.cp-btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: white;
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cp-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cp-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.35), 0 0 40px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.cp-btn-primary:hover::before {
+  opacity: 1;
+}
+
+.cp-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.cp-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.cp-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--cp-text);
+  background: var(--cp-panel-light);
+  border: 1px solid var(--cp-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.cp-btn-secondary:hover {
+  border-color: var(--cp-accent);
+  background: rgba(16, 185, 129, 0.08);
+  color: white;
+}
+
+.cp-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: white;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cp-btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
+}
+
+/* ─── Tab Buttons ─── */
+.cp-tab-active {
+  background: linear-gradient(135deg, #10b981, #06b6d4) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+}
+
+/* ─── Modal System ─── */
+.cp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: cpFadeIn 0.2s ease-out;
+}
+
+.cp-modal-panel {
+  background: var(--cp-panel);
+  border: 1px solid var(--cp-border);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(16, 185, 129, 0.05);
+  animation: cpSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cpFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cpSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
