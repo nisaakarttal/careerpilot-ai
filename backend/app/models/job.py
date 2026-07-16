@@ -22,7 +22,7 @@ class JobPost(SQLModel, table=True):
     description: str = Field(nullable=False)
 
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+        default_factory=lambda: datetime.utcnow(), nullable=False
     )
 
     # Relationships
@@ -42,7 +42,7 @@ class JobMatch(SQLModel, table=True):
     )
 
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+        default_factory=lambda: datetime.utcnow(), nullable=False
     )
 
     # Relationships
