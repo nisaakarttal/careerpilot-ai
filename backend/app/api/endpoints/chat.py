@@ -1,12 +1,13 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from app.api.deps import get_current_user
-from app.core.database import get_session
+from app.core.database import get_session, AsyncSessionLocal
+from app.core.security import decode_access_token
 from app.models.chat import ChatMessage, ChatSession
 from app.models.resume import Resume
 from app.models.user import User
@@ -166,3 +167,105 @@ async def send_chat_message(
     await session.refresh(ai_message)
 
     return ai_message
+
+
+@router.websocket("/ws/{session_id}")
+async def websocket_chat_endpoint(websocket: WebSocket, session_id: UUID):
+    await websocket.accept()
+    
+    token = websocket.query_params.get("token")
+    if not token:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    email = decode_access_token(token)
+    if not email:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    # Check session ownership in database
+    async with AsyncSessionLocal() as db_session:
+        result = await db_session.execute(
+            select(ChatSession)
+            .join(User, ChatSession.user_id == User.id)
+            .where(ChatSession.id == session_id, User.email == email)
+        )
+        chat_session = result.scalar_one_or_none()
+        if not chat_session:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+            
+        resume_result = await db_session.execute(
+            select(Resume).where(Resume.id == chat_session.resume_id)
+        )
+        resume = resume_result.scalar_one_or_none()
+        if not resume:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+            
+        resume_text = resume.raw_text
+
+    try:
+        while True:
+            data = await websocket.receive_text()
+            try:
+                msg_data = json.loads(data)
+                user_content = msg_data.get("content", "").strip()
+            except Exception:
+                user_content = data.strip()
+
+            if not user_content:
+                continue
+
+            async with AsyncSessionLocal() as db_session:
+                user_message = ChatMessage(
+                    session_id=session_id,
+                    role="user",
+                    content=user_content,
+                )
+                db_session.add(user_message)
+                await db_session.commit()
+
+                messages_result = await db_session.execute(
+                    select(ChatMessage)
+                    .where(ChatMessage.session_id == session_id)
+                    .order_by(ChatMessage.created_at.asc())
+                )
+                history_messages = messages_result.scalars().all()
+
+                mapped_history = [
+                    {"role": msg.role, "content": msg.content}
+                    for msg in history_messages
+                ]
+
+            try:
+                ai_reply = generate_interview_chat_response(resume_text, history=mapped_history)
+            except Exception as exc:
+                await websocket.send_text(json.dumps({
+                    "error": f"Failed to get AI response: {str(exc)}"
+                }))
+                continue
+
+            async with AsyncSessionLocal() as db_session:
+                ai_message = ChatMessage(
+                    session_id=session_id,
+                    role="model",
+                    content=ai_reply,
+                )
+                db_session.add(ai_message)
+                await db_session.commit()
+                await db_session.refresh(ai_message)
+                
+                reply_data = {
+                    "id": str(ai_message.id),
+                    "session_id": str(ai_message.session_id),
+                    "role": ai_message.role,
+                    "content": ai_message.content,
+                    "created_at": ai_message.created_at.isoformat()
+                }
+
+            await websocket.send_text(json.dumps(reply_data))
+
+    except WebSocketDisconnect:
+        pass
+

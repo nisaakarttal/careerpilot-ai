@@ -180,3 +180,51 @@ async def get_resume_by_id(
             detail="Resume analysis not found.",
         )
     return _resume_to_response(resume)
+
+
+@router.delete("/{resume_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_resume(
+    resume_id: UUID,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    # 1. Fetch resume and verify ownership
+    result = await session.execute(
+        select(Resume).where(Resume.id == resume_id, Resume.user_id == current_user.id)
+    )
+    resume = result.scalar_one_or_none()
+    if resume is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resume not found.",
+        )
+
+    from sqlmodel import delete
+    from app.models.job import JobMatch
+    from app.models.chat import ChatSession, ChatMessage
+
+    # 2. Get chat sessions related to this resume
+    chat_sessions_result = await session.execute(
+        select(ChatSession).where(ChatSession.resume_id == resume_id)
+    )
+    chat_sessions = chat_sessions_result.scalars().all()
+    chat_session_ids = [cs.id for cs in chat_sessions]
+
+    # 3. Delete ChatMessages for those chat sessions
+    if chat_session_ids:
+        await session.execute(
+            delete(ChatMessage).where(ChatMessage.session_id.in_(chat_session_ids))
+        )
+        # 4. Delete ChatSessions
+        await session.execute(
+            delete(ChatSession).where(ChatSession.id.in_(chat_session_ids))
+        )
+
+    # 5. Delete JobMatches
+    await session.execute(
+        delete(JobMatch).where(JobMatch.resume_id == resume_id)
+    )
+
+    # 6. Delete Resume
+    await session.delete(resume)
+    await session.commit()

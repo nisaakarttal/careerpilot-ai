@@ -95,6 +95,16 @@ export async function getResumeById(resumeId) {
   }
 }
 
+export async function deleteResume(resumeId) {
+  try {
+    const response = await apiClient.delete(`/resume/${resumeId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+
 export async function createJobPost({ title, company, description }) {
   try {
     const response = await apiClient.post("/jobs", {
@@ -166,4 +176,23 @@ export async function sendChatMessage(sessionId, content) {
   }
 }
 
+export async function getMyProfile() {
+  try {
+    const response = await apiClient.get("/auth/me");
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function updateMyProfile(payload) {
+  try {
+    const response = await apiClient.put("/auth/me", payload);
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
 export default apiClient;
+

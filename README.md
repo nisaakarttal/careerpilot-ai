@@ -1,290 +1,94 @@
-# CareerPilot - Grup 79
+# 🚀 CareerPilot AI - Yapay Zekâ Destekli Kariyer Yönetim Platformu
 
-## Yapay Zekâ Destekli Kariyer ve CV Asistanı
-
-CareerPilot AI; kullanıcıların özgeçmişlerini derinlemesine analiz eden, ATS (Applicant Tracking System) uyumluluğunu ölçümleyen, güncel iş ilanlarıyla akıllı semantik eşleştirmeler yapan ve kariyer gelişimlerine yönelik kişiselleştirilmiş yol haritaları sunan **uçtan uca bir dijital kariyer asistanı platformudur.**
-
-Platform, adayların işe alım süreçlerinde daha rekabetçi ve başarılı olabilmeleri adına; CV optimizasyonu, yapay zekâ tabanlı mülakat simülasyonları ve dinamik kariyer planlaması araçları sunar.
+CareerPilot AI, adayların özgeçmişlerini (CV) analiz eden, iş ilanları ile semantik eşleştirme sağlayan, yapay zekâ kariyer koçluğu yapan ve WebSocket üzerinden gerçek zamanlı teknik/İK mülakat simülasyonları gerçekleştiren yeni nesil bir kariyer otomasyon sistemidir.
 
 ---
 
-## Takım Bilgileri: CareerPilot Team - Grup 79
+## ✨ Temel Özellikler
 
-Ekibimiz Yapay Zeka ve Teknoloji Akademisi bünyesinde çapraz fonksiyonlu (Cross-Functional) olarak çalışmaktadır. Akademi kuralları gereği ekibimizde tek bir lider bulunmamakta; tüm üyeler eşit sorumlulukla hem süreç yönetiminde hem de ürünün geliştirilmesinde aktif rol oynamaktadır.
-
-*   **Scrum Master (İletişim Sorumlusu):** Hayrunnisa Kartal — Ekip içi koordinasyon, Scrum eventlerinin yönetimi, engellerin kaldırılması ve Full-Stack Geliştirme.
-*   **Product Owner (Yedek İletişim Sorumlusu):** Utku Akkuşoğlu — Product Backlog yönetimi, user story'lerin önceliklendirilmesi ve Full-Stack Geliştirme.
-*   **Developer:** Yiğit Emir Saatçi — Full-Stack Geliştirme, Yapay Zeka Modelleri ve Veritabanı Mimarisi.
-*   **Developer:** Yusuf Yıldırım — Full-Stack Geliştirme, UI/UX Tasarım ve API Entegrasyonları.
-*   **Developer:** Sati Bıldırcın — Full-Stack Geliştirme, Test, Dağıtım ve Sistem Optimizasyonu.
-
---- 
-
-## Problem ve Çözüm
-
-### Problem Tanımı
-*   **ATS Engeli:** İş ve staj başvurusu yapan birçok nitelikli aday, hazırladıkları CV'lerin ATS (Aday Takip Sistemleri) standartlarına ve algoritmalarına uygun olmaması nedeniyle ilk aşamada elenmektedir.
-*   **Bütünleşik Platform Eksikliği:** Adayların kariyer gelişimlerini merkezi bir sistemden takip edebilecekleri, teknik/sosyal eksik yetkinliklerini analiz edebilecekleri ve doğrudan aksiyona dönüştürülebilir kişiselleştirilmiş geri bildirim alabilecekleri bütünleşik bir çözüm bulunmamaktadır.
-
-### Çözümümüz
-CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası arasındaki bu köprüyü kurar:
-*   **Detaylı CV Analizi:** Güçlü yönleri ve eksikleri anında listeler, puanlama sunar.
-*   **ATS Uyumluluk Ölçümü:** CV'nin kurumsal sistemlerden geçme şansını anahtar kelimeler üzerinden hesaplar.
-*   **Akıllı İlan Eşleştirme:** CV ile hedeflenen ilan arasındaki semantik uyum yüzdesini çıkarır.
-*   **Mülakat ve Recruiter Simülasyonu:** Gerçekçi İK geri bildirimleri ve teknik sorularla adayı mülakata hazırlar.
-*   **Kariyer Yol Haritası:** Eksik yetkinlikler için sertifika, teknoloji ve eğitim önerileri sunar.
-
----
-##  Hedef Kitle
-*  Üniversite öğrencileri ve yeni mezunlar
-*  Aktif olarak staj ve iş arayan adaylar
-*  Sektör veya kariyer yolu değiştirmek isteyen profesyoneller
-
----
-##  Kullanılan Teknolojiler & Mimari Yapı
-
-# Kullanılan Teknolojiler
-
-| Katman | Teknoloji |
-|---------|-----------|
-| Backend | FastAPI |
-| ORM | SQLModel |
-| Database | PostgreSQL |
-| Frontend | Next.js |
-| UI | Tailwind CSS |
-| Grafik | Recharts |
-| AI | OpenAI GPT-4o |
-| Prompt | LangChain |
-| Container | Docker |
-| API Docs | Swagger |
+* **📄 Gelişmiş CV Analizi & ATS Puanlama (Sprint 1):** Yüklenen PDF veya Word özgeçmişlerini asenkron arka plan görevleri ile analiz eder. ATS uyumluluk skoru, zayıf/güçlü yanlar ve iyileştirme tavsiyeleri sunar.
+* **📈 Dinamik İlerleme Çubuğu:** CV analizi aşama aşama gerçekleştirilir ve kullanıcıya canlı yüzdelik ilerleme durumları verilir.
+* **📂 Sidebar Geçmiş Özgeçmişler & Silme:** Geçmişte yüklenen özgeçmişlere sidebar listesinden anında erişim sağlanabilir veya "✕" butonu ile tüm ilişkili verileriyle birlikte tek tıkla silinebilir.
+* **🤝 İş İlanı Eşleştirme Motoru (Sprint 2):** Kaydedilen iş ilanlarının niteliklerini adayın özgeçmişiyle karşılaştırır, Recharts grafik destekli semantik uyum analizi üretir.
+* **📋 LinkedIn Hızlı Doldurma Şablonları:** İş ilanı ekleme formunda Trendyol, Aselsan ve Getir gibi popüler firmaların LinkedIn ilan mock verileri tek tıkla yüklenebilir.
+* **💬 WebSocket Mülakat Simülatörü (Sprint 3):** Adayın özgeçmiş verilerine ve zayıf yönlerine odaklanarak kıdemli bir İK yöneticisi rolünde WebSocket üzerinden gerçek zamanlı, çift yönlü mülakat gerçekleştirir.
+* **👤 Kullanıcı Profili ve İstatistikleri (Polish Sprint):** Kullanıcının platform üzerindeki toplam yüklenen CV, yapılan eşleşme ve mülakat istatistiklerini raporlar; profil adı ve şifre güncellemelerini yönetir.
 
 ---
 
-# Sistem Mimarisi
+## 🛠️ Teknoloji Yığını
 
-```text
-                +----------------------+
-                |     Next.js UI       |
-                +----------+-----------+
-                           |
-                        REST API
-                           |
-                +----------v-----------+
-                |      FastAPI         |
-                +----------+-----------+
-                           |
-        +------------------+-------------------+
-        |                  |                   |
- Resume Service      Auth Service        AI Service
-        |                  |                   |
-        |                  |             OpenAI API
-        |                  |
-        +------------------+
-               |
-         PostgreSQL
+* **Backend:** Python, FastAPI, SQLModel, SQLAlchemy (Async), PostgreSQL (asyncpg)
+* **Frontend:** React, Next.js, Axios, Tailwind CSS, Recharts
+* **AI Engine:** Google GenAI SDK (`gemini-3.1-flash-lite`)
+* **Deployment:** Docker, Docker Compose
+
+---
+
+## 🚀 Hızlı Başlangıç (Docker Compose - Tavsiye Edilen)
+
+Tüm servisleri (PostgreSQL, Backend API ve Next.js Frontend) tek bir komutla ayağa kaldırabilirsiniz:
+
+```bash
+# Servisleri derleyin ve arka planda çalıştırın
+docker compose up --build -d
+
+# Konteyner loglarını takip etmek için
+docker compose logs -f
+```
+
+* **Frontend Arayüzü:** `http://localhost:3000`
+* **Backend API adresi:** `http://localhost:8000`
+* **Swagger API Dokümantasyonu:** `http://localhost:8000/docs`
+
+---
+
+## ⚙️ Çevre Değişkenleri (.env)
+
+Projeyi çalıştırmadan önce `backend/` dizini içerisinde bir `.env` dosyası oluşturarak aşağıdaki çevre değişkenlerini ayarlamanız gerekmektedir:
+
+```env
+PROJECT_NAME=CareerPilot AI
+API_V1_PREFIX=/api
+DATABASE_URL=postgresql+asyncpg://careerpilot:careerpilot@db:5432/careerpilot
+
+# Güvenlik & JWT
+JWT_SECRET_KEY=kendi-guvenli-anahtariniz
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# Yapay Zeka Servisi (Google Gemini API Key)
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+GEMINI_MODEL=gemini-3.1-flash-lite
+
+CORS_ORIGINS=http://localhost:3000
+MAX_UPLOAD_SIZE_MB=10
 ```
 
 ---
 
-# Proje Yapısı
+## 🔌 API Endpoint Listesi
 
-```text
-careerpilot-ai/
-├── docker-compose.yml
-├── README.md
-├── assets/
-│   ├── anasayfa.png
-│   ├── cv-yukleme.png
-│   ├── kayit.png
-│   └── login.png
-├── backend/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   ├── .env.example
-│   └── app/
-│       ├── main.py
-│       ├── core/
-│       │   ├── config.py
-│       │   ├── database.py
-│       │   └── security.py
-│       ├── api/
-│       │   ├── deps.py
-│       │   └── endpoints/
-│       │       ├── auth.py
-│       │       └── resume.py
-│       ├── models/
-│       │   ├── user.py
-│       │   └── resume.py
-│       ├── schemas/
-│       │   ├── aioutputs.py
-│       │   ├── auth.py
-│       │   └── resume.py
-│       └── services/
-│           ├── parser.py
-│           └── aiservice.py
-└── frontend/
-    ├── Dockerfile
-    ├── package.json
-    ├── next.config.js
-    ├── postcss.config.js
-    ├── tailwind.config.js
-    ├── jsconfig.json
-    ├── .env.local.example
-    ├── app/
-    │   ├── layout.jsx
-    │   ├── page.jsx
-    │   ├── globals.css
-    │   ├── login/
-    │   │   └── page.jsx
-    │   ├── register/
-    │   │   └── page.jsx
-    │   └── dashboard/
-    │       └── page.jsx
-    ├── components/
-    │   ├── Navbar.jsx
-    │   ├── AuthForm.jsx
-    │   └── CareerPilotDashboard.jsx
-    └── lib/
-        ├── api.js
-        └── auth.js
-```
+### 🔐 Kimlik Doğrulama (Auth)
+* `POST /api/auth/register` - Yeni kullanıcı kaydı
+* `POST /api/auth/login` - Kullanıcı girişi & token alma
+* `GET /api/auth/me` - Kullanıcı profili & istatistikleri
+* `PUT /api/auth/me` - Profil adı, e-posta veya şifre güncelleme
 
----
+### 📄 Özgeçmiş (Resume)
+* `POST /api/resume/upload` - CV PDF/Word yükleme (Arka planda asenkron analiz başlatır)
+* `GET /api/resume/dashboard` - Genel dashboard ve geçmiş analizlerin listesi
+* `GET /api/resume/{resume_id}` - Detaylı analiz sonucunu getirme
+* `DELETE /api/resume/{resume_id}` - Özgeçmişi ve ilişkili tüm verileri silme
 
-# Ürün İş Listesi (Product Backlog)
+### 💼 İş İlanı Eşleştirme (Jobs)
+* `POST /api/jobs` - Yeni iş ilanı kaydetme
+* `GET /api/jobs` - Kayıtlı tüm iş ilanlarını listeleme
+* `POST /api/jobs/{job_id}/match/{resume_id}` - CV ile iş ilanını karşılaştırıp analiz etme
+* `GET /api/jobs/{job_id}/matches` - İlanın eşleşme geçmişi
 
-- PB-01 Kullanıcı kayıt
-- PB-02 Login & JWT Authentication
-- PB-03 Yetkilendirme
-- PB-04 PostgreSQL Veritabanı
-- PB-05 Backend & Frontend Mimarisi
-- PB-06 Docker Ortamı
-- PB-07 CV Upload
-- PB-08 CV Parser
-- PB-09 AI CV Analizi
-- PB-10 ATS Analizi
-- PB-11 Recruiter Feedback
-- PB-12 Career Coach
-- PB-13 Dashboard
-- PB-14 Analiz Geçmişi
-- PB-15 AI Mülakat
-- PB-16 İş İlanı Eşleştirme
-- PB-17 Responsive UI
-- PB-18 Swagger
-- PB-19 Hata Yönetimi
-- PB-20 Test & Performans
-
----
-
-# Sprint Planları
-
-## Sprint 1 (19 Haziran 2026 - 5 Temmuz 2026)
-
-###  Proje Yönetim Araçları
-
-- **Sprint Planı:** https://postamuedu-my.sharepoint.com/:x:/g/personal/hayrunnisakartal_posta_mu_edu_tr/IQBfLlNPr_i2S4UOm2ToqJJqAbj-WzZUvGZrkmldr05pG-I?e=2cLwLr
-
-> İlk sprint için plan hazırlanmış ancak süreç içerisinde karşılaşılan teknik engeller nedeniyle bazı görevlerin kapsamı ve kişiler güncellenmiştir.
-
-### Trello İş Planı
-![Trello İş Planı](assets/trello.png)
-
-![Trello İş Planı](assets/trello1.png)
-
----
-# Sprint Review
-
-- Proje klasör yapısı oluşturuldu.
-- Docker geliştirme ortamı hazırlandı.
-- Backend ve Frontend temel mimarisi oluşturuldu.
-- PostgreSQL veritabanı geliştirildi.
-- JWT Authentication sistemi tamamlandı.
-- CV Upload servisi geliştirildi.
-- Resume Parser geliştirildi.
-- OpenAI analiz altyapısı oluşturuldu.
-- Dashboard temel bileşenleri geliştirildi.
-- Landing, Login ve Register sayfaları geliştirildi.
-- Trello görev yönetim sistemi oluşturuldu.
-- Sprint planı hazırlandı.
-
----
-
-#  Proje Durumu
-
-### Giriş Sayfası
-![Giriş Sayfası](assets/login.png)
-
-### Kayıt Sayfası
-![Kayıt Sayfası](assets/kayit.png)
-
-### CV Yükleme
-![CV Yükleme](assets/cv-yükleme.png)
-
-### Ana Sayfa
-![Ana Sayfa](assets/anasayfa.png)
-
----
-
-## Sprint Retrospective
-Sprint boyunca teknik hedeflerin büyük kısmı tamamlanmış olsa da takım içi iletişim istenilen seviyede sağlanamadı. Görev paylaşımı ve ilerleme durumlarının düzenli olarak aktarılmaması zaman zaman koordinasyon sorunlarına neden oldu. Bir sonraki sprintte daha düzenli iletişim kurulması, görev takibinin sıklaştırılması ve ekip üyeleri arasında daha etkin iş birliği sağlanması hedeflenmektedir.Daily Scrum toplantıları istenen şekilde gerçekleşmedi.
-
-
-### Daily Scrum
-![Daily Scrum](assets/daily-scrum.txt)
-
-
-## Teknik Altyapı
-
-### Backend
-
-- JWT Authentication
-- Register / Login API
-- Password Hashing (Bcrypt)
-- JWT Token Servisi
-- Resume Upload API
-- Resume Parser
-- OpenAI Structured Outputs
-- AI Persona Sistemi
-- Dashboard API
-- CORS
-- Global Exception Handling
-
-### Frontend
-
-- Landing Page
-- Login
-- Register
-- Dashboard
-- KPI Kartları
-- Raporlama Sekmeleri
-- API Katmanı
-- Authentication Yönetimi
-
-### Veritabanı
-
-- PostgreSQL
-- User Tablosu
-- Resume Tablosu
-
----
-
-
-## Sprint 2
-
-**06 Temmuz 2026 – 19 Temmuz 2026**
-
-> Devam ediyor...
-
----
-
-## Sprint 3
-
-**20 Temmuz 2026 – 02 Ağustos 2026**
-
-> Planlandı.
-
----
-
-#  Lisans
-
-Bu proje **Yapay Zeka ve Teknoloji Akademisi 5. Dönem Bootcamp** kapsamında eğitim amacıyla geliştirilmektedir.
+### 💬 Mülakat Simülatörü (Chat)
+* `POST /api/chat/sessions` - Yeni mülakat seansı başlatma
+* `GET /api/chat/sessions/{session_id}/messages` - Mesaj geçmişini getirme
+* `POST /api/chat/sessions/{session_id}/message` - HTTP REST üzerinden mesaj gönderme
+* `WS /api/chat/ws/{session_id}` - **WebSocket** üzerinden anlık, gerçek zamanlı çift yönlü mülakat
