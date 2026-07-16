@@ -168,7 +168,7 @@ def generate_interview_chat_response(resume_text: str, history: list[dict], new_
         contents.append(
             types.Content(
                 role="user",
-                parts=[types.Part.from_text("Lütfen özgeçmişimi incele ve mülakat simülasyonunu başlatıp bana ilk soruyu sor.")]
+                parts=[types.Part(text="Lütfen özgeçmişimi incele ve mülakat simülasyonunu başlatıp bana ilk soruyu sor.")]
             )
         )
     else:
@@ -177,14 +177,14 @@ def generate_interview_chat_response(resume_text: str, history: list[dict], new_
             contents.append(
                 types.Content(
                     role=role,
-                    parts=[types.Part.from_text(msg["content"])]
+                    parts=[types.Part(text=msg["content"])]
                 )
             )
         if new_message:
             contents.append(
                 types.Content(
                     role="user",
-                    parts=[types.Part.from_text(new_message)]
+                    parts=[types.Part(text=new_message)]
                 )
             )
 
