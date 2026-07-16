@@ -41,7 +41,7 @@ export default function Navbar() {
                 Panel
               </a>
               {user?.full_name && (
-                <span className="text-sm text-[var(--cp-text-dim)] hidden sm:inline">
+                <span className="text-sm text-[var(--cp-text-dim)] hidden sm:inline hover:text-white transition-colors cursor-default">
                   {user.full_name}
                 </span>
               )}
@@ -62,7 +62,7 @@ export default function Navbar() {
               </a>
               <a
                 href="/register"
-                className="text-sm px-4 py-2 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] transition-colors font-medium"
+                className="cp-btn-primary px-4 py-2 text-sm"
               >
                 Kayıt Ol
               </a>
