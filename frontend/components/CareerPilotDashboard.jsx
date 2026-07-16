@@ -890,20 +890,43 @@ function JobMatchTab({ resume }) {
               {jobs.length === 0 ? (
                 <p className="text-sm text-[var(--cp-text-dim)]">Kayıtlı iş ilanı bulunmuyor. Yeni bir tane ekleyerek başlayın.</p>
               ) : (
-                <select
-                  value={selectedJobId}
-                  onChange={(e) => {
-                    setSelectedJobId(e.target.value);
-                    setMatchResult(null);
-                  }}
-                  className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)]"
-                >
-                  {jobs.map((j) => (
-                    <option key={j.id} value={j.id} className="bg-[var(--cp-panel)] text-white">
-                      {j.title} - {j.company}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                       const dd = document.getElementById('job-dropdown');
+                       if (dd) dd.classList.toggle('hidden');
+                    }} 
+                    className="w-full text-left px-4 py-3 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm border border-[var(--cp-border)] flex justify-between items-center transition-colors hover:border-[var(--cp-accent)]"
+                  >
+                    <span className="text-white font-medium truncate pr-4">
+                      {jobs.find(j => j.id === selectedJobId)?.title || "İlan Seçin..."} - <span className="text-[var(--cp-text-dim)] font-normal">{jobs.find(j => j.id === selectedJobId)?.company}</span>
+                    </span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--cp-text-dim)]"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </button>
+                  <div id="job-dropdown" className="hidden absolute z-50 w-full mt-2 bg-[var(--cp-panel-light)] border border-[var(--cp-border)] rounded-xl shadow-2xl overflow-hidden animate-fadeIn">
+                    <div className="max-h-60 overflow-y-auto cp-scrollbar">
+                      {jobs.map((job) => (
+                        <div 
+                          key={job.id} 
+                          onClick={() => { 
+                            setSelectedJobId(job.id); 
+                            setMatchResult(null); 
+                            document.getElementById('job-dropdown').classList.add('hidden');
+                          }}
+                          className={`px-4 py-3 cursor-pointer text-sm transition-colors border-b border-[var(--cp-border)] last:border-0 ${
+                            selectedJobId === job.id 
+                              ? "bg-gradient-to-r from-[#10b981]/15 to-[#06b6d4]/15 border-l-2 border-l-[#10b981] text-white" 
+                              : "hover:bg-[var(--cp-panel)] text-[var(--cp-text-dim)] hover:text-white border-l-2 border-l-transparent"
+                          }`}
+                        >
+                          <div className="font-medium">{job.title}</div>
+                          <div className="text-xs opacity-70 mt-0.5">{job.company}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             <button
@@ -1061,7 +1084,7 @@ function HistorySidebar({ history, selectedId, onSelect, onDelete }) {
             
             <button
               onClick={(e) => onDelete(h.id, e)}
-              className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100 text-[var(--cp-text-dim)] hover:text-red-400 p-2 text-sm transition-all focus:opacity-100 bg-[var(--cp-panel)] hover:bg-[var(--cp-panel-light)] rounded border border-transparent hover:border-red-400/30 cursor-pointer"
+              className="absolute right-2.5 top-3.5 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 p-1 text-xs transition-opacity focus:opacity-100 bg-transparent border-0 cursor-pointer"
               title="Sil"
             >
               ✕
@@ -1482,7 +1505,40 @@ export default function CareerPilotDashboard() {
   const isSelectedResumeAnalyzing = selectedResume && (!selectedResume.cv_analytics || !selectedResume.ats_analytics || !selectedResume.recruiter_analytics || !selectedResume.coach_analytics);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
+    <>
+      {deleteConfirm.open && (
+        <div className="cp-modal-backdrop" onClick={() => setDeleteConfirm({ open: false, resumeId: null })}>
+          <div className="cp-modal-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-11 h-11 rounded-full bg-red-500/15 flex items-center justify-center flex-shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-base">Özgeçmişi Sil</h3>
+                <p className="text-xs text-[var(--cp-text-dim)]">Bu işlem geri alınamaz</p>
+              </div>
+            </div>
+            <p className="text-sm text-[var(--cp-text-dim)] leading-relaxed mb-6">
+              Bu özgeçmiş ve bağlı tüm veriler (mülakat geçmişi, iş ilanı eşleşmeleri) kalıcı olarak silinecek. Devam etmek istiyor musunuz?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setDeleteConfirm({ open: false, resumeId: null })}
+                className="cp-btn-secondary"
+              >
+                Vazgeç
+              </button>
+              <button
+                onClick={confirmDeleteResume}
+                className="cp-btn-danger"
+              >
+                Evet, Sil
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
         {dashboard && dashboard.history && dashboard.history.length > 0 && (
