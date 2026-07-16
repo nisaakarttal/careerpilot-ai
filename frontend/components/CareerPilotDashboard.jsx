@@ -1061,7 +1061,7 @@ function HistorySidebar({ history, selectedId, onSelect, onDelete }) {
             
             <button
               onClick={(e) => onDelete(h.id, e)}
-              className="absolute right-2.5 top-3.5 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 p-1 text-xs transition-opacity focus:opacity-100 bg-transparent border-0 cursor-pointer"
+              className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100 text-[var(--cp-text-dim)] hover:text-red-400 p-2 text-sm transition-all focus:opacity-100 bg-[var(--cp-panel)] hover:bg-[var(--cp-panel-light)] rounded border border-transparent hover:border-red-400/30 cursor-pointer"
               title="Sil"
             >
               ✕
