@@ -1,24 +1,35 @@
 import os
-from google import genai
+from pathlib import Path
 
-# Load env variables from backend/.env manually
-env_path = "backend/.env"
-if os.path.exists(env_path):
-    with open(env_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                key, val = line.split("=", 1)
-                os.environ[key.strip()] = val.strip().strip('"').strip("'")
+from openai import OpenAI
 
-api_key = os.getenv("GEMINI_API_KEY")
-print("API Key loaded:", api_key[:8] + "..." if api_key else "None")
 
-try:
-    client = genai.Client(api_key=api_key)
-    models = client.models.list()
-    print("Available models:")
-    for m in models:
-        print(f" - {m.name}")
-except Exception as e:
-    print("Error listing models:", str(e))
+def load_backend_env() -> None:
+    env_path = Path("backend/.env")
+    if not env_path.exists():
+        return
+
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            os.environ.setdefault(
+                key.strip(),
+                value.strip().strip('"').strip("'"),
+            )
+
+
+def main() -> None:
+    load_backend_env()
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise SystemExit("OPENAI_API_KEY backend/.env içinde yapılandırılmamış.")
+
+    client = OpenAI(api_key=api_key)
+    print("Kullanılabilir OpenAI modelleri:")
+    for model in client.models.list():
+        print(f" - {model.id}")
+
+
+if __name__ == "__main__":
+    main()

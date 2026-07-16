@@ -31,7 +31,7 @@ class ChatMessage(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     session_id: UUID = Field(foreign_key="chatsessions.id", nullable=False, index=True)
 
-    role: str = Field(nullable=False)  # "user" veya "model" (Google GenAI SDK "model" kullanır)
+    role: str = Field(nullable=False)  # "user" veya "model"
     content: str = Field(nullable=False)
 
     created_at: datetime = Field(
