@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.endpoints.auth import router as auth_router
 from app.api.endpoints.resume import router as resume_router
+from app.api.endpoints.job import router as job_router
 from app.core.config import settings
 from app.core.database import init_db
 
@@ -54,3 +55,4 @@ async def health_check():
 
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(resume_router, prefix=settings.API_V1_PREFIX)
+app.include_router(job_router, prefix=settings.API_V1_PREFIX)

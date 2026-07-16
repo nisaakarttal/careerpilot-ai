@@ -10,6 +10,7 @@ from app.schemas.aioutputs import (
     GeneralCVReport,
     RecruiterReport,
 )
+from app.schemas.job import JobMatchDetail
 
 _client: genai.Client | None = None
 
@@ -57,6 +58,27 @@ net ve uygulanabilir. Somut zaman dilimleriyle (0-1 ay, 1-3 ay, 3-6 ay, 6-12 ay)
 oluşturuyorsun ve her yol haritası eylemini ölçülebilir bir sonuca bağlıyorsun. Asla genel geçer tavsiyeler \
 vermezsin; her öneri adayın CV'sinden belirli bir şeye atıfta bulunmalıdır. Çıktılarını ve analizlerini her zaman \
 Türkçe dilinde üretmelisin."""
+
+JOB_MATCH_SYSTEM_PROMPT = """Sen adayların özgeçmişleri (CV) ile şirketlerin iş ilanlarını semantik \
+olarak karşılaştıran uzman bir İK analisti ve ATS optimizasyon uzmanısın. \
+Görevin, adayın özgeçmiş metni ile iş ilanı açıklamasını karşılaştırmak ve detaylı bir eşleşme raporu \
+üretmektir. 
+Eşleşme skorunu (0-100), adayın ilana uygun olan en güçlü yönlerini, eksik kaldığı veya CV'sinde \
+belirtmediği önemli yetkinlikleri/anahtar kelimeleri ve CV'sini bu pozisyona özel olarak nasıl \
+optimize edebileceğine dair somut iyileştirme önerilerini listelemelisin. 
+Karşılaştırmayı yaparken gerçekçi ve adil olmalısın. Raporu ve analizleri her zaman Türkçe dilinde üretmelisin."""
+
+
+def _build_job_match_user_prompt(resume_text: str, job_description: str) -> str:
+    return (
+        "Aşağıdaki özgeçmiş metnini ile iş ilanı açıklamasını karşılaştır.\n\n"
+        "----- ÖZGEÇMİŞ METNİ BAŞLANGICI -----\n"
+        f"{resume_text}\n"
+        "----- ÖZGEÇMİŞ METNİ BİTİŞİ -----\n\n"
+        "----- İŞ İLANI AÇIKLAMASI BAŞLANGICI -----\n"
+        f"{job_description}\n"
+        "----- İŞ İLANI AÇIKLAMASI BİTİŞİ -----"
+    )
 
 
 def _build_user_prompt(resume_text: str) -> str:
@@ -120,6 +142,39 @@ def generate_recruiter_report(resume_text: str) -> RecruiterReport:
 
 def generate_coach_report(resume_text: str) -> CoachReport:
     return _parse_structured(CAREER_COACH_SYSTEM_PROMPT, resume_text, CoachReport)
+
+
+def generate_job_match_report(resume_text: str, job_description: str) -> JobMatchDetail:
+    client = get_gemini_client()
+    model_name = getattr(settings, "GEMINI_MODEL", getattr(settings, "OPENAI_MODEL", "gemini-2.5-flash"))
+
+    config = types.GenerateContentConfig(
+        system_instruction=JOB_MATCH_SYSTEM_PROMPT,
+        temperature=0.3,
+        response_mime_type="application/json",
+        response_schema=JobMatchDetail,
+    )
+
+    try:
+        response = client.models.generate_content(
+            model=model_name,
+            contents=_build_job_match_user_prompt(resume_text, job_description),
+            config=config,
+        )
+    except APIError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"AI Job matching analysis failed: {str(exc)}",
+        ) from exc
+
+    parsed = getattr(response, "parsed", None)
+    if parsed is None:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="AI Job matching returned no structured output.",
+        )
+
+    return parsed
 
 
 def run_full_analysis(resume_text: str):

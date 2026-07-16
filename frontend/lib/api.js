@@ -95,4 +95,44 @@ export async function getResumeById(resumeId) {
   }
 }
 
+export async function createJobPost({ title, company, description }) {
+  try {
+    const response = await apiClient.post("/jobs", {
+      title,
+      company,
+      description,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function listJobPosts() {
+  try {
+    const response = await apiClient.get("/jobs");
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function matchResumeToJob(jobId, resumeId) {
+  try {
+    const response = await apiClient.post(`/jobs/${jobId}/match/${resumeId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function getJobMatches(jobId) {
+  try {
+    const response = await apiClient.get(`/jobs/${jobId}/matches`);
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
 export default apiClient;

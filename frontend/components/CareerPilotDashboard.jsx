@@ -16,11 +16,12 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { getDashboard, uploadResume, getResumeById } from "@/lib/api";
+import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob } from "@/lib/api";
 
 const TABS = [
   { id: "overview", label: "Genel Bakış" },
   { id: "ats", label: "ATS Raporu" },
+  { id: "jobmatch", label: "İş İlanı Eşleştirme" },
   { id: "interview", label: "Mülakat Simülatörü" },
   { id: "roadmap", label: "Kariyer Yol Haritası" },
 ];
@@ -504,6 +505,263 @@ function RoadmapTab({ resume }) {
 }
 
 
+
+function JobMatchTab({ resume }) {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState("");
+  const [matching, setMatching] = useState(false);
+  const [matchResult, setMatchResult] = useState(null);
+  
+  // Form state
+  const [showForm, setShowForm] = useState(false);
+  const [title, setTitle] = useState("");
+  const [company, setCompany] = useState("");
+  const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
+
+  async function fetchJobs() {
+    setLoading(true);
+    try {
+      const data = await listJobPosts();
+      setJobs(data);
+      if (data.length > 0) {
+        setSelectedJobId(data[0].id);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchJobs();
+  }, [resume.id]);
+
+  async function handleCreateJob(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const newJob = await createJobPost({ title, company, description });
+      setJobs((prev) => [newJob, ...prev]);
+      setSelectedJobId(newJob.id);
+      setShowForm(false);
+      setTitle("");
+      setCompany("");
+      setDescription("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleMatch() {
+    if (!selectedJobId) return;
+    setError("");
+    setMatching(true);
+    setMatchResult(null);
+    try {
+      const result = await matchResumeToJob(selectedJobId, resume.id);
+      setMatchResult(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setMatching(false);
+    }
+  }
+
+  const selectedJob = jobs.find((j) => j.id === selectedJobId);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h3 className="font-semibold text-lg">İş İlanı Eşleştirme</h3>
+        <button
+          onClick={() => {
+            setShowForm(!showForm);
+            setMatchResult(null);
+          }}
+          className="px-4 py-2 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] text-sm font-medium transition-colors"
+        >
+          {showForm ? "İlan Seçimine Dön" : "Yeni İş İlanı Ekle"}
+        </button>
+      </div>
+
+      {error && (
+        <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+          {error}
+        </div>
+      )}
+
+      {showForm ? (
+        <form onSubmit={handleCreateJob} className="cp-card p-6 space-y-4">
+          <h4 className="font-semibold">Yeni İş İlanı Bilgileri</h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">İlan Başlığı</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm"
+                placeholder="Senior React Developer"
+              />
+            </div>
+            <div>
+              <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">Şirket Adı</label>
+              <input
+                type="text"
+                required
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm"
+                placeholder="TechCorp"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">İlan Detayı / Açıklaması</label>
+            <textarea
+              required
+              rows={6}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm"
+              placeholder="Pozisyon gereksinimleri, aranan özellikler, görev tanımı..."
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium transition-colors disabled:opacity-60"
+          >
+            {loading ? "Kaydediliyor..." : "İlanı Kaydet"}
+          </button>
+        </form>
+      ) : (
+        <div className="space-y-6">
+          <div className="cp-card p-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="flex-1 bg-transparent">
+              <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">Eşleştirilecek İş İlanı Seçin</label>
+              {jobs.length === 0 ? (
+                <p className="text-sm text-[var(--cp-text-dim)]">Kayıtlı iş ilanı bulunmuyor. Yeni bir tane ekleyerek başlayın.</p>
+              ) : (
+                <select
+                  value={selectedJobId}
+                  onChange={(e) => {
+                    setSelectedJobId(e.target.value);
+                    setMatchResult(null);
+                  }}
+                  className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)]"
+                >
+                  {jobs.map((j) => (
+                    <option key={j.id} value={j.id} className="bg-[var(--cp-panel)] text-white">
+                      {j.title} - {j.company}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <button
+              onClick={handleMatch}
+              disabled={matching || !selectedJobId}
+              className="px-6 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 text-sm font-medium transition-colors whitespace-nowrap"
+            >
+              {matching ? "Eşleştiriliyor..." : "Özgeçmişle Eşleştir"}
+            </button>
+          </div>
+
+          {selectedJob && !matchResult && (
+            <div className="cp-card p-6">
+              <h4 className="font-semibold text-md mb-2">{selectedJob.title} @ {selectedJob.company}</h4>
+              <p className="text-xs text-[var(--cp-text-dim)] mb-4">
+                Kayıt Tarihi: {new Date(selectedJob.created_at).toLocaleDateString("tr-TR")}
+              </p>
+              <div className="bg-[var(--cp-panel-light)] rounded-lg p-4 max-h-60 overflow-y-auto cp-scrollbar text-sm whitespace-pre-line text-[var(--cp-text-dim)]">
+                {selectedJob.description}
+              </div>
+            </div>
+          )}
+
+          {matchResult && (
+            <div className="space-y-6">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="cp-card p-5">
+                  <div className="text-sm text-[var(--cp-text-dim)] mb-2">Semantik Eşleşme Skoru</div>
+                  <div className="flex items-baseline gap-1">
+                    <span
+                      className="text-3xl font-bold"
+                      style={{ color: scoreColor(matchResult.match_score) }}
+                    >
+                      {Math.round(matchResult.match_score)}
+                    </span>
+                    <span className="text-sm text-[var(--cp-text-dim)]">/ 100</span>
+                  </div>
+                  <div className="mt-3 h-1.5 rounded-full bg-[var(--cp-border)] overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{
+                        width: `${matchResult.match_score}%`,
+                        backgroundColor: scoreColor(matchResult.match_score),
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="cp-card p-5 md:col-span-2">
+                  <div className="text-sm text-[var(--cp-text-dim)] mb-2">Eşleşme Özeti</div>
+                  <p className="text-sm text-[var(--cp-text-dim)] leading-relaxed">
+                    {matchResult.match_analytics.match_summary}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="cp-card p-6">
+                  <h4 className="font-semibold mb-3 text-emerald-400">Güçlü Eşleşmeler</h4>
+                  <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+                    {matchResult.match_analytics.strong_fits.map((s, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-emerald-400">✓</span> {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="cp-card p-6">
+                  <h4 className="font-semibold mb-3 text-red-400">Eksik Yetkinlikler / Kelimeler</h4>
+                  <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+                    {matchResult.match_analytics.missing_skills.map((m, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-red-400">•</span> {m}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="cp-card p-6">
+                <h4 className="font-semibold mb-3 text-amber-400">Özgeçmiş İyileştirme Önerileri</h4>
+                <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+                  {matchResult.match_analytics.improvements.map((imp, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-amber-400">→</span> {imp}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HistorySidebar({ history, selectedId, onSelect }) {
   if (!history || history.length === 0) return null;
 
@@ -722,6 +980,7 @@ export default function CareerPilotDashboard() {
 
               {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
               {activeTab === "ats" && <AtsTab resume={selectedResume} />}
+              {activeTab === "jobmatch" && <JobMatchTab resume={selectedResume} />}
               {activeTab === "interview" && <InterviewTab resume={selectedResume} />}
               {activeTab === "roadmap" && <RoadmapTab resume={selectedResume} />}
 

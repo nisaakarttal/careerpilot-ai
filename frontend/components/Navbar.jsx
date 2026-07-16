@@ -49,7 +49,7 @@ export default function Navbar() {
                 onClick={handleLogout}
                 className="text-sm px-4 py-2 rounded-lg border border-[var(--cp-border)] hover:border-red-400 hover:text-red-400 transition-colors"
               >
-                Cikis Yap
+                Çıkış Yap
               </button>
             </>
           ) : (
@@ -58,13 +58,13 @@ export default function Navbar() {
                 href="/login"
                 className="text-sm text-[var(--cp-text-dim)] hover:text-white transition-colors"
               >
-                Giris Yap
+                Giriş Yap
               </a>
               <a
                 href="/register"
                 className="text-sm px-4 py-2 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] transition-colors font-medium"
               >
-                Kayit Ol
+                Kayıt Ol
               </a>
             </>
           )}

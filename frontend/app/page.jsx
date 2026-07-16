@@ -9,26 +9,26 @@ export default function HomePage() {
           Yapay Zeka Destekli Kariyer Asistani
         </span>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-          CV'nizi <span className="cp-gradient-text">saniyeler icinde</span>{" "}
-          dort farkli uzman gozuyle analiz edin
+          CV'nizi <span className="cp-gradient-text">saniyeler içinde</span>{" "}
+          dört farklı uzman gözüyle analiz edin
         </h1>
         <p className="text-[var(--cp-text-dim)] text-lg max-w-2xl mx-auto mb-10">
-          CareerPilot AI; CV analisti, ATS optimizasyon uzmani, ise alim
-          uzmani ve kariyer kocu perspektiflerini tek bir panelde birlestirir.
-          PDF veya DOCX formatinda CV'nizi yukleyin, kapsamli raporunuzu aninda alin.
+          CareerPilot AI; CV analisti, ATS optimizasyon uzmanı, ise alim
+          uzmani ve kariyer koçu perspektiflerini tek bir panelde birleştirir.
+          PDF veya DOCX formatinda CV'nizi yükleyin, kapsamlı raporunuzu aninda alin.
         </p>
         <div className="flex items-center justify-center gap-4">
           <a
             href="/register"
             className="px-6 py-3 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] transition-colors font-medium"
           >
-            Ucretsiz Basla
+            Ücretsiz Başla
           </a>
           <a
             href="/login"
             className="px-6 py-3 rounded-lg cp-card-light hover:border-[var(--cp-accent)] transition-colors font-medium"
           >
-            Giris Yap
+            Giriş Yap
           </a>
         </div>
 
@@ -36,19 +36,19 @@ export default function HomePage() {
           {[
             {
               title: "Genel CV Raporu",
-              desc: "Bolum bazli skorlar, guclu ve zayif yonler, oncelikli iyilestirmeler.",
+              desc: "Bölüm bazlı skorlar, güçlü ve zayıf yönler, öncelikli iyileştirmeler.",
             },
             {
               title: "ATS Uyumluluk Raporu",
-              desc: "Ayristirma riski, anahtar kelime eksikleri, X-Y-Z formatinda madde revizyonu.",
+              desc: "Ayrıştırma riski, anahtar kelime eksikleri, X-Y-Z formatında madde revizyonu.",
             },
             {
-              title: "Ise Alim Uzmani Bakisi",
-              desc: "Ilk izlenim, kidem algisi, olasi mulakat sorulari.",
+              title: "İşe Alım Uzmanı Bakisi",
+              desc: "İlk izlenim, kıdem algısı, olası mülakat sorulari.",
             },
             {
-              title: "Kariyer Kocu Plani",
-              desc: "Kariyer konumlandirma, gelisim oncelikleri, zaman cizelgeli yol haritasi.",
+              title: "Kariyer Koçu Planı",
+              desc: "Kariyer konumlandirma, gelişim öncelikleri, zaman çizelgeli yol haritasi.",
             },
           ].map((f, i) => (
             <div key={i} className="cp-card p-5">

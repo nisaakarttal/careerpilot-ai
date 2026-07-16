@@ -39,12 +39,12 @@ export default function AuthForm({ mode }) {
     <div className="w-full max-w-md mx-auto">
       <div className="cp-card p-8">
         <h1 className="text-2xl font-semibold mb-1">
-          {isRegister ? "Hesap Olustur" : "Tekrar Hosgeldiniz"}
+          {isRegister ? "Hesap Oluştur" : "Tekrar Hoş Geldiniz"}
         </h1>
         <p className="text-sm text-[var(--cp-text-dim)] mb-6">
           {isRegister
-            ? "CV'nizi analiz etmeye baslamak icin kayit olun."
-            : "Kariyer panelinize erismek icin giris yapin."}
+            ? "CV'nizi analiz etmeye başlamak için kayıt olun."
+            : "Kariyer panelinize erişmek için giriş yapın."}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,7 +81,7 @@ export default function AuthForm({ mode }) {
 
           <div>
             <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">
-              Sifre
+              Şifre
             </label>
             <input
               type="password"
@@ -106,26 +106,26 @@ export default function AuthForm({ mode }) {
             className="w-full py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 disabled:cursor-not-allowed transition-colors font-medium text-sm"
           >
             {loading
-              ? "Isleniyor..."
+              ? "İşleniyor..."
               : isRegister
-              ? "Kayit Ol"
-              : "Giris Yap"}
+              ? "Kayıt Ol"
+              : "Giriş Yap"}
           </button>
         </form>
 
         <div className="mt-6 text-sm text-center text-[var(--cp-text-dim)]">
           {isRegister ? (
             <>
-              Zaten hesabiniz var mi?{" "}
+              Zaten hesabınız var mı?{" "}
               <a href="/login" className="text-[var(--cp-accent-light)] hover:underline">
-                Giris yapin
+                Giriş yapın
               </a>
             </>
           ) : (
             <>
-              Hesabiniz yok mu?{" "}
+              Hesabınız yok mu?{" "}
               <a href="/register" className="text-[var(--cp-accent-light)] hover:underline">
-                Kayit olun
+                Kayıt olun
               </a>
             </>
           )}
