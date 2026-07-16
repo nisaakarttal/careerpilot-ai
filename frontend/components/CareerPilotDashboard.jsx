@@ -16,7 +16,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob } from "@/lib/api";
+import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob, startChatSession, getSessionMessages, sendChatMessage } from "@/lib/api";
 
 const TABS = [
   { id: "overview", label: "Genel Bakış" },
@@ -334,13 +334,168 @@ function AtsTab({ resume }) {
   );
 }
 
+
+function InterviewSimulator({ resume, onBack }) {
+  const [session, setSession] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [inputText, setInputText] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const messagesEndRef = useRef(null);
+
+  async function initSimulator() {
+    setLoading(true);
+    setError("");
+    try {
+      const sess = await startChatSession(resume.id);
+      setSession(sess);
+      const msgs = await getSessionMessages(sess.id);
+      setMessages(msgs);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    initSimulator();
+  }, [resume.id]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function handleSend(e) {
+    e.preventDefault();
+    if (!inputText.trim() || sending || !session) return;
+    setError("");
+    setSending(true);
+    const userText = inputText;
+    setInputText("");
+
+    // Append user message locally
+    const tempUserMsg = {
+      id: "temp-user-" + Date.now(),
+      role: "user",
+      content: userText,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, tempUserMsg]);
+
+    try {
+      const response = await sendChatMessage(session.id, userText);
+      setMessages((prev) => [...prev, response]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="cp-card flex flex-col h-[600px]">
+      {/* Header */}
+      <div className="p-4 border-b border-[var(--cp-border)] flex justify-between items-center bg-[var(--cp-panel-light)] rounded-t-xl">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+          <h4 className="font-semibold text-sm">Yapay Zeka Mülakat Simülatörü</h4>
+        </div>
+        <button
+          onClick={onBack}
+          className="text-xs text-[var(--cp-text-dim)] hover:text-white border border-[var(--cp-border)] px-3 py-1.5 rounded-lg hover:bg-[var(--cp-panel)] transition-colors"
+        >
+          Simülasyondan Çık
+        </button>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 cp-scrollbar bg-[var(--cp-panel-dark)]/30">
+        {loading ? (
+          <div className="text-center text-[var(--cp-text-dim)] text-sm py-10 animate-pulse">
+            Mülakat oturumu başlatılıyor, yapay zeka özgeçmişinizi inceliyor...
+          </div>
+        ) : (
+          messages.map((msg) => {
+            const isUser = msg.role === "user";
+            return (
+              <div
+                key={msg.id}
+                className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
+                    isUser
+                      ? "bg-[var(--cp-accent)] text-white rounded-br-none"
+                      : "bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white rounded-bl-none"
+                  }`}
+                >
+                  <p className="whitespace-pre-line">{msg.content}</p>
+                </div>
+              </div>
+            );
+          })
+        )}
+        {sending && (
+          <div className="flex justify-start">
+            <div className="bg-[var(--cp-panel-light)] border border-[var(--cp-border)] rounded-xl rounded-bl-none px-4 py-3 text-sm text-[var(--cp-text-dim)] italic animate-pulse">
+              İşe Alım Uzmanı yazıyor...
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 text-center">
+            Hata: {error}
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <form onSubmit={handleSend} className="p-4 border-t border-[var(--cp-border)] flex gap-2">
+        <input
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          disabled={loading || sending || !session}
+          placeholder="Cevabınızı buraya yazın..."
+          className="flex-1 px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm disabled:opacity-60 bg-[var(--cp-panel-light)] text-white"
+        />
+        <button
+          type="submit"
+          disabled={loading || sending || !inputText.trim() || !session}
+          className="px-5 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 text-sm font-medium transition-colors"
+        >
+          Gönder
+        </button>
+      </form>
+    </div>
+  );
+}
+
 function InterviewTab({ resume }) {
   const rec = resume.recruiter_analytics;
   const [openIndex, setOpenIndex] = useState(null);
+  const [showSimulator, setShowSimulator] = useState(false);
   const seniorityTone = "neutral";
+
+  if (showSimulator) {
+    return <InterviewSimulator resume={resume} onBack={() => setShowSimulator(false)} />;
+  }
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <h3 className="font-semibold text-lg">İşe Alım Uzmanı Raporu</h3>
+        <button
+          onClick={() => setShowSimulator(true)}
+          className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-emerald-950/20"
+        >
+          <span>💬</span> Mülakat Simülasyonu Başlat
+        </button>
+      </div>
+
       <div className="grid md:grid-cols-3 gap-4">
         <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} />
         <div className="cp-card p-5">

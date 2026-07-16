@@ -24,6 +24,7 @@ async def init_db() -> None:
     from app.models import user  # noqa: F401
     from app.models import resume  # noqa: F401
     from app.models import job  # noqa: F401
+    from app.models import chat  # noqa: F401
 
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)

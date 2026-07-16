@@ -144,6 +144,70 @@ def generate_coach_report(resume_text: str) -> CoachReport:
     return _parse_structured(CAREER_COACH_SYSTEM_PROMPT, resume_text, CoachReport)
 
 
+INTERVIEWER_SYSTEM_PROMPT = """Sen adayın yüklediği CV analizine ve CV metnine dayanarak onunla \
+mülakat simülasyonu gerçekleştiren kıdemli bir teknik işe alım uzmanı ve İK yöneticisisin. 
+Amacın, adayın CV'sindeki teknik deneyimler, projeler ve yetkinliklerle ilgili gerçekçi, dürüst ve \
+zorlayıcı mülakat soruları sormaktır.
+Sohbete adayın özgeçmişini kısaca özetleyerek ve ona CV'sindeki güçlü/zayıf noktalara odaklanan ilk \
+mülakat sorusunu sorarak başla. 
+Sonrasında, adayın verdiği her cevaba göre gerçekçi geri bildirimler (feedback) ver, gerektiğinde \
+cevaplarını derinleştirici takip soruları sor. 
+Bir kerede birden fazla soru sorma. Adayla konuşurken profesyonel, dürüst ve kurumsal bir dil kullan. 
+Tüm konuşmayı Türkçe gerçekleştir. Karşındakinin bir aday olduğunu unutma, doğrudan onunla konuş."""
+
+
+def generate_interview_chat_response(resume_text: str, history: List[dict], new_message: str = None) -> str:
+    client = get_gemini_client()
+    model_name = getattr(settings, "GEMINI_MODEL", "gemini-3.1-flash-lite")
+
+    system_instruction = INTERVIEWER_SYSTEM_PROMPT + f"\n\nAdayın Özgeçmiş Metni:\n{resume_text}"
+
+    contents = []
+
+    if not history and not new_message:
+        contents.append(
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text("Lütfen özgeçmişimi incele ve mülakat simülasyonunu başlatıp bana ilk soruyu sor.")]
+            )
+        )
+    else:
+        for msg in history:
+            role = "user" if msg["role"] == "user" else "model"
+            contents.append(
+                types.Content(
+                    role=role,
+                    parts=[types.Part.from_text(msg["content"])]
+                )
+            )
+        if new_message:
+            contents.append(
+                types.Content(
+                    role="user",
+                    parts=[types.Part.from_text(new_message)]
+                )
+            )
+
+    config = types.GenerateContentConfig(
+        system_instruction=system_instruction,
+        temperature=0.7,
+    )
+
+    try:
+        response = client.models.generate_content(
+            model=model_name,
+            contents=contents,
+            config=config,
+        )
+    except APIError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"AI Interview API failed: {str(exc)}",
+        ) from exc
+
+    return response.text or ""
+
+
 def generate_job_match_report(resume_text: str, job_description: str) -> JobMatchDetail:
     client = get_gemini_client()
     model_name = getattr(settings, "GEMINI_MODEL", getattr(settings, "OPENAI_MODEL", "gemini-2.5-flash"))

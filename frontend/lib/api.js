@@ -135,4 +135,35 @@ export async function getJobMatches(jobId) {
   }
 }
 
+export async function startChatSession(resumeId) {
+  try {
+    const response = await apiClient.post("/chat/sessions", {
+      resume_id: resumeId,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function getSessionMessages(sessionId) {
+  try {
+    const response = await apiClient.get(`/chat/sessions/${sessionId}/messages`);
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function sendChatMessage(sessionId, content) {
+  try {
+    const response = await apiClient.post(`/chat/sessions/${sessionId}/message`, {
+      content,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
 export default apiClient;
