@@ -187,6 +187,7 @@ Tamamlanan:
 - Gemini API'sine mülakat geçmişini context olarak besleyerek İK Yöneticisi rolüyle mülakat yapan yapay zeka entegrasyonunu tamamladı.
 - JWT token doğrulama destekli WS /api/chat/ws/{session_id} WebSocket uç noktasını kurdu ve interaktif chat arayüzünü geliştirdi.
 - GET /me ve PUT /me uç noktalarını yazdı ve Profil ve Ayarlar sekmesine bağladı.
+- Kullanıcıların önceden yüklediği geçmiş CV'leri veritabanında tutma ve sol menüde (Sidebar) listeleme özelliğini geliştirdi.
 - Geçmiş CV silme (DELETE /resume/{id}) ve cascade silme işlemlerini tamamlayarak arayüzdeki "✕" butonuna bağladı.
 - Gereksiz dosyaları docker build sürecinden çıkarmak için .dockerignore yapılandırdı ve tüm konteynerleri başarıyla yeniden derledi.
 - Takım içi kod çakışmalarını önleyerek backend ve frontend bileşenlerini main branch'te sorunsuz şekilde merge etti.
