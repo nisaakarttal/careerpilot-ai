@@ -156,7 +156,7 @@ Bir kerede birden fazla soru sorma. Adayla konuşurken profesyonel, dürüst ve 
 Tüm konuşmayı Türkçe gerçekleştir. Karşındakinin bir aday olduğunu unutma, doğrudan onunla konuş."""
 
 
-def generate_interview_chat_response(resume_text: str, history: List[dict], new_message: str = None) -> str:
+def generate_interview_chat_response(resume_text: str, history: list[dict], new_message: str = None) -> str:
     client = get_gemini_client()
     model_name = getattr(settings, "GEMINI_MODEL", "gemini-3.1-flash-lite")
 
