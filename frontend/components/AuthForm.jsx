@@ -103,7 +103,7 @@ export default function AuthForm({ mode }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+            className="cp-btn-primary w-full"
           >
             {loading
               ? "İşleniyor..."

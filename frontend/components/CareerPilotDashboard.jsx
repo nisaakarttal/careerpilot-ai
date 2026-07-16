@@ -16,7 +16,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob, startChatSession, getSessionMessages, sendChatMessage } from "@/lib/api";
+import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob, startChatSession, getSessionMessages, sendChatMessage, getMyProfile, updateMyProfile, deleteResume } from "@/lib/api";
+import { getToken } from "@/lib/auth";
 
 const TABS = [
   { id: "overview", label: "Genel Bakış" },
@@ -24,6 +25,7 @@ const TABS = [
   { id: "jobmatch", label: "İş İlanı Eşleştirme" },
   { id: "interview", label: "Mülakat Simülatörü" },
   { id: "roadmap", label: "Kariyer Yol Haritası" },
+  { id: "profile", label: "Profil ve Ayarlar" },
 ];
 
 function scoreColor(score) {
@@ -125,7 +127,7 @@ function UploadPanel({ onUploaded }) {
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="px-5 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 transition-colors text-sm font-medium"
+        className="cp-btn-primary"
       >
         {uploading ? "Analiz Ediliyor..." : "Dosya Seç"}
       </button>
@@ -343,6 +345,42 @@ function InterviewSimulator({ resume, onBack }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
+  const wsRef = useRef(null);
+
+  function connectWebSocket(sessionId) {
+    const token = getToken();
+    const wsUrl = `ws://localhost:8000/api/chat/ws/${sessionId}?token=${token}`;
+    
+    const ws = new WebSocket(wsUrl);
+    wsRef.current = ws;
+
+    ws.onmessage = (event) => {
+      try {
+        const reply = JSON.parse(event.data);
+        if (reply.error) {
+          setError(reply.error);
+        } else {
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === reply.id)) return prev;
+            return [...prev, reply];
+          });
+        }
+      } catch (err) {
+        console.error("Failed to parse WebSocket message:", err);
+      } finally {
+        setSending(false);
+      }
+    };
+
+    ws.onerror = (err) => {
+      console.error("WebSocket error:", err);
+      setError("Gerçek zamanlı bağlantı kurulamadı. HTTP istekleri kullanılıyor.");
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+  }
 
   async function initSimulator() {
     setLoading(true);
@@ -352,6 +390,7 @@ function InterviewSimulator({ resume, onBack }) {
       setSession(sess);
       const msgs = await getSessionMessages(sess.id);
       setMessages(msgs);
+      connectWebSocket(sess.id);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -361,6 +400,11 @@ function InterviewSimulator({ resume, onBack }) {
 
   useEffect(() => {
     initSimulator();
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
   }, [resume.id]);
 
   useEffect(() => {
@@ -375,7 +419,6 @@ function InterviewSimulator({ resume, onBack }) {
     const userText = inputText;
     setInputText("");
 
-    // Append user message locally
     const tempUserMsg = {
       id: "temp-user-" + Date.now(),
       role: "user",
@@ -384,13 +427,17 @@ function InterviewSimulator({ resume, onBack }) {
     };
     setMessages((prev) => [...prev, tempUserMsg]);
 
-    try {
-      const response = await sendChatMessage(session.id, userText);
-      setMessages((prev) => [...prev, response]);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSending(false);
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ content: userText }));
+    } else {
+      try {
+        const response = await sendChatMessage(session.id, userText);
+        setMessages((prev) => [...prev, response]);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setSending(false);
+      }
     }
   }
 
@@ -427,7 +474,7 @@ function InterviewSimulator({ resume, onBack }) {
                 <div
                   className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
                     isUser
-                      ? "bg-[var(--cp-accent)] text-white rounded-br-none"
+                      ? "bg-gradient-to-br from-emerald-500 to-cyan-600 text-white rounded-br-none"
                       : "bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white rounded-bl-none"
                   }`}
                 >
@@ -465,7 +512,7 @@ function InterviewSimulator({ resume, onBack }) {
         <button
           type="submit"
           disabled={loading || sending || !inputText.trim() || !session}
-          className="px-5 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 text-sm font-medium transition-colors"
+          className="cp-btn-primary"
         >
           Gönder
         </button>
@@ -661,6 +708,25 @@ function RoadmapTab({ resume }) {
 
 
 
+
+const MOCK_LINKEDIN_JOBS = [
+  {
+    title: "Yazılım Geliştirme Mühendisi (Full Stack)",
+    company: "Trendyol Group",
+    description: "Trendyol olarak milyonlarca müşteriye hizmet veren yüksek trafikli microservices mimarilerinde görev alacak Full Stack Mühendisler arıyoruz.\n\nGenel Nitelikler:\n- React, Next.js ve modern frontend teknolojilerinde en az 3 yıl deneyim\n- Node.js, Python, Java veya benzeri backend dillerinden birinde tecrübe\n- PostgreSQL, Redis, Elasticsearch ve NoSQL veritabanı deneyimi\n- Docker, Kubernetes, CI/CD süreçlerine hakimiyet\n- RESTful API tasarımı ve mikroservis mimarisi bilgisi\n- Problem çözme yeteneği gelişmiş ve takım çalışmasına yatkın."
+  },
+  {
+    title: "Yapay Zeka & Veri Bilimci",
+    company: "Aselsan",
+    description: "Aselsan bünyesinde savunma sanayii ve sivil alanlarda yapay zeka tabanlı sistemlerin araştırma ve geliştirme süreçlerinde görev alacak çalışma arkadaşları arıyoruz.\n\nAranan Nitelikler:\n- Python dilinde ileri seviye kodlama becerisi\n- PyTorch, TensorFlow veya JAX kütüphaneleri ile derin öğrenme projeleri geliştirmiş\n- LLM (Large Language Models), RAG, Prompt Engineering alanlarında pratik bilgi sahibi\n- SQL, PostgreSQL ve vektör veritabanları (Chroma, PGVector, Pinecone) tecrübesi\n- Büyük veri işleme teknolojilerine (Spark, Hadoop) aşinalık\n- İyi derecede İngilizce bilgisi."
+  },
+  {
+    title: "Frontend Developer",
+    company: "Getir",
+    description: "Getir bünyesinde hızlı teslimat operasyonlarımızın kullanıcı arayüzlerini geliştirecek Frontend Geliştiriciler arıyoruz.\n\nNitelikler:\n- HTML5, CSS3, TailwindCSS ve Vanilla Javascript konularında uzmanlaşmış\n- React, Redux, Next.js teknolojilerinde en az 2 yıl aktif deneyim\n- Responsive Web Design, Cross-Browser Compatibility konularına hakim\n- REST API entegrasyonu, JSON yapıları ve WebSocket iletişim süreçlerinde tecrübeli\n- Git versiyon kontrol sistemi kullanımı ve CI/CD süreçleri bilgisi\n- UX/UI tasarımlarını piksel kusursuzluğunda koda dökebilen."
+  }
+];
+
 function JobMatchTab({ resume }) {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -739,7 +805,7 @@ function JobMatchTab({ resume }) {
             setShowForm(!showForm);
             setMatchResult(null);
           }}
-          className="px-4 py-2 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] text-sm font-medium transition-colors"
+          className="cp-btn-primary"
         >
           {showForm ? "İlan Seçimine Dön" : "Yeni İş İlanı Ekle"}
         </button>
@@ -752,8 +818,27 @@ function JobMatchTab({ resume }) {
       )}
 
       {showForm ? (
-        <form onSubmit={handleCreateJob} className="cp-card p-6 space-y-4">
-          <h4 className="font-semibold">Yeni İş İlanı Bilgileri</h4>
+        <form onSubmit={handleCreateJob} className="cp-card p-6 space-y-4 animate-fadeIn">
+          <div className="flex justify-between items-center border-b border-[var(--cp-border)] pb-3 flex-wrap gap-2">
+            <h4 className="font-semibold text-white">Yeni İş İlanı Bilgileri</h4>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-xs text-[var(--cp-text-dim)] font-medium">Hızlı Doldur (Mock İlanlar):</span>
+              {MOCK_LINKEDIN_JOBS.map((mj, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setTitle(mj.title);
+                    setCompany(mj.company);
+                    setDescription(mj.description);
+                  }}
+                  className="px-2.5 py-1 rounded bg-[var(--cp-panel-light)] hover:bg-[var(--cp-accent)]/20 border border-[var(--cp-border)] hover:border-[var(--cp-accent)] text-xs text-[var(--cp-text-dim)] hover:text-white transition-all font-medium"
+                >
+                  {mj.company}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">İlan Başlığı</label>
@@ -824,7 +909,7 @@ function JobMatchTab({ resume }) {
             <button
               onClick={handleMatch}
               disabled={matching || !selectedJobId}
-              className="px-6 py-2.5 rounded-lg bg-[var(--cp-accent)] hover:bg-[var(--cp-accent-light)] disabled:opacity-60 text-sm font-medium transition-colors whitespace-nowrap"
+              className="cp-btn-primary whitespace-nowrap"
             >
               {matching ? "Eşleştiriliyor..." : "Özgeçmişle Eşleştir"}
             </button>
@@ -944,35 +1029,44 @@ function AnalysisProgressPanel({ progress, filename }) {
   );
 }
 
-function HistorySidebar({ history, selectedId, onSelect }) {
+function HistorySidebar({ history, selectedId, onSelect, onDelete }) {
   if (!history || history.length === 0) return null;
 
   return (
-    <div className="cp-card p-5 h-full max-h-[800px] overflow-y-auto cp-scrollbar">
-      <h3 className="font-semibold mb-4 text-lg border-b border-[var(--cp-border)] pb-2">Geçmiş Özgeçmişler</h3>
+    <div className="cp-card p-5 h-full max-h-[800px] overflow-y-auto cp-scrollbar animate-fadeIn">
+      <h3 className="font-semibold mb-4 text-lg border-b border-[var(--cp-border)] pb-2 text-white">Geçmiş Özgeçmişler</h3>
       <div className="space-y-3">
         {history.map((h) => (
-          <button
-            key={h.id}
-            onClick={() => onSelect(h.id)}
-            className={`w-full text-left p-3 rounded-lg transition-colors border ${
-              selectedId === h.id
-                ? "bg-[var(--cp-accent)]/10 border-[var(--cp-accent)] text-[var(--cp-accent-light)]"
-                : "border-[var(--cp-border)] hover:bg-[var(--cp-panel-light)]"
-            }`}
-          >
-            <div className="font-medium text-sm truncate" title={h.original_filename || "Özgeçmiş"}>
-              {h.original_filename || "İsimsiz Özgeçmiş"}
-            </div>
-            <div className="text-xs text-[var(--cp-text-dim)] mt-1 flex justify-between">
-              {h.overall_score === 0 ? (
-                <span className="text-[var(--cp-accent-light)] animate-pulse font-semibold">Analiz Ediliyor...</span>
-              ) : (
-                <span>Skor: <span className="font-semibold">{Math.round(h.overall_score)}</span></span>
-              )}
-              <span>{new Date(h.created_at).toLocaleDateString("tr-TR")}</span>
-            </div>
-          </button>
+          <div key={h.id} className="group relative">
+            <button
+              onClick={() => onSelect(h.id)}
+              className={`w-full text-left p-3 pr-8 rounded-lg transition-colors border ${
+                selectedId === h.id
+                  ? "bg-[var(--cp-accent)]/10 border-[var(--cp-accent)] text-[var(--cp-accent-light)]"
+                  : "border-[var(--cp-border)] hover:bg-[var(--cp-panel-light)]"
+              }`}
+            >
+              <div className="font-medium text-sm truncate text-white" title={h.original_filename || "Özgeçmiş"}>
+                {h.original_filename || "İsimsiz Özgeçmiş"}
+              </div>
+              <div className="text-xs text-[var(--cp-text-dim)] mt-1 flex justify-between">
+                {h.overall_score === 0 ? (
+                  <span className="text-[var(--cp-accent-light)] animate-pulse font-semibold">Analiz Ediliyor...</span>
+                ) : (
+                  <span>Skor: <span className="font-semibold">{Math.round(h.overall_score)}</span></span>
+                )}
+                <span>{new Date(h.created_at).toLocaleDateString("tr-TR")}</span>
+              </div>
+            </button>
+            
+            <button
+              onClick={(e) => onDelete(h.id, e)}
+              className="absolute right-2.5 top-3.5 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 p-1 text-xs transition-opacity focus:opacity-100 bg-transparent border-0 cursor-pointer"
+              title="Sil"
+            >
+              ✕
+            </button>
+          </div>
         ))}
       </div>
     </div>
@@ -1017,6 +1111,154 @@ function HistoryChart({ history }) {
   );
 }
 
+
+function ProfileTab() {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [updating, setUpdating] = useState(false);
+
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function loadProfile() {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await getMyProfile();
+      setProfile(data);
+      setFullName(data.full_name);
+      setEmail(data.email);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  async function handleUpdate(e) {
+    e.preventDefault();
+    setError("");
+    setSuccessMsg("");
+    setUpdating(true);
+
+    const payload = {};
+    if (fullName !== profile.full_name) payload.full_name = fullName;
+    if (email !== profile.email) payload.email = email;
+    if (password) payload.password = password;
+
+    if (Object.keys(payload).length === 0) {
+      setUpdating(false);
+      return;
+    }
+
+    try {
+      const updated = await updateMyProfile(payload);
+      setProfile(updated);
+      setSuccessMsg("Profil bilgileriniz başarıyla güncellendi.");
+      setPassword("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUpdating(false);
+    }
+  }
+
+  if (loading) {
+    return <div className="text-center text-[var(--cp-text-dim)] py-10">Profil yükleniyor...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      {profile && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fadeIn">
+          <div className="cp-card p-5 text-center">
+            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Yüklenen CV Sayısı</span>
+            <span className="text-2xl font-bold text-[var(--cp-accent-light)]">{profile.total_resumes}</span>
+          </div>
+          <div className="cp-card p-5 text-center">
+            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Eklenen İlanlar</span>
+            <span className="text-2xl font-bold text-indigo-400">{profile.total_jobs}</span>
+          </div>
+          <div className="cp-card p-5 text-center">
+            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Yapılan Eşleşmeler</span>
+            <span className="text-2xl font-bold text-emerald-400">{profile.total_matches}</span>
+          </div>
+          <div className="cp-card p-5 text-center">
+            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Mülakat Oturumları</span>
+            <span className="text-2xl font-bold text-pink-400">{profile.total_chats}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="cp-card p-6 max-w-2xl mx-auto space-y-6 animate-fadeIn">
+        <h3 className="font-semibold text-lg border-b border-[var(--cp-border)] pb-3">Profil Ayarları</h3>
+        
+        {error && (
+          <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-2 text-center">
+            {error}
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-2 text-center">
+            {successMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div>
+            <label className="text-xs text-[var(--cp-text-dim)] font-medium block mb-1.5 font-semibold text-white">Ad Soyad</label>
+            <input
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-[var(--cp-text-dim)] font-medium block mb-1.5 font-semibold text-white">E-posta Adresi</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-[var(--cp-text-dim)] font-medium block mb-1.5 font-semibold text-white">Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın)</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={updating}
+            className="cp-btn-primary w-full"
+          >
+            {updating ? "Güncelleniyor..." : "Profil Bilgilerini Güncelle"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function CareerPilotDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -1025,6 +1267,7 @@ export default function CareerPilotDashboard() {
   const [selectedResume, setSelectedResume] = useState(null);
   const [loadingResume, setLoadingResume] = useState(false);
   const [analyzingResumeId, setAnalyzingResumeId] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, resumeId: null });
   const [analysisProgress, setAnalysisProgress] = useState(0);
 
   async function loadDashboard() {
@@ -1109,6 +1352,50 @@ export default function CareerPilotDashboard() {
 
     return () => clearInterval(intervalId);
   }, [analyzingResumeId]);
+
+  function handleDeleteResume(resumeId, e) {
+    if (e) e.stopPropagation();
+    setDeleteConfirm({ open: true, resumeId });
+  }
+
+  async function confirmDeleteResume() {
+    const resumeId = deleteConfirm.resumeId;
+    setDeleteConfirm({ open: false, resumeId: null });
+
+    try {
+      await deleteResume(resumeId);
+      
+      // Update local state history
+      setDashboard((prev) => {
+        if (!prev) return prev;
+        const newHistory = prev.history.filter((h) => h.id !== resumeId);
+        let newLatest = prev.latest;
+        if (prev.latest && prev.latest.id === resumeId) {
+          newLatest = newHistory.length > 0 ? newHistory[0] : null;
+        }
+        return {
+          ...prev,
+          latest: newLatest,
+          history: newHistory
+        };
+      });
+
+      // Update selectedResume if it was the one deleted
+      if (selectedResume && selectedResume.id === resumeId) {
+        setAnalyzingResumeId(null);
+        
+        // Find if we have another resume left to select
+        const remaining = dashboard.history.filter((h) => h.id !== resumeId);
+        if (remaining.length > 0) {
+          handleSelectHistory(remaining[0].id);
+        } else {
+          setSelectedResume(null);
+        }
+      }
+    } catch (err) {
+      alert("Özgeçmiş silinirken bir hata oluştu: " + err.message);
+    }
+  }
 
   async function handleSelectHistory(id) {
     setLoadingResume(true);
@@ -1204,6 +1491,7 @@ export default function CareerPilotDashboard() {
               history={dashboard.history} 
               selectedId={selectedResume?.id} 
               onSelect={handleSelectHistory} 
+              onDelete={handleDeleteResume}
             />
           </div>
         )}
@@ -1219,7 +1507,29 @@ export default function CareerPilotDashboard() {
 
           <UploadPanel onUploaded={handleUploaded} />
 
-          {loadingResume ? (
+          <div className="flex gap-2 overflow-x-auto cp-scrollbar pb-1 border-b border-[var(--cp-border)] pt-2">
+            {TABS.map((tab) => {
+              // Hide tabs that require a resume if there isn't one
+              if (!hasResume && tab.id !== "profile") return null;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                    activeTab === tab.id
+                      ? "cp-tab-active"
+                      : "cp-card-light text-[var(--cp-text-dim)] hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {activeTab === "profile" ? (
+            <ProfileTab />
+          ) : loadingResume ? (
             <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
               Seçilen CV yükleniyor...
             </div>
@@ -1234,22 +1544,6 @@ export default function CareerPilotDashboard() {
             />
           ) : (
             <>
-              <div className="flex gap-2 overflow-x-auto cp-scrollbar pb-1">
-                {TABS.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                      activeTab === tab.id
-                        ? "bg-[var(--cp-accent)] text-white"
-                        : "cp-card-light text-[var(--cp-text-dim)] hover:text-white"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
               {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
               {activeTab === "ats" && <AtsTab resume={selectedResume} />}
               {activeTab === "jobmatch" && <JobMatchTab resume={selectedResume} />}

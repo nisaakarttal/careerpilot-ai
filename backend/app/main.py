@@ -19,7 +19,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
+    title="CareerPilot AI - API Docs",
+    description="CareerPilot AI is an AI-powered Career Management Platform. Analyze CVs, match jobs, simulate HR interviews in real-time over WebSockets, and get AI career coach roadmaps.",
     version="1.0.0",
     lifespan=lifespan,
 )
