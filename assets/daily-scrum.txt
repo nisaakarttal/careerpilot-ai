@@ -170,3 +170,30 @@ Sonraki Adımlar:
 
 Engeller:
 - Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
+- Tüm analiz promptları, çıktı şemaları ve arayüz metinlerini Türkçeleştirdi ve Türkçe karakter sorunlarını giderdi.
+- Tema sistemini Teal-Cyan Gradient yapısına geçirdi ve 3 yeni premium buton sınıfı (primary, secondary, danger) oluşturdu.
+- Tarayıcı otomatik doldurma form arka plan hatalarını CSS ile giderdi ve navbar kullanıcı ismine hover efekti ekledi.
+- Eski window.confirm yapısını animasyonlu "Silme Onay Modalı" ile değiştirdi.
+- JobPost ve JobMatch veritabanı tablolarını, Pydantic şemalarını ve ilgili API uç noktalarını (POST, GET, match) yazdı.
+- Arayüze "İş İlanı Eşleştirme" sekmesini ve LinkedIn (Trendyol, Aselsan, Getir) hızlı ilan doldurma özelliklerini entegre etti.
+- İş ilanı seçimi için özel animasyonlu ve dışarıya tıklayınca kapanan React Dropdown bileşeni geliştirdi.
+- CV yüklendiğinde 1 saniyede yanıt dönen ve analizleri arka planda (BackgroundTasks) çalıştıran kademeli güncelleme mimarisini kurdu.
+- Frontend'de 3 saniyede bir polling yapan, renk geçişli ve aşamalı İlerleme Çubuğu (Progress Bar) oluşturdu.
+- Mülakat simülatörü için ChatSession ve ChatMessage veritabanı tablolarını kurdu.
+- Gemini API'sine mülakat geçmişini context olarak besleyerek İK Yöneticisi rolüyle mülakat yapan yapay zeka entegrasyonunu tamamladı.
+- JWT token doğrulama destekli WS /api/chat/ws/{session_id} WebSocket uç noktasını kurdu ve interaktif chat arayüzünü geliştirdi.
+- GET /me ve PUT /me uç noktalarını yazdı ve Profil ve Ayarlar sekmesine bağladı.
+- Geçmiş CV silme (DELETE /resume/{id}) ve cascade silme işlemlerini tamamlayarak arayüzdeki "✕" butonuna bağladı.
+- Gereksiz dosyaları docker build sürecinden çıkarmak için .dockerignore yapılandırdı ve tüm konteynerleri başarıyla yeniden derledi.
+- Takım içi kod çakışmalarını önleyerek backend ve frontend bileşenlerini main branch'te sorunsuz şekilde merge etti.
+
+Sonraki Adımlar:
+- İş ilanı eşleştirme ve mülakat sisteminin uçtan uca testlerine destek olmak.
+- Kullanıcı geri bildirimlerine göre UI/UX iyileştirmelerine devam etmek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
