@@ -405,7 +405,7 @@ function InterviewSimulator({ resume, onBack }) {
         wsRef.current.close();
       }
     };
-  }, [resume.id]);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -741,7 +741,8 @@ function JobMatchTab({ resume }) {
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
-  async function fetchJobs() {
+const fetchJobs = async () => {
+    if (jobs.length > 0) return;
     setLoading(true);
     try {
       const data = await listJobPosts();
@@ -754,7 +755,7 @@ function JobMatchTab({ resume }) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -770,7 +771,7 @@ function JobMatchTab({ resume }) {
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [resume.id]);
+  }, [jobs.length]);
 
   async function handleCreateJob(e) {
     e.preventDefault();
