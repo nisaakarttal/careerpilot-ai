@@ -130,148 +130,365 @@ Sprint 1 kapsamında planlanan dokümantasyon çalışmaları, GitHub organizasy
 
 =================================================================
 
-16 Temmuz 2026 – Daily Scrum 5: AI Analiz ve Semantik Eşleştirme Geliştirmeleri
-# Daily Scrum Raporları (08.07.2026 - 18.07.2026)
+SPRINT 2 - DAILY SCRUM (GÜNLÜK DURUM RAPORLARI)
 
-## 08.07.2026
+=================================================================
 
-### Hayrunnisa Kartal
-- Mevcut AI altyapısını analiz ederek `aioutputs.py` ve `ai_service.py` dosyalarındaki response modelleri, multi-agent akışı ve Structured Output mimarisini inceledi.
-- CV yükleme sırasında oluşan `502 Bad Gateway` hatasının nedenini araştırdı.
-- OpenAI ile `httpx` paketleri arasındaki sürüm uyumsuzluklarını analiz etti.
+08 Temmuz 2026 – Daily Scrum 1: AI Altyapı Analizi ve Gemini Geçiş Hazırlıkları
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
+- Mevcut AI altyapısını analiz ederek aioutputs.py ve ai_service.py dosyalarındaki response modelleri, multi-agent akışı ve Structured Output mimarisini inceledi.
+- CV yükleme sırasında oluşan 502 Bad Gateway hatasının nedenini araştırdı.
+- OpenAI ile httpx paketleri arasındaki sürüm uyumsuzluklarını analiz etti.
 - Google Gemini'ye geçiş için mevcut AI mimarisinin teknik analizini gerçekleştirdi.
 
-### Yiğit Emir Saatçi
+Sonraki Adımlar:
+- Google Gemini SDK entegrasyonuna başlamak.
+- Gemini istemci yapısını oluşturmak.
+- Konfigürasyon dosyalarını Gemini mimarisine uygun hale getirmek.
+
+Engeller:
+- CV yükleme sırasında oluşan 502 Bad Gateway hatası.
+- OpenAI ve httpx paketleri arasındaki sürüm uyumsuzluğu.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
 - OpenAI ve LangChain SDK entegrasyonunu tamamladı.
 - CV analizi için 100 puanlık değerlendirme sistemine sahip v1 system promptunu hazırladı.
 - Yapay zekâ yanıtlarının doğrulanması için JSON Output Parser entegrasyonunu gerçekleştirdi.
 
-### Utku Akkuşoğlu
+Sonraki Adımlar:
+- ATS değerlendirme sistemini geliştirmek.
+- Embedding altyapısını oluşturmaya başlamak.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
 - Tüm analiz promptları, çıktı şemaları ve arayüz metinlerini Türkçeleştirdi.
 - Türkçe karakter sorunlarını giderdi.
 - Tema sistemini Teal-Cyan Gradient yapısına geçirdi.
 
----
+Sonraki Adımlar:
+- Premium arayüz bileşenlerini geliştirmek.
+- Tema sistemi üzerinde iyileştirmeler yapmak.
 
-## 09.07.2026
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-### Hayrunnisa Kartal
-- Google Gemini (`google-genai`) SDK entegrasyonuna başladı.
-- `get_gemini_client()` fonksiyonunu geliştirerek singleton istemci yapısını oluşturdu.
-- `config.py` dosyasına `GEMINI_API_KEY` ve `GEMINI_MODEL` ayarlarını ekledi.
-- `.env` yapılandırmasını Gemini ile uyumlu hale getirdi.
+Günlük Özet:
+AI altyapısının mevcut durumu analiz edilmiş, Google Gemini mimarisine geçiş için teknik hazırlıklar başlatılmıştır. Yapay zekâ altyapısı, sistem promptları ve kullanıcı arayüzü tarafında ilk geliştirmeler tamamlanarak Sprint 2 kapsamındaki AI geliştirmeleri için temel oluşturulmuştur.
 
-### Yiğit Emir Saatçi
+=================================================================
+
+09 Temmuz 2026 – Daily Scrum 2: Google Gemini Entegrasyonu ve Yapılandırma
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
+- Google Gemini (google-genai) SDK entegrasyonuna başladı.
+- get_gemini_client() fonksiyonunu geliştirerek singleton istemci yapısını oluşturdu.
+- config.py dosyasına GEMINI_API_KEY ve GEMINI_MODEL ayarlarını ekledi.
+- .env yapılandırmasını Gemini ile uyumlu hale getirdi.
+
+Sonraki Adımlar:
+- AI servislerini Gemini mimarisine taşımak.
+- Structured Output desteğini entegre etmek.
+
+Engeller:
+- OpenAI ve Gemini SDK'ları arasındaki mimari farklılıklar nedeniyle istemci yapısının yeniden düzenlenmesi gerekti.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
 - ATS analizi için 100 puanlık ayrıntılı değerlendirme rubriğini oluşturdu.
-- ATS skorlarını şema seviyesinde `0-100` aralığıyla sınırlandırdı.
+- ATS skorlarını şema seviyesinde 0–100 aralığıyla sınırlandırdı.
 - CV ve iş ilanlarını OpenAI Embeddings kullanarak vektörleştirdi.
 
-### Utku Akkuşoğlu
+Sonraki Adımlar:
+- Semantik eşleştirme algoritmasını geliştirmek.
+- Yetkinlik karşılaştırma mekanizmasını oluşturmak.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
 - Premium buton sınıflarını (Primary, Secondary, Danger) oluşturdu.
 - Tarayıcı otomatik doldurma kaynaklı CSS sorunlarını giderdi.
 - Navbar kullanıcı adına hover efekti ekledi.
 
----
+Sonraki Adımlar:
+- İş ilanı yönetimi ekranlarını geliştirmek.
+- Yeni UI bileşenlerini sisteme entegre etmek.
 
-## 10.07.2026
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-### Hayrunnisa Kartal
-- OpenAI istemci yapısını Gemini `client.models.generate_content()` mimarisine taşıdı.
-- Structured Output desteğini `GenerateContentConfig(response_schema=...)` ile entegre etti.
+Günlük Özet:
+Google Gemini entegrasyonu başlatılmış, yapılandırma dosyaları güncellenmiş ve AI altyapısının yeni mimariye taşınması için gerekli hazırlıklar tamamlanmıştır.
+
+=================================================================
+
+10 Temmuz 2026 – Daily Scrum 3: AI Servislerinin Gemini Mimarisiyle Yeniden Yapılandırılması
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
+- OpenAI istemci yapısını Gemini client.models.generate_content() mimarisine taşıdı.
+- Structured Output desteğini GenerateContentConfig(response_schema=...) ile entegre etti.
 - AI çıktılarının mevcut Pydantic modellere dönüştürülmesini sağlayarak API sözleşmesini korudu.
-- `ai_service.py` dosyasını Gemini mimarisine göre yeniden düzenledi.
+- ai_service.py dosyasını Gemini mimarisine göre yeniden düzenledi.
 
-### Yiğit Emir Saatçi
+Sonraki Adımlar:
+- Gemini entegrasyonunu test etmek.
+- Hata yönetimini güncellemek.
+
+Engeller:
+- Structured Output yapısının Gemini SDK'sına uyarlanması gerekti.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
 - Kosinüs benzerliğine dayalı semantik eşleştirme algoritmasını geliştirdi.
 - Açıklanabilir anahtar kelime ve yetkinlik karşılaştırmasını ekledi.
 - AI, embedding ve yetkinlik örtüşmesi skorlarını birleştiren değerlendirme sistemini oluşturdu.
 
-### Utku Akkuşoğlu
-- Eski `window.confirm` yapısını animasyonlu Silme Onay Modalı ile değiştirdi.
-- `JobPost` ve `JobMatch` veritabanı tablolarını oluşturdu.
-- İlgili API uç noktalarını (`POST`, `GET`, `MATCH`) geliştirdi.
+Sonraki Adımlar:
+- Recruiter değerlendirme zincirini geliştirmek.
+- Backend testlerini hazırlamak.
 
----
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-## 11.07.2026
+Utku Akkuşoğlu (Product Owner & Developer)
 
-### Hayrunnisa Kartal
-- PostgreSQL tarafındaki `offset-naive / offset-aware datetime` hatasını analiz etti.
-- `created_at` alanını `datetime.utcnow()` kullanacak şekilde güncelleyerek problemi kalıcı olarak çözdü.
+Tamamlanan:
+- Eski window.confirm yapısını animasyonlu Silme Onay Modalı ile değiştirdi.
+- JobPost ve JobMatch veritabanı tablolarını oluşturdu.
+- POST, GET ve Match API uç noktalarını geliştirdi.
+
+Sonraki Adımlar:
+- İş ilanı ekranını geliştirmek.
+- React bileşenlerini tamamlamak.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Günlük Özet:
+AI servisleri başarıyla Gemini mimarisine taşınmış, semantik eşleştirme altyapısı geliştirilmiş ve iş ilanı modülünün temel backend geliştirmeleri tamamlanmıştır.
+
+=================================================================
+
+11 Temmuz 2026 – Daily Scrum 4: AI Kalite İyileştirmeleri ve İş İlanı Modülü
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
+- PostgreSQL tarafındaki offset-naive / offset-aware datetime hatasını analiz etti.
+- created_at alanını datetime.utcnow() kullanacak şekilde güncelleyerek problemi kalıcı olarak çözdü.
 - Sistem promptlarını güncelleyerek AI analizlerinin tamamen Türkçe üretilmesini sağladı.
 - Türkçe rapor çıktılarının doğruluğunu test etti.
 
-### Yiğit Emir Saatçi
+Sonraki Adımlar:
+- Gemini entegrasyonunu uçtan uca test etmek.
+- Backend servislerini doğrulamak.
+
+Engeller:
+- PostgreSQL timezone uyumsuzluğu.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
 - Recruiter değerlendirmesini ATS ve iş eşleştirme sonuçlarını kullanan LangChain zincirine dönüştürdü.
 
-### Utku Akkuşoğlu
+Sonraki Adımlar:
+- Backend testlerini tamamlamak.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
 - İş İlanı Eşleştirme sekmesini geliştirdi.
 - LinkedIn (Trendyol, Aselsan, Getir) hızlı ilan doldurma özelliklerini entegre etti.
 - React Dropdown bileşenini geliştirdi.
 
----
+Sonraki Adımlar:
+- Analiz sürecini kullanıcıya gösterecek arayüz geliştirmelerine başlamak.
 
-## 14.07.2026
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-### Hayrunnisa Kartal
+Günlük Özet:
+AI servislerinin doğruluğu artırılmış, Türkçe analiz altyapısı tamamlanmış ve iş ilanı eşleştirme modülünün kullanıcı arayüzü geliştirilmiştir.
+
+=================================================================
+
+14 Temmuz 2026 – Daily Scrum 5: Kullanıcı Deneyimi ve Sistem Testleri
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
 - Kullanıcı profili ve ayarlar sayfasındaki kullanım istatistikleri için backend düzenlemelerini gerçekleştirdi.
 - Geçmiş CV kayıtlarının yönetimi ve silinmesi süreçlerinde iyileştirmeler yaptı.
 - Cascade delete yapısını test ederek veri bütünlüğünü doğruladı.
 
-### Yiğit Emir Saatçi
+Sonraki Adımlar:
+- AI servislerinin uçtan uca testlerini gerçekleştirmek.
+- API uyumluluğunu doğrulamak.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
 - Hazırlanan 16 backend testinin tamamını başarıyla çalıştırdı.
 - AI modüllerinin doğruluğunu test ederek sonuçları doğruladı.
 
-### Utku Akkuşoğlu
-- CV analizlerinin arka planda (`BackgroundTasks`) çalışmasını sağlayan mimariyi geliştirdi.
+Sonraki Adımlar:
+- Gerçek API ile canlı analiz testlerini gerçekleştirmek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
+- CV analizlerinin arka planda (BackgroundTasks) çalışmasını sağlayan mimariyi geliştirdi.
 - Frontend tarafında polling mekanizmasını oluşturdu.
 - Aşamalı Progress Bar bileşenini geliştirdi.
 
----
+Sonraki Adımlar:
+- Mülakat simülatörü geliştirmelerine başlamak.
 
-## 16.07.2026
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-### Hayrunnisa Kartal
+Günlük Özet:
+Kullanıcı deneyimini iyileştiren geliştirmeler tamamlanmış, AI modüllerinin testleri başarıyla gerçekleştirilmiş ve sistem performansını artıran yeni mimari devreye alınmıştır.
+
+=================================================================
+
+16 Temmuz 2026 – Daily Scrum 6: Mülakat Simülatörü ve Entegrasyon Testleri
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
 - Gemini entegrasyonu sonrasında AI servislerinin uçtan uca testlerini gerçekleştirdi.
 - Frontend ve backend arasındaki API uyumluluğunu doğruladı.
 - Kod düzenlemeleri ve refaktör çalışmaları yaparak servislerin bakımını kolaylaştırdı.
-- `feature/resume-parser` branch'inde geliştirmelerin kararlı çalıştığını doğruladı.
+- feature/resume-parser branch'inde geliştirmelerin kararlı çalıştığını doğruladı.
 
-### Yiğit Emir Saatçi
+Sonraki Adımlar:
+- Sprint kapanışı öncesi son kontrolleri gerçekleştirmek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
 - Gerçek OpenAI API anahtarıyla yapılacak canlı analiz testleri için sistemi hazır hale getirdi.
 - AI modüllerinin uygulama içerisindeki sonuçlarını kontrol etti.
 
-### Utku Akkuşoğlu
-- `ChatSession` ve `ChatMessage` veritabanı tablolarını geliştirdi.
+Sonraki Adımlar:
+- Son entegrasyon kontrollerini gerçekleştirmek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
+- ChatSession ve ChatMessage veritabanı tablolarını geliştirdi.
 - Gemini destekli mülakat simülatörünü tamamladı.
 - JWT doğrulamalı WebSocket tabanlı canlı sohbet altyapısını geliştirdi.
 
----
+Sonraki Adımlar:
+- Profil modülünü tamamlamak.
+- Docker yapılandırmalarını gözden geçirmek.
 
-## 17.07.2026
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-### Hayrunnisa Kartal
-- `feature/resume-parser` branch'indeki tüm geliştirmeleri son kez test etti.
+Günlük Özet:
+AI servisleri başarıyla test edilmiş, mülakat simülatörü tamamlanmış ve sistem entegrasyonunun büyük bölümü tamamlanmıştır.
+
+=================================================================
+
+17 Temmuz 2026 – Daily Scrum 7: Sprint Sonu Entegrasyon ve Merge İşlemleri
+
+Hayrunnisa Kartal (Scrum Master& Developer)
+
+Tamamlanan:
+- feature/resume-parser branch'indeki tüm geliştirmeleri son kez test etti.
 - Kod düzenlemeleri ve dokümantasyon çalışmalarını tamamladı.
 - Sprint kapanışı öncesinde son kontrolleri gerçekleştirdi.
 
-### Yiğit Emir Saatçi
-- Son ekip değişikliklerini kendi geliştirmeleriyle birleştirerek güncel `main` dalına aktardı.
+Sonraki Adımlar:
+- Sprint raporlarını hazırlamak.
 
-### Utku Akkuşoğlu
-- `GET /me` ve `PUT /me` uç noktalarını geliştirerek Profil ve Ayarlar sayfasına bağladı.
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
+- Son ekip değişikliklerini kendi geliştirmeleriyle birleştirerek güncel main dalına aktardı.
+
+Sonraki Adımlar:
+- Sprint kapanışını desteklemek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Utku Akkuşoğlu (Product Owner & Developer)
+
+Tamamlanan:
+- GET /me ve PUT /me uç noktalarını geliştirerek Profil ve Ayarlar sayfasına bağladı.
 - Kullanıcıların geçmiş CV'lerini listeleme ve silme özelliklerini tamamladı.
-- `.dockerignore` yapılandırmasını ekleyerek Docker build sürecini optimize etti.
-- Takım içi kod çakışmalarını önleyerek backend ve frontend bileşenlerini `main` branch'te sorunsuz şekilde merge etti.
+- .dockerignore yapılandırmasını ekleyerek Docker build sürecini optimize etti.
+- Takım içi kod çakışmalarını önleyerek backend ve frontend bileşenlerini main branch'te sorunsuz şekilde merge etti.
 
----
+Sonraki Adımlar:
+- Sprint kapanış testlerine destek olmak.
 
-## 18.07.2026
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
 
-### Hayrunnisa Kartal
+Günlük Özet:
+Sprint kapsamındaki tüm geliştirmeler tamamlanmış, kodlar başarıyla birleştirilmiş ve proje Sprint Review sürecine hazır hale getirilmiştir.
+
+=================================================================
+
+18 Temmuz 2026 – Daily Scrum 8: Sprint Kapanışı ve Dokümantasyon
+
+Hayrunnisa Kartal (Scrum Master & Developer)
+
+Tamamlanan:
 - Sprint boyunca gerçekleştirilen geliştirmeleri derleyerek Sprint Review raporunu hazırladı.
 - Sprint Retrospective raporunu oluşturdu.
 - Günlük Scrum kayıtlarını düzenledi.
 - Sprint dokümantasyonunu tamamladı.
 - Ekip tarafından gerçekleştirilen geliştirmeleri derleyerek proje çıktılarının raporlanmasını sağladı.
 - Sprint kapanış dokümanlarını hazırlayarak sprinti başarıyla tamamladı.
+
+Sonraki Adımlar:
+- Sprint 3 planlamasını gerçekleştirmek.
+- Yeni geliştirme süreci için backlog'u güncellemek.
+
+Engeller:
+- Herhangi bir engel bulunmamaktadır.
+
+Günlük Özet:
+Sprint 2 başarıyla tamamlanmış, tüm teknik geliştirmeler dokümante edilmiş ve Sprint Review ile Sprint Retrospective süreçleri tamamlanarak bir sonraki sprint için planlama aşamasına geçilmiştir.
+```
