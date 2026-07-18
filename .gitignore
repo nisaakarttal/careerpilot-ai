@@ -8,7 +8,7 @@ frontend/.next/
 .env.*
 !.env.example
 !.env.local.example
-
+.idea/
 
 
 *.log
