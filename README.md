@@ -12,11 +12,11 @@ Platform, adayların işe alım süreçlerinde daha rekabetçi ve başarılı ol
 
 Ekibimiz Yapay Zeka ve Teknoloji Akademisi bünyesinde çapraz fonksiyonlu (Cross-Functional) olarak çalışmaktadır. Akademi kuralları gereği ekibimizde tek bir lider bulunmamakta; tüm üyeler eşit sorumlulukla hem süreç yönetiminde hem de ürünün geliştirilmesinde aktif rol oynamaktadır.
 
-*   **Scrum Master (İletişim Sorumlusu):** Hayrunnisa Kartal — Ekip içi koordinasyon, Scrum eventlerinin yönetimi, engellerin kaldırılması ve Full-Stack Geliştirme.
-*   **Product Owner (Yedek İletişim Sorumlusu):** Utku Akkuşoğlu — Product Backlog yönetimi, user story'lerin önceliklendirilmesi ve Full-Stack Geliştirme.
-*   **Developer:** Yiğit Emir Saatçi — Full-Stack Geliştirme, Yapay Zeka Modelleri ve Veritabanı Mimarisi.
-*   **Developer:** Yusuf Yıldırım — Full-Stack Geliştirme, UI/UX Tasarım ve API Entegrasyonları.
-*   **Developer:** Sati Bıldırcın — Full-Stack Geliştirme, Test, Dağıtım ve Sistem Optimizasyonu.
+| Role | Team Member |
+|------|-------------|
+| **Scrum Master (Communication Lead)** | **Hayrunnisa Kartal**<br>Scrum Master & AI/Backend Developer |
+| **Product Owner (Deputy Communication Lead)** | **Utku Akkuşoğlu**<br>Product Owner & Full Stack Developer |
+| **Developer** | **Yiğit Emir Saatçi**<br>Full Stack Developer & AI Developer |
 
 --- 
 
