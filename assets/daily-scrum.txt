@@ -63,11 +63,6 @@ Tamamlanan:
 - Mezuniyet programı nedeniyle sürece asenkron olarak katıldı.
 - Form için gerekli bilgileri iletti.
 
-Sati Bıldırcın (Developer)
-
-Tamamlanan:
-- GitHub repo bağlantısını kontrol ederek erişimde herhangi bir sorun olmadığını doğruladı.
-
 Günlük Özet:
 GitHub deposu başarıyla oluşturulmuş, ekip organizasyonu tamamlanmış ve proje resmi olarak başlatılmıştır.
 
@@ -92,23 +87,12 @@ Tamamlanan:
 - README içeriğini inceleyerek geri bildirim verdi.
 - Sprint planlamasının hızlandırılması konusunda ekip koordinasyonuna katkı sağladı.
 
-Yusuf Yıldırım (Developer)
-
-Tamamlanan:
-- Görev dağılımını onayladı.
-- GitHub kullanıcı bilgisini paylaşarak projeye dahil oldu.
-
 Yiğit Emir Saatçi (Developer)
 
 Tamamlanan:
 - Görev dağılımını onayladı.
 - GitHub kullanıcı adını paylaşarak projeye dahil oldu.
 
-Sati Bıldırcın (Developer)
-
-Tamamlanan:
-- GitHub kullanıcı adını paylaştı.
-- Yoğunluğu nedeniyle geliştirmelere sonraki günlerde aktif olarak katılacağını belirtti.
 
 Günlük Özet:
 Sprint 1 kapsamındaki görevler ekip üyelerine dengeli şekilde dağıtılmış, tüm ekip üyeleri GitHub reposuna eklenmiş ve Sprint Board hazırlıkları tamamlanmıştır.
@@ -147,54 +131,147 @@ Sprint 1 kapsamında planlanan dokümantasyon çalışmaları, GitHub organizasy
 =================================================================
 
 16 Temmuz 2026 – Daily Scrum 5: AI Analiz ve Semantik Eşleştirme Geliştirmeleri
+# Daily Scrum Raporları (08.07.2026 - 18.07.2026)
 
-Yiğit Emir Saatçi (Developer)
+## 08.07.2026
 
-Tamamlanan:
+### Hayrunnisa Kartal
+- Mevcut AI altyapısını analiz ederek `aioutputs.py` ve `ai_service.py` dosyalarındaki response modelleri, multi-agent akışı ve Structured Output mimarisini inceledi.
+- CV yükleme sırasında oluşan `502 Bad Gateway` hatasının nedenini araştırdı.
+- OpenAI ile `httpx` paketleri arasındaki sürüm uyumsuzluklarını analiz etti.
+- Google Gemini'ye geçiş için mevcut AI mimarisinin teknik analizini gerçekleştirdi.
+
+### Yiğit Emir Saatçi
 - OpenAI ve LangChain SDK entegrasyonunu tamamladı.
-- CV analizi için 100 puanlık değerlendirme sistemine sahip v1 system prompt hazırladı.
+- CV analizi için 100 puanlık değerlendirme sistemine sahip v1 system promptunu hazırladı.
 - Yapay zekâ yanıtlarının doğrulanması için JSON Output Parser entegrasyonunu gerçekleştirdi.
-- ATS analizi için 100 puanlık ayrıntılı değerlendirme rubriği oluşturdu.
-- ATS skorlarını şema seviyesinde 0–100 aralığıyla sınırlandırdı.
-- CV ve iş ilanlarının OpenAI Embeddings ile vektörleştirilmesini sağladı.
+
+### Utku Akkuşoğlu
+- Tüm analiz promptları, çıktı şemaları ve arayüz metinlerini Türkçeleştirdi.
+- Türkçe karakter sorunlarını giderdi.
+- Tema sistemini Teal-Cyan Gradient yapısına geçirdi.
+
+---
+
+## 09.07.2026
+
+### Hayrunnisa Kartal
+- Google Gemini (`google-genai`) SDK entegrasyonuna başladı.
+- `get_gemini_client()` fonksiyonunu geliştirerek singleton istemci yapısını oluşturdu.
+- `config.py` dosyasına `GEMINI_API_KEY` ve `GEMINI_MODEL` ayarlarını ekledi.
+- `.env` yapılandırmasını Gemini ile uyumlu hale getirdi.
+
+### Yiğit Emir Saatçi
+- ATS analizi için 100 puanlık ayrıntılı değerlendirme rubriğini oluşturdu.
+- ATS skorlarını şema seviyesinde `0-100` aralığıyla sınırlandırdı.
+- CV ve iş ilanlarını OpenAI Embeddings kullanarak vektörleştirdi.
+
+### Utku Akkuşoğlu
+- Premium buton sınıflarını (Primary, Secondary, Danger) oluşturdu.
+- Tarayıcı otomatik doldurma kaynaklı CSS sorunlarını giderdi.
+- Navbar kullanıcı adına hover efekti ekledi.
+
+---
+
+## 10.07.2026
+
+### Hayrunnisa Kartal
+- OpenAI istemci yapısını Gemini `client.models.generate_content()` mimarisine taşıdı.
+- Structured Output desteğini `GenerateContentConfig(response_schema=...)` ile entegre etti.
+- AI çıktılarının mevcut Pydantic modellere dönüştürülmesini sağlayarak API sözleşmesini korudu.
+- `ai_service.py` dosyasını Gemini mimarisine göre yeniden düzenledi.
+
+### Yiğit Emir Saatçi
 - Kosinüs benzerliğine dayalı semantik eşleştirme algoritmasını geliştirdi.
-- Açıklanabilir anahtar kelime ve yetkinlik karşılaştırması ekledi.
-- AI, embedding ve yetkinlik örtüşmesi skorlarını birleştiren değerlendirme sistemi oluşturdu.
-- Recruiter değerlendirmesini ATS ve iş eşleştirme sonuçlarını kullanan bir LangChain zincirine dönüştürdü.
-- Geliştirmeler için hazırlanan 16 backend testinin tamamını başarıyla çalıştırdı.
-- Son ekip değişiklikleriyle kodları birleştirerek güncel main dalına aktardı.
+- Açıklanabilir anahtar kelime ve yetkinlik karşılaştırmasını ekledi.
+- AI, embedding ve yetkinlik örtüşmesi skorlarını birleştiren değerlendirme sistemini oluşturdu.
 
-Sonraki Adımlar:
-- Gerçek OpenAI API anahtarıyla uçtan uca canlı analiz testlerini gerçekleştirmek.
-- Entegre edilen AI modüllerinin uygulama içerisindeki sonuçlarını kontrol etmek.
+### Utku Akkuşoğlu
+- Eski `window.confirm` yapısını animasyonlu Silme Onay Modalı ile değiştirdi.
+- `JobPost` ve `JobMatch` veritabanı tablolarını oluşturdu.
+- İlgili API uç noktalarını (`POST`, `GET`, `MATCH`) geliştirdi.
 
-Engeller:
-- Herhangi bir engel bulunmamaktadır.
+---
 
-Utku Akkuşoğlu (Product Owner & Developer)
+## 11.07.2026
 
-Tamamlanan:
-- Tüm analiz promptları, çıktı şemaları ve arayüz metinlerini Türkçeleştirdi ve Türkçe karakter sorunlarını giderdi.
-- Tema sistemini Teal-Cyan Gradient yapısına geçirdi ve 3 yeni premium buton sınıfı (primary, secondary, danger) oluşturdu.
-- Tarayıcı otomatik doldurma form arka plan hatalarını CSS ile giderdi ve navbar kullanıcı ismine hover efekti ekledi.
-- Eski window.confirm yapısını animasyonlu "Silme Onay Modalı" ile değiştirdi.
-- JobPost ve JobMatch veritabanı tablolarını, Pydantic şemalarını ve ilgili API uç noktalarını (POST, GET, match) yazdı.
-- Arayüze "İş İlanı Eşleştirme" sekmesini ve LinkedIn (Trendyol, Aselsan, Getir) hızlı ilan doldurma özelliklerini entegre etti.
-- İş ilanı seçimi için özel animasyonlu ve dışarıya tıklayınca kapanan React Dropdown bileşeni geliştirdi.
-- CV yüklendiğinde 1 saniyede yanıt dönen ve analizleri arka planda (BackgroundTasks) çalıştıran kademeli güncelleme mimarisini kurdu.
-- Frontend'de 3 saniyede bir polling yapan, renk geçişli ve aşamalı İlerleme Çubuğu (Progress Bar) oluşturdu.
-- Mülakat simülatörü için ChatSession ve ChatMessage veritabanı tablolarını kurdu.
-- Gemini API'sine mülakat geçmişini context olarak besleyerek İK Yöneticisi rolüyle mülakat yapan yapay zeka entegrasyonunu tamamladı.
-- JWT token doğrulama destekli WS /api/chat/ws/{session_id} WebSocket uç noktasını kurdu ve interaktif chat arayüzünü geliştirdi.
-- GET /me ve PUT /me uç noktalarını yazdı ve Profil ve Ayarlar sekmesine bağladı.
-- Kullanıcıların önceden yüklediği geçmiş CV'leri veritabanında tutma ve sol menüde (Sidebar) listeleme özelliğini geliştirdi.
-- Geçmiş CV silme (DELETE /resume/{id}) ve cascade silme işlemlerini tamamlayarak arayüzdeki "✕" butonuna bağladı.
-- Gereksiz dosyaları docker build sürecinden çıkarmak için .dockerignore yapılandırdı ve tüm konteynerleri başarıyla yeniden derledi.
-- Takım içi kod çakışmalarını önleyerek backend ve frontend bileşenlerini main branch'te sorunsuz şekilde merge etti.
+### Hayrunnisa Kartal
+- PostgreSQL tarafındaki `offset-naive / offset-aware datetime` hatasını analiz etti.
+- `created_at` alanını `datetime.utcnow()` kullanacak şekilde güncelleyerek problemi kalıcı olarak çözdü.
+- Sistem promptlarını güncelleyerek AI analizlerinin tamamen Türkçe üretilmesini sağladı.
+- Türkçe rapor çıktılarının doğruluğunu test etti.
 
-Sonraki Adımlar:
-- İş ilanı eşleştirme ve mülakat sisteminin uçtan uca testlerine destek olmak.
-- Kullanıcı geri bildirimlerine göre UI/UX iyileştirmelerine devam etmek.
+### Yiğit Emir Saatçi
+- Recruiter değerlendirmesini ATS ve iş eşleştirme sonuçlarını kullanan LangChain zincirine dönüştürdü.
 
-Engeller:
-- Herhangi bir engel bulunmamaktadır.
+### Utku Akkuşoğlu
+- İş İlanı Eşleştirme sekmesini geliştirdi.
+- LinkedIn (Trendyol, Aselsan, Getir) hızlı ilan doldurma özelliklerini entegre etti.
+- React Dropdown bileşenini geliştirdi.
+
+---
+
+## 14.07.2026
+
+### Hayrunnisa Kartal
+- Kullanıcı profili ve ayarlar sayfasındaki kullanım istatistikleri için backend düzenlemelerini gerçekleştirdi.
+- Geçmiş CV kayıtlarının yönetimi ve silinmesi süreçlerinde iyileştirmeler yaptı.
+- Cascade delete yapısını test ederek veri bütünlüğünü doğruladı.
+
+### Yiğit Emir Saatçi
+- Hazırlanan 16 backend testinin tamamını başarıyla çalıştırdı.
+- AI modüllerinin doğruluğunu test ederek sonuçları doğruladı.
+
+### Utku Akkuşoğlu
+- CV analizlerinin arka planda (`BackgroundTasks`) çalışmasını sağlayan mimariyi geliştirdi.
+- Frontend tarafında polling mekanizmasını oluşturdu.
+- Aşamalı Progress Bar bileşenini geliştirdi.
+
+---
+
+## 16.07.2026
+
+### Hayrunnisa Kartal
+- Gemini entegrasyonu sonrasında AI servislerinin uçtan uca testlerini gerçekleştirdi.
+- Frontend ve backend arasındaki API uyumluluğunu doğruladı.
+- Kod düzenlemeleri ve refaktör çalışmaları yaparak servislerin bakımını kolaylaştırdı.
+- `feature/resume-parser` branch'inde geliştirmelerin kararlı çalıştığını doğruladı.
+
+### Yiğit Emir Saatçi
+- Gerçek OpenAI API anahtarıyla yapılacak canlı analiz testleri için sistemi hazır hale getirdi.
+- AI modüllerinin uygulama içerisindeki sonuçlarını kontrol etti.
+
+### Utku Akkuşoğlu
+- `ChatSession` ve `ChatMessage` veritabanı tablolarını geliştirdi.
+- Gemini destekli mülakat simülatörünü tamamladı.
+- JWT doğrulamalı WebSocket tabanlı canlı sohbet altyapısını geliştirdi.
+
+---
+
+## 17.07.2026
+
+### Hayrunnisa Kartal
+- `feature/resume-parser` branch'indeki tüm geliştirmeleri son kez test etti.
+- Kod düzenlemeleri ve dokümantasyon çalışmalarını tamamladı.
+- Sprint kapanışı öncesinde son kontrolleri gerçekleştirdi.
+
+### Yiğit Emir Saatçi
+- Son ekip değişikliklerini kendi geliştirmeleriyle birleştirerek güncel `main` dalına aktardı.
+
+### Utku Akkuşoğlu
+- `GET /me` ve `PUT /me` uç noktalarını geliştirerek Profil ve Ayarlar sayfasına bağladı.
+- Kullanıcıların geçmiş CV'lerini listeleme ve silme özelliklerini tamamladı.
+- `.dockerignore` yapılandırmasını ekleyerek Docker build sürecini optimize etti.
+- Takım içi kod çakışmalarını önleyerek backend ve frontend bileşenlerini `main` branch'te sorunsuz şekilde merge etti.
+
+---
+
+## 18.07.2026
+
+### Hayrunnisa Kartal
+- Sprint boyunca gerçekleştirilen geliştirmeleri derleyerek Sprint Review raporunu hazırladı.
+- Sprint Retrospective raporunu oluşturdu.
+- Günlük Scrum kayıtlarını düzenledi.
+- Sprint dokümantasyonunu tamamladı.
+- Ekip tarafından gerçekleştirilen geliştirmeleri derleyerek proje çıktılarının raporlanmasını sağladı.
+- Sprint kapanış dokümanlarını hazırlayarak sprinti başarıyla tamamladı.
