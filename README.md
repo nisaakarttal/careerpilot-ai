@@ -285,11 +285,25 @@ Bu sprint boyunca **CareerPilot AI** projesinde yapay zekâ altyapısı, sistem 
 **Kayıt Sayfası**
 ![Kayıt Sayfası](assets/kayit.png)
 
+**Ana Sayfa**
+![Ana Sayfa](assets/anasayfa.png)
+
 **CV Yükleme**
 ![CV Yükleme](assets/cv-yükleme.png)
 
-**Ana Sayfa**
-![Ana Sayfa](assets/anasayfa.png)
+**CV Analizleri**
+![CV Analizleri](assets/cv1.png)
+
+![CV Analizleri](assets/cv2.png)
+
+![CV Analizleri](assets/cv3.png)
+
+![CV Analizleri](assets/cv4.png)
+
+![CV Analizleri](assets/cv5.png)
+
+![CV Analizleri](assets/cv6.png)
+
 
 ---
 
