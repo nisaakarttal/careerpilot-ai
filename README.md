@@ -17,6 +17,8 @@ Ekibimiz Yapay Zeka ve Teknoloji Akademisi bünyesinde çapraz fonksiyonlu (Cros
 | **Scrum Master (Communication Lead)** | **Hayrunnisa Kartal**<br>Scrum Master & AI/Backend Developer |
 | **Product Owner (Deputy Communication Lead)** | **Utku Akkuşoğlu**<br>Product Owner & Full Stack Developer |
 | **Developer** | **Yiğit Emir Saatçi**<br>Full Stack Developer & AI Developer |
+| **Developer** | **Yusuf Yıldırım**<br>Full Stack Developer, UI/UX & API Integration |
+| **Developer** | **Sati Bıldırcın**<br>Full Stack Developer, Testing, Deployment & System Optimization |
 
 --- 
 
@@ -348,7 +350,16 @@ Bu sprint boyunca **CareerPilot AI** projesinde yapay zekâ altyapısı, sistem 
 ![Daily Scrum](assets/daily-scrum.txt)
 
 ### Sprint 3 (20 Temmuz 2026 – 02 Ağustos 2026)
-Planlandı.
+
+**Sati Bıldırcın - Test, Dağıtım ve Sistem Optimizasyonu**
+
+- Pull request ve `main` güncellemelerinde backend testlerini otomatik çalıştıran GitHub Actions CI iş akışı hazırlandı.
+- Next.js production build kontrolü CI sürecine eklendi.
+- Backend ve frontend Docker imajları için smoke build kontrolü eklendi.
+- Aynı branch için eski CI çalışmasını iptal eden concurrency ayarıyla gereksiz kaynak tüketimi azaltıldı.
+- Sağlık endpoint'i için temel regresyon testi eklendi.
+
+**Sonraki adımlar:** staging deployment, performans/yük testleri ve AI servisleri için merkezi monitoring/loglama.
 
 ## Lisans
 Bu proje Yapay Zeka ve Teknoloji Akademisi 5. Dönem Bootcamp kapsamında eğitim amacıyla geliştirilmektedir.
