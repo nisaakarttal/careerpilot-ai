@@ -17,7 +17,6 @@ Ekibimiz Yapay Zeka ve Teknoloji Akademisi bünyesinde çapraz fonksiyonlu (Cros
 | **Scrum Master (Communication Lead)** | **Hayrunnisa Kartal**<br>Scrum Master & AI/Backend Developer |
 | **Product Owner (Deputy Communication Lead)** | **Utku Akkuşoğlu**<br>Product Owner & Full Stack Developer |
 | **Developer** | **Yiğit Emir Saatçi**<br>Full Stack Developer & AI Developer |
-| **Developer** | **Yusuf Yıldırım**<br>Full Stack Developer, UI/UX & API Integration |
 | **Developer** | **Sati Bıldırcın**<br>Full Stack Developer, Testing, Deployment & System Optimization |
 
 --- 
