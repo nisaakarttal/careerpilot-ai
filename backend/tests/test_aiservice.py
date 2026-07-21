@@ -2,11 +2,12 @@ import unittest
 from unittest.mock import patch
 
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
+from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.runnables import RunnableSequence
 from langchain_openai import ChatOpenAI
 
-from app.schemas.aioutputs import ATSReport, RecruiterReport
+from app.schemas.aioutputs import ATSReport, InterviewEvaluation, RecruiterReport
 from app.schemas.job import (
     AIJobMatchDetail,
     JobMatchDetail,
@@ -52,6 +53,19 @@ def make_job_match_report() -> AIJobMatchDetail:
         missing_skills=["Docker"],
         improvements=["Docker deneyimi edinildikten sonra CV'ye kanıtıyla eklenmeli."],
         match_summary="Temel teknik eşleşme var, ancak bazı gereksinimler eksik.",
+    )
+
+
+def make_interview_evaluation() -> InterviewEvaluation:
+    return InterviewEvaluation(
+        overall_score=78,
+        communication_score=82,
+        technical_depth_score=75,
+        evidence_score=72,
+        strengths=["Yanıtlarını anlaşılır biçimde yapılandırıyor."],
+        improvement_areas=["Teknik sonuçları sayısal kanıtlarla desteklemeli."],
+        recommended_answer_framework="STAR yöntemiyle durum, görev, aksiyon ve sonucu anlat.",
+        evaluation_summary="İletişimi güçlü, teknik kanıtlarını geliştirmesi gereken bir aday.",
     )
 
 
@@ -188,6 +202,67 @@ class AIServiceTests(unittest.TestCase):
 
         self.assertIn("İlk projenizi", result)
         get_model.assert_called_once_with(temperature=0.7)
+
+    def test_chat_memory_keeps_only_recent_supported_messages(self):
+        history = [
+            {"role": "system", "content": "Bu mesaj prompta girmemeli."},
+            {"role": "user", "content": "İlk cevap"},
+            {"role": "model", "content": "İlk geri bildirim"},
+            {"role": "user", "content": "Son cevap"},
+        ]
+
+        messages = aiservice._to_langchain_history(history, max_messages=2)
+
+        self.assertEqual(len(messages), 2)
+        self.assertIsInstance(messages[0], AIMessage)
+        self.assertIsInstance(messages[1], HumanMessage)
+        self.assertEqual(messages[1].content, "Son cevap")
+
+    def test_career_coach_uses_shared_langchain_memory_chain(self):
+        fake_model = FakeListChatModel(
+            responses=["Hedeflediğiniz rolü ve zaman planınızı netleştirelim."]
+        )
+
+        with patch(
+            "app.services.aiservice.get_chat_model",
+            return_value=fake_model,
+        ) as get_model:
+            result = aiservice.generate_career_coach_chat_response(
+                "Python ve FastAPI projeleri geliştirdim.",
+                history=[
+                    {"role": "user", "content": "Backend alanında ilerlemek istiyorum."}
+                ],
+            )
+
+        self.assertIn("Hedeflediğiniz rolü", result)
+        get_model.assert_called_once_with(temperature=0.5)
+
+    def test_assistant_chain_rejects_unknown_mode(self):
+        with self.assertRaisesRegex(ValueError, "Desteklenmeyen asistan türü"):
+            aiservice.build_assistant_chat_chain("unknown")
+
+    @patch("app.services.aiservice._parse_structured")
+    def test_interview_completion_uses_cv_and_conversation(self, parse_structured):
+        parse_structured.return_value = make_interview_evaluation()
+
+        result = aiservice.generate_session_completion(
+            "interview",
+            "Python ve FastAPI projeleri geliştirdim.",
+            [
+                {"role": "model", "content": "En güçlü projenizi anlatın."},
+                {"role": "user", "content": "Bir REST API geliştirdim."},
+            ],
+        )
+
+        self.assertEqual(result.overall_score, 78)
+        call_kwargs = parse_structured.call_args.kwargs
+        self.assertIs(call_kwargs["response_model"], InterviewEvaluation)
+        self.assertIn("ADAY: Bir REST API geliştirdim.", call_kwargs["user_prompt"])
+        self.assertIn("Python ve FastAPI", call_kwargs["user_prompt"])
+
+    def test_session_completion_rejects_unknown_mode(self):
+        with self.assertRaisesRegex(ValueError, "Desteklenmeyen asistan türü"):
+            aiservice.generate_session_completion("unknown", "CV", [])
 
     @patch("app.services.aiservice.generate_recruiter_report")
     @patch("app.services.aiservice.generate_job_match_report")

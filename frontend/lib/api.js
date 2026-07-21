@@ -145,15 +145,64 @@ export async function getJobMatches(jobId) {
   }
 }
 
-export async function startChatSession(resumeId) {
+export async function startChatSession(resumeId, assistantType = "interview") {
   try {
     const response = await apiClient.post("/chat/sessions", {
       resume_id: resumeId,
+      assistant_type: assistantType,
     });
     return response.data;
   } catch (error) {
     throw new Error(extractErrorMessage(error));
   }
+}
+
+export async function listChatSessions({
+  resumeId,
+  assistantType,
+  status,
+} = {}) {
+  try {
+    const response = await apiClient.get("/chat/sessions", {
+      params: {
+        resume_id: resumeId,
+        assistant_type: assistantType,
+        status,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function completeChatSession(sessionId) {
+  try {
+    const response = await apiClient.post(`/chat/sessions/${sessionId}/complete`);
+    return response.data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export async function deleteChatSession(sessionId) {
+  try {
+    await apiClient.delete(`/chat/sessions/${sessionId}`);
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
+export function getChatWebSocketUrl(sessionId, token) {
+  if (typeof window === "undefined") return "";
+
+  const url = new URL(API_BASE_URL, window.location.origin);
+  const apiPath = url.pathname.replace(/\/$/, "");
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  url.pathname = `${apiPath}/chat/ws/${sessionId}`;
+  url.search = "";
+  url.searchParams.set("token", token);
+  return url.toString();
 }
 
 export async function getSessionMessages(sessionId) {
@@ -195,4 +244,3 @@ export async function updateMyProfile(payload) {
 }
 
 export default apiClient;
-

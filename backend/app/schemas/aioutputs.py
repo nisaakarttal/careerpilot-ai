@@ -86,6 +86,35 @@ class CoachReport(BaseModel):
     coach_summary: str = Field(description="Genel kariyer koçu özeti ve cesaretlendirme")
 
 
+class InterviewEvaluation(BaseModel):
+    overall_score: int = Field(
+        ge=0,
+        le=100,
+        description="Mülakat performansının 0-100 arası genel puanı",
+    )
+    communication_score: int = Field(
+        ge=0,
+        le=100,
+        description="Yanıtların açıklığı ve iletişim kalitesi",
+    )
+    technical_depth_score: int = Field(
+        ge=0,
+        le=100,
+        description="Teknik yanıtların derinliği ve doğrulanabilirliği",
+    )
+    evidence_score: int = Field(
+        ge=0,
+        le=100,
+        description="Yanıtların somut örnek ve sonuçlarla desteklenme düzeyi",
+    )
+    strengths: List[str] = Field(description="Görüşmede gösterilen güçlü yönler")
+    improvement_areas: List[str] = Field(description="Geliştirilmesi gereken yanıt alanları")
+    recommended_answer_framework: str = Field(
+        description="Adayın sonraki görüşmelerde kullanabileceği yanıt çerçevesi"
+    )
+    evaluation_summary: str = Field(description="Kısa ve kanıta dayalı mülakat özeti")
+
+
 class MasterCareerPilotOutput(BaseModel):
     general_report: GeneralCVReport
     ats_report: ATSReport

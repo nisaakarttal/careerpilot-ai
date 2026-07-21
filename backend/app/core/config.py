@@ -35,6 +35,16 @@ class Settings(BaseSettings):
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash-latest")
     GEMINI_EMBEDDING_MODEL: str = os.getenv("GEMINI_EMBEDDING_MODEL", "models/text-embedding-004")
 
+    # Keep recent messages in the prompt while the full conversation remains in PostgreSQL.
+    CHAT_MEMORY_MAX_MESSAGES: int = max(
+        1,
+        int(os.getenv("CHAT_MEMORY_MAX_MESSAGES", "12")),
+    )
+    CHAT_COMPLETION_MAX_MESSAGES: int = max(
+        CHAT_MEMORY_MAX_MESSAGES,
+        int(os.getenv("CHAT_COMPLETION_MAX_MESSAGES", "40")),
+    )
+
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "http://localhost:3000")
 
     MAX_UPLOAD_SIZE_MB: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))

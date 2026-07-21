@@ -1,9 +1,10 @@
-from typing import TypeVar
+from typing import Literal, TypeVar
 
 from fastapi import HTTPException, status
 from langchain_core.exceptions import OutputParserException
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.output_parsers import PydanticOutputParser
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -15,6 +16,7 @@ from app.schemas.aioutputs import (
     ATSReport,
     CoachReport,
     GeneralCVReport,
+    InterviewEvaluation,
     RecruiterReport,
 )
 from app.schemas.job import AIJobMatchDetail, JobMatchDetail
@@ -26,6 +28,7 @@ from app.services.matching import (
 )
 
 ReportT = TypeVar("ReportT", bound=BaseModel)
+AssistantType = Literal["interview", "career_coach"]
 _chat_models: dict[str, Runnable] = {}
 
 
@@ -341,56 +344,210 @@ noktalara odaklanan ilk soruyu sorarak başla. Adayın verdiği her cevaba göre
 gerektiğinde cevabı derinleştiren tek bir takip sorusu sor. Bir kerede birden fazla soru sorma. Profesyonel, \
 dürüst ve kurumsal bir dil kullan. Tüm konuşmayı Türkçe gerçekleştir ve doğrudan adayla konuş."""
 
+CAREER_COACH_CHAT_SYSTEM_PROMPT = """Sen adayın yüklediği özgeçmişe dayalı, etkileşimli bir AI kariyer \
+koçusun. Adayın hedefini netleştir, CV'deki doğrulanabilir güçlü yönleri ve gelişim alanlarını kullanarak \
+ölçülebilir aksiyonlar öner. Önerileri 0-1 ay, 1-3 ay, 3-6 ay ve gerektiğinde 6-12 ay zaman dilimlerine bağla. \
+Bir mesajda en fazla bir netleştirici soru sor. Adayın CV'sinde bulunmayan deneyim veya yetkinlikleri varmış \
+gibi kabul etme; eksik bir bilgi kararını etkiliyorsa bunu açıkça sor. Tüm konuşmayı Türkçe, destekleyici ama \
+gerçekçi bir dille yürüt."""
+
+INTERVIEW_EVALUATION_SYSTEM_PROMPT = """Sen tamamlanmış bir mülakat simülasyonunu değerlendiren kıdemli \
+teknik işe alım uzmanısın. Yalnızca adayın özgeçmişi ve konuşma dökümündeki cevaplarını kanıt olarak kullan. \
+İletişim, teknik derinlik ve somut örnek kullanımı için ayrı puanlar ver. Adayın cevaplamadığı veya konuşmada \
+ölçülemeyen alanlarda varsayım yapma; bunu gelişim alanı olarak belirt. Geri bildirimi yapıcı, net ve Türkçe üret."""
+
+CAREER_COACH_COMPLETION_SYSTEM_PROMPT = """Sen tamamlanmış kariyer koçluğu görüşmesini eylem planına dönüştüren \
+deneyimli bir kariyer koçusun. Özgeçmişteki doğrulanabilir kanıtları ve adayın konuşmada açıkladığı hedefleri \
+birlikte kullan. Hedefi konuşmada netleşmediyse bunu açıkça belirt. Yol haritasını ölçülebilir sonuçlarla \
+0-1 ay, 1-3 ay, 3-6 ay ve gerektiğinde 6-12 ay dönemlerine ayır. Tüm çıktıyı Türkçe üret."""
+
+ASSISTANT_SYSTEM_PROMPTS: dict[AssistantType, str] = {
+    "interview": INTERVIEWER_SYSTEM_PROMPT,
+    "career_coach": CAREER_COACH_CHAT_SYSTEM_PROMPT,
+}
+
+ASSISTANT_INITIAL_MESSAGES: dict[AssistantType, str] = {
+    "interview": (
+        "Özgeçmişimi incele, mülakat simülasyonunu başlat ve ilk soruyu sor."
+    ),
+    "career_coach": (
+        "Özgeçmişimi incele, kariyer durumumu kısaca değerlendir ve hedefimi "
+        "netleştirmek için ilk sorunu sor."
+    ),
+}
+
+ASSISTANT_TEMPERATURES: dict[AssistantType, float] = {
+    "interview": 0.7,
+    "career_coach": 0.5,
+}
+
+
+def _to_langchain_history(
+    history: list[dict],
+    max_messages: int | None = None,
+) -> list[BaseMessage]:
+    """Convert persisted messages to a safe, bounded LangChain chat history."""
+    message_limit = (
+        settings.CHAT_MEMORY_MAX_MESSAGES
+        if max_messages is None
+        else max(0, max_messages)
+    )
+    converted: list[BaseMessage] = []
+
+    for message in history:
+        role = str(message.get("role", "")).lower()
+        content = str(message.get("content", "")).strip()
+        if not content:
+            continue
+        if role in {"user", "human"}:
+            converted.append(HumanMessage(content=content))
+        elif role in {"model", "assistant", "ai"}:
+            converted.append(AIMessage(content=content))
+
+    if message_limit == 0:
+        return []
+    return converted[-message_limit:]
+
+
+def build_assistant_chat_chain(
+    assistant_type: AssistantType,
+    model: Runnable | None = None,
+) -> Runnable:
+    """Build the shared LCEL chain used by interview and career-coach chats."""
+    if assistant_type not in ASSISTANT_SYSTEM_PROMPTS:
+        raise ValueError(f"Desteklenmeyen asistan türü: {assistant_type}")
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                f"{ASSISTANT_SYSTEM_PROMPTS[assistant_type]}\n\n"
+                "----- ADAYIN ÖZGEÇMİŞ METNİ -----\n"
+                "{resume_text}\n"
+                "----- ÖZGEÇMİŞ METNİ BİTİŞİ -----",
+            ),
+            MessagesPlaceholder(variable_name="history"),
+            ("human", "{message}"),
+        ]
+    )
+    chat_model = model or get_chat_model(
+        temperature=ASSISTANT_TEMPERATURES[assistant_type]
+    )
+    return prompt | chat_model
+
+
+def generate_assistant_chat_response(
+    assistant_type: AssistantType,
+    resume_text: str,
+    history: list[dict],
+    new_message: str | None = None,
+) -> str:
+    """Generate a mode-specific response with a bounded window of persisted memory."""
+    if assistant_type not in ASSISTANT_SYSTEM_PROMPTS:
+        raise ValueError(f"Desteklenmeyen asistan türü: {assistant_type}")
+
+    chat_history = _to_langchain_history(history)
+
+    if new_message and new_message.strip():
+        current_message = new_message.strip()
+    elif chat_history and isinstance(chat_history[-1], HumanMessage):
+        current_message = str(chat_history.pop().content)
+    elif not chat_history:
+        current_message = ASSISTANT_INITIAL_MESSAGES[assistant_type]
+    else:
+        current_message = "Sohbete kaldığın yerden devam et."
+
+    try:
+        chain = build_assistant_chat_chain(assistant_type)
+        response = chain.invoke(
+            {
+                "resume_text": resume_text,
+                "history": chat_history,
+                "message": current_message,
+            }
+        )
+    except HTTPException:
+        raise
+    except APIError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"AI asistan yanıtı üretilemedi: {str(exc)}",
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"LangChain konuşma zinciri çalıştırılamadı: {str(exc)}",
+        ) from exc
+
+    return response.text or str(response.content)
+
 
 def generate_interview_chat_response(
     resume_text: str,
     history: list[dict],
     new_message: str | None = None,
 ) -> str:
-    prompt_messages: list[tuple[str, str]] = [
-        (
-            "system",
-            f"{INTERVIEWER_SYSTEM_PROMPT}\n\n"
-            "----- ADAYIN ÖZGEÇMİŞ METNİ -----\n"
-            f"{resume_text}\n"
-            "----- ÖZGEÇMİŞ METNİ BİTİŞİ -----",
-        )
-    ]
+    return generate_assistant_chat_response(
+        "interview",
+        resume_text,
+        history,
+        new_message,
+    )
 
+
+def generate_career_coach_chat_response(
+    resume_text: str,
+    history: list[dict],
+    new_message: str | None = None,
+) -> str:
+    return generate_assistant_chat_response(
+        "career_coach",
+        resume_text,
+        history,
+        new_message,
+    )
+
+
+def _build_session_completion_prompt(
+    resume_text: str,
+    history: list[dict],
+) -> str:
+    transcript_lines = []
     for message in history:
-        role = "human" if message["role"] == "user" else "ai"
-        prompt_messages.append((role, message["content"]))
+        role = "ADAY" if message.get("role") == "user" else "AI ASİSTAN"
+        content = str(message.get("content", "")).strip()
+        if content:
+            transcript_lines.append(f"{role}: {content}")
 
-    if new_message:
-        prompt_messages.append(("human", new_message))
-    elif not history:
-        prompt_messages.append(
-            (
-                "human",
-                "Özgeçmişimi incele, mülakat simülasyonunu başlat ve ilk soruyu sor.",
-            )
-        )
+    transcript = "\n".join(transcript_lines) or "Konuşma kaydı bulunmuyor."
+    return (
+        f"{_build_user_prompt(resume_text)}\n\n"
+        "----- KONUŞMA DÖKÜMÜ BAŞLANGICI -----\n"
+        f"{transcript}\n"
+        "----- KONUŞMA DÖKÜMÜ BİTİŞİ -----"
+    )
 
-    try:
-        chain = (
-            ChatPromptTemplate.from_messages(prompt_messages)
-            | get_chat_model(temperature=0.7)
-        )
-        response = chain.invoke({})
-    except HTTPException:
-        raise
-    except APIError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"AI mülakat analizi başarısız oldu: {str(exc)}",
-        ) from exc
-    except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Mülakat zinciri çalıştırılamadı: {str(exc)}",
-        ) from exc
 
-    return response.text or str(response.content)
+def generate_session_completion(
+    assistant_type: AssistantType,
+    resume_text: str,
+    history: list[dict],
+) -> InterviewEvaluation | CoachReport:
+    if assistant_type == "interview":
+        system_prompt = INTERVIEW_EVALUATION_SYSTEM_PROMPT
+        response_model = InterviewEvaluation
+    elif assistant_type == "career_coach":
+        system_prompt = CAREER_COACH_COMPLETION_SYSTEM_PROMPT
+        response_model = CoachReport
+    else:
+        raise ValueError(f"Desteklenmeyen asistan türü: {assistant_type}")
+
+    return _parse_structured(
+        system_prompt=system_prompt,
+        user_prompt=_build_session_completion_prompt(resume_text, history),
+        response_model=response_model,
+        temperature=0.2,
+    )
 
 
 def generate_job_match_report(

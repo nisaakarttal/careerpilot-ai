@@ -517,4 +517,43 @@ Engeller:
 
 Günlük Özet:
 Otomatik test, production build ve Docker imaj kontrollerini kapsayan CI altyapısı hazırlanmış; Sati Bıldırcın'ın test, dağıtım ve sistem optimizasyonu sorumlulukları doğrultusundaki ilk Sprint 3 geliştirmeleri kod incelemesine hazır hale getirilmiştir.
-```
+
+=================================================================
+
+SPRINT 3 - DAILY SCRUM (GÜNLÜK DURUM RAPORLARI)
+
+=================================================================
+
+21 Temmuz 2026 – Daily Scrum 1: AI Career Coach, Interview Assistant ve LangChain Memory
+
+Yiğit Emir Saatçi (Developer)
+
+Tamamlanan:
+- AI Career Coach ve AI Interview Assistant için ayrı sistem promptları hazırlayarak ortak LangChain konuşma zincirine entegre etti.
+- OpenAI ve Gemini sağlayıcılarını destekleyen AI servis yapısını sohbet asistanları için genişletti.
+- Interview Assistant görüşmelerinin başlatılması, mesaj gönderimi ve tamamlanması için REST API yaşam döngüsünü geliştirdi.
+- Mülakat sonunda genel başarı, iletişim, teknik derinlik ve örnek kullanımı puanlarını içeren yapılandırılmış değerlendirme raporunu oluşturdu.
+- Career Coach görüşmelerinin kullanıcının CV'si ve kariyer hedefleri üzerinden yürütülmesini sağladı.
+- Career Coach görüşmesi sonunda hedeflere ve konuşma geçmişine göre güncellenmiş kariyer yol haritası üretilmesini sağladı.
+- LangChain konuşma hafızasını PostgreSQL'deki kalıcı mesaj geçmişiyle entegre ederek modele gönderilen geçmişi yapılandırılabilir mesaj penceresiyle sınırlandırdı.
+- Chat oturumlarına asistan türü, oturum durumu, sonuç verisi ve tamamlanma zamanı alanlarını ekledi; geriye uyumlu PostgreSQL migration'ını hazırladı.
+- Aktif sohbetlerin listelenmesini, sayfa yenilendiğinde kaldığı yerden devam etmesini ve konuşma geçmişinin yeniden yüklenmesini sağladı.
+- Tamamlanan oturumlara mesaj gönderimini engelledi; oturum sahipliği, silme ve kullanıcı yetkilendirme kontrollerini geliştirdi.
+- REST API ve WebSocket mesajlaşma akışlarını ortak AI servisleri ve kalıcı sohbet geçmişiyle uyumlu hale getirdi.
+- AI çağrılarını FastAPI event loop'unu bloklamaması için threadpool üzerinden çalıştırdı ve hata mesajlarını güvenli hale getirdi.
+- Dashboard'daki Interview Assistant ve Career Coach ekranlarını ortak ve responsive sohbet bileşeni üzerinden çalışacak şekilde geliştirdi.
+- Frontend API ve WebSocket adreslerinin ortam değişkenlerinden dinamik olarak oluşturulmasını sağladı.
+- PostgreSQL, FastAPI backend ve Next.js frontend servislerini Docker Compose ile birlikte çalışır hale getirdi.
+- Docker Desktop'ı otomatik açan; servisleri başlatma, yeniden başlatma, durum görüntüleme, log izleme ve güvenli durdurma seçenekleri sunan macOS komut dosyasını hazırladı.
+- AI servis, chat şema ve oturum yaşam döngüsü testlerini genişletti; backend testlerini, frontend production build'ini, OpenAPI endpoint'lerini ve Docker servis sağlık kontrollerini doğruladı.
+
+Sonraki Adımlar:
+- Geçerli AI sağlayıcı anahtarıyla uçtan uca kullanıcı kabul testini gerçekleştirmek.
+- Uzun görüşme ve yük testlerini tamamlamak.
+- Değişiklikleri temiz bir pull request ile ekip incelemesine sunmak.
+
+Engeller:
+- Canlı AI görüşmelerinin doğrulanabilmesi için geçerli OpenAI veya Gemini API anahtarı gerekmektedir.
+
+Günlük Özet:
+Sprint 3 kapsamında AI Career Coach, AI Interview Assistant ve LangChain Memory geliştirmeleri tamamlanmış; kalıcı sohbet yönetimi, yapılandırılmış değerlendirme çıktıları, frontend entegrasyonu ve Docker çalışma ortamı test edilerek kullanıcı kabul testine hazır hale getirilmiştir.

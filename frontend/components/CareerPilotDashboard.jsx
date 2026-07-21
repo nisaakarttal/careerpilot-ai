@@ -16,7 +16,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob, startChatSession, getSessionMessages, sendChatMessage, getMyProfile, updateMyProfile, deleteResume } from "@/lib/api";
+import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob, startChatSession, listChatSessions, completeChatSession, getSessionMessages, sendChatMessage, getChatWebSocketUrl, getMyProfile, updateMyProfile, deleteResume } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 
 const TABS = [
@@ -337,19 +337,113 @@ function AtsTab({ resume }) {
 }
 
 
-function InterviewSimulator({ resume, onBack }) {
+const ASSISTANT_UI = {
+  interview: {
+    title: "Yapay Zeka Mülakat Simülatörü",
+    exitLabel: "Simülasyondan Çık",
+    loadingLabel: "Mülakat oturumu başlatılıyor, yapay zeka özgeçmişinizi inceliyor...",
+    typingLabel: "İşe Alım Uzmanı yazıyor...",
+    inputPlaceholder: "Cevabınızı buraya yazın...",
+    completeLabel: "Mülakatı Bitir ve Değerlendir",
+  },
+  career_coach: {
+    title: "AI Kariyer Koçu",
+    exitLabel: "Koç Görüşmesinden Çık",
+    loadingLabel: "Kariyer koçu özgeçmişinizi ve yol haritanızı inceliyor...",
+    typingLabel: "Kariyer Koçu yazıyor...",
+    inputPlaceholder: "Hedefinizi veya sorunuzu yazın...",
+    completeLabel: "Görüşmeyi Bitir ve Planı Oluştur",
+  },
+};
+
+function SessionResultPanel({ assistantType, result, onBack }) {
+  if (assistantType === "interview") {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center flex-wrap gap-4">
+          <h3 className="font-semibold text-lg">Mülakat Değerlendirmesi</h3>
+          <button onClick={onBack} className="cp-btn-primary">Rapora Dön</button>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <KpiCard label="Genel Performans" value={result.overall_score} />
+          <KpiCard label="İletişim" value={result.communication_score} />
+          <KpiCard label="Teknik Derinlik" value={result.technical_depth_score} />
+          <KpiCard label="Somut Kanıt" value={result.evidence_score} />
+        </div>
+        <div className="cp-card p-6">
+          <h3 className="font-semibold mb-2">Değerlendirme Özeti</h3>
+          <p className="text-sm text-[var(--cp-text-dim)]">{result.evaluation_summary}</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="cp-card p-6">
+            <h3 className="font-semibold mb-3 text-emerald-400">Güçlü Yönler</h3>
+            <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+              {result.strengths.map((item, index) => <li key={index}>✓ {item}</li>)}
+            </ul>
+          </div>
+          <div className="cp-card p-6">
+            <h3 className="font-semibold mb-3 text-amber-400">Gelişim Alanları</h3>
+            <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+              {result.improvement_areas.map((item, index) => <li key={index}>→ {item}</li>)}
+            </ul>
+          </div>
+        </div>
+        <div className="cp-card p-6">
+          <h3 className="font-semibold mb-2">Önerilen Cevap Çerçevesi</h3>
+          <p className="text-sm text-[var(--cp-text-dim)]">{result.recommended_answer_framework}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <h3 className="font-semibold text-lg">Güncellenmiş Kariyer Planı</h3>
+        <button onClick={onBack} className="cp-btn-primary">Yol Haritasına Dön</button>
+      </div>
+      <KpiCard label="Kariyer Hazırlık Skoru" value={result.coach_score} />
+      <div className="cp-card p-6">
+        <h3 className="font-semibold mb-2">Kariyer Konumlandırma</h3>
+        <p className="text-sm text-[var(--cp-text-dim)]">{result.career_positioning}</p>
+      </div>
+      <div className="cp-card p-6">
+        <h3 className="font-semibold mb-4">Görüşmeye Göre Yol Haritası</h3>
+        <div className="relative pl-6 border-l-2 border-[var(--cp-border)] space-y-6">
+          {result.roadmap.map((item, index) => (
+            <div key={index} className="relative">
+              <span className="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-[var(--cp-accent)]" />
+              <p className="text-xs uppercase tracking-wide text-[var(--cp-accent-light)] mb-1">{item.timeframe}</p>
+              <p className="text-sm font-medium mb-1">{item.action}</p>
+              <p className="text-sm text-[var(--cp-text-dim)]">{item.expected_outcome}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="cp-card p-6">
+        <h3 className="font-semibold mb-2">Koç Özeti</h3>
+        <p className="text-sm text-[var(--cp-text-dim)]">{result.coach_summary}</p>
+      </div>
+    </div>
+  );
+}
+
+function AssistantChat({ resume, assistantType, onBack }) {
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
   const [sending, setSending] = useState(false);
+  const [completing, setCompleting] = useState(false);
+  const [sessionResult, setSessionResult] = useState(null);
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
+  const ui = ASSISTANT_UI[assistantType];
 
   function connectWebSocket(sessionId) {
     const token = getToken();
-    const wsUrl = `ws://localhost:8000/api/chat/ws/${sessionId}?token=${token}`;
+    const wsUrl = getChatWebSocketUrl(sessionId, token);
     
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
@@ -386,11 +480,21 @@ function InterviewSimulator({ resume, onBack }) {
     setLoading(true);
     setError("");
     try {
-      const sess = await startChatSession(resume.id);
+      const activeSessions = await listChatSessions({
+        resumeId: resume.id,
+        assistantType,
+        status: "active",
+      });
+      const sess = activeSessions[0] || await startChatSession(resume.id, assistantType);
       setSession(sess);
+      setSessionResult(
+        sess.session_result && Object.keys(sess.session_result).length > 0
+          ? sess.session_result
+          : null
+      );
       const msgs = await getSessionMessages(sess.id);
       setMessages(msgs);
-      connectWebSocket(sess.id);
+      if (sess.status === "active") connectWebSocket(sess.id);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -405,7 +509,7 @@ function InterviewSimulator({ resume, onBack }) {
         wsRef.current.close();
       }
     };
-  }, []);
+  }, [assistantType, resume.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -441,27 +545,62 @@ function InterviewSimulator({ resume, onBack }) {
     }
   }
 
+  async function handleComplete() {
+    if (!session || completing || !messages.some((message) => message.role === "user")) return;
+    setCompleting(true);
+    setError("");
+    try {
+      const completedSession = await completeChatSession(session.id);
+      setSession(completedSession);
+      setSessionResult(completedSession.session_result);
+      wsRef.current?.close();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCompleting(false);
+    }
+  }
+
+  if (sessionResult) {
+    return (
+      <SessionResultPanel
+        assistantType={assistantType}
+        result={sessionResult}
+        onBack={onBack}
+      />
+    );
+  }
+
   return (
     <div className="cp-card flex flex-col h-[600px]">
       {/* Header */}
-      <div className="p-4 border-b border-[var(--cp-border)] flex justify-between items-center bg-[var(--cp-panel-light)] rounded-t-xl">
-        <div className="flex items-center gap-2">
+      <div className="p-4 border-b border-[var(--cp-border)] flex flex-wrap gap-3 justify-between items-center bg-[var(--cp-panel-light)] rounded-t-xl">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-          <h4 className="font-semibold text-sm">Yapay Zeka Mülakat Simülatörü</h4>
+          <h4 className="font-semibold text-sm">{ui.title}</h4>
         </div>
-        <button
-          onClick={onBack}
-          className="text-xs text-[var(--cp-text-dim)] hover:text-white border border-[var(--cp-border)] px-3 py-1.5 rounded-lg hover:bg-[var(--cp-panel)] transition-colors"
-        >
-          Simülasyondan Çık
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleComplete}
+            disabled={completing || !messages.some((message) => message.role === "user")}
+            className="text-xs text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10 transition-colors disabled:opacity-40"
+          >
+            {completing ? "Rapor Hazırlanıyor..." : ui.completeLabel}
+          </button>
+          <button
+            onClick={onBack}
+            className="text-xs text-[var(--cp-text-dim)] hover:text-white border border-[var(--cp-border)] px-3 py-1.5 rounded-lg hover:bg-[var(--cp-panel)] transition-colors"
+          >
+            {ui.exitLabel}
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 cp-scrollbar bg-[var(--cp-panel-dark)]/30">
         {loading ? (
           <div className="text-center text-[var(--cp-text-dim)] text-sm py-10 animate-pulse">
-            Mülakat oturumu başlatılıyor, yapay zeka özgeçmişinizi inceliyor...
+            {ui.loadingLabel}
           </div>
         ) : (
           messages.map((msg) => {
@@ -487,7 +626,7 @@ function InterviewSimulator({ resume, onBack }) {
         {sending && (
           <div className="flex justify-start">
             <div className="bg-[var(--cp-panel-light)] border border-[var(--cp-border)] rounded-xl rounded-bl-none px-4 py-3 text-sm text-[var(--cp-text-dim)] italic animate-pulse">
-              İşe Alım Uzmanı yazıyor...
+              {ui.typingLabel}
             </div>
           </div>
         )}
@@ -506,7 +645,7 @@ function InterviewSimulator({ resume, onBack }) {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           disabled={loading || sending || !session}
-          placeholder="Cevabınızı buraya yazın..."
+          placeholder={ui.inputPlaceholder}
           className="flex-1 px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm disabled:opacity-60 bg-[var(--cp-panel-light)] text-white"
         />
         <button
@@ -528,7 +667,13 @@ function InterviewTab({ resume }) {
   const seniorityTone = "neutral";
 
   if (showSimulator) {
-    return <InterviewSimulator resume={resume} onBack={() => setShowSimulator(false)} />;
+    return (
+      <AssistantChat
+        resume={resume}
+        assistantType="interview"
+        onBack={() => setShowSimulator(false)}
+      />
+    );
   }
 
   return (
@@ -627,9 +772,30 @@ function InterviewTab({ resume }) {
 
 function RoadmapTab({ resume }) {
   const coach = resume.coach_analytics;
+  const [showCoach, setShowCoach] = useState(false);
+
+  if (showCoach) {
+    return (
+      <AssistantChat
+        resume={resume}
+        assistantType="career_coach"
+        onBack={() => setShowCoach(false)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <h3 className="font-semibold text-lg">Kişiselleştirilmiş Kariyer Planı</h3>
+        <button
+          onClick={() => setShowCoach(true)}
+          className="px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-indigo-950/20"
+        >
+          <span>🧭</span> AI Kariyer Koçuyla Görüş
+        </button>
+      </div>
+
       <div className="grid md:grid-cols-1 gap-4">
         <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} />
       </div>
@@ -1228,7 +1394,7 @@ function ProfileTab() {
             <span className="text-2xl font-bold text-emerald-400">{profile.total_matches}</span>
           </div>
           <div className="cp-card p-5 text-center">
-            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Mülakat Oturumları</span>
+            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">AI Asistan Oturumları</span>
             <span className="text-2xl font-bold text-pink-400">{profile.total_chats}</span>
           </div>
         </div>
