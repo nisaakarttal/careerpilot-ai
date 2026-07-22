@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#F9E1E0] text-[#4E677F] antialiased selection:bg-[#FEADB9] selection:text-[#4E677F] relative overflow-x-hidden">
+    <div className="min-h-screen text-[#4E677F] antialiased selection:bg-[#FEADB9] selection:text-[#4E677F] relative overflow-x-hidden">
 
       {/* Master Arka Plan Işık (Glow & Mesh) Efektleri */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-[#FEADB9]/50 via-[#BC85A3]/20 to-transparent blur-3xl -z-10 pointer-events-none" />

@@ -16,7 +16,23 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { getDashboard, uploadResume, getResumeById, createJobPost, listJobPosts, matchResumeToJob, startChatSession, listChatSessions, completeChatSession, getSessionMessages, sendChatMessage, getChatWebSocketUrl, getMyProfile, updateMyProfile, deleteResume } from "@/lib/api";
+import {
+  getDashboard,
+  uploadResume,
+  getResumeById,
+  createJobPost,
+  listJobPosts,
+  matchResumeToJob,
+  startChatSession,
+  listChatSessions,
+  completeChatSession,
+  getSessionMessages,
+  sendChatMessage,
+  getChatWebSocketUrl,
+  getMyProfile,
+  updateMyProfile,
+  deleteResume,
+} from "@/lib/api";
 import { getToken } from "@/lib/auth";
 
 const TABS = [
@@ -29,31 +45,42 @@ const TABS = [
 ];
 
 function scoreColor(score) {
-  if (score >= 75) return "var(--cp-good)";
-  if (score >= 50) return "var(--cp-warn)";
-  return "var(--cp-bad)";
+  if (score >= 75) return "#0EA5E9"; // Canlı Mavi
+  if (score >= 50) return "#A855F7"; // Mor
+  return "#EC4899"; // Canlı Pembe
 }
 
-function KpiCard({ label, value }) {
+function KpiCard({ label, value, type = "overall" }) {
+  const gradients = {
+    overall: "from-[#38BDF8] to-[#0EA5E9]",
+    ats: "from-[#EC4899] to-[#F9A8D4]",
+    recruiter: "from-[#A855F7] to-[#7C3AED]",
+    coach: "from-[#0EA5E9] to-[#7C3AED]",
+  };
+
+  const bgGradient = gradients[type] || gradients.overall;
+
   return (
-    <div className="cp-card p-5">
-      <div className="text-sm text-[var(--cp-text-dim)] mb-2">{label}</div>
-      <div className="flex items-baseline gap-1">
-        <span
-          className="text-3xl font-bold"
-          style={{ color: scoreColor(value) }}
-        >
+    <div className="bg-white rounded-[24px] p-[28px] border border-gray-100 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+      <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${bgGradient}`} />
+      <div className="flex justify-between items-start mb-3">
+        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          {label}
+        </span>
+        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${bgGradient} opacity-20 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold`}>
+          ✓
+        </div>
+      </div>
+      <div className="flex items-baseline gap-1.5 mb-4">
+        <span className="text-4xl font-extrabold tracking-tight text-slate-900">
           {Math.round(value)}
         </span>
-        <span className="text-sm text-[var(--cp-text-dim)]">/ 100</span>
+        <span className="text-sm font-medium text-slate-400">/ 100</span>
       </div>
-      <div className="mt-3 h-1.5 rounded-full bg-[var(--cp-border)] overflow-hidden">
+      <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden p-0.5 border border-slate-200/50">
         <div
-          className="h-full rounded-full transition-all"
-          style={{
-            width: `${Math.min(100, Math.max(0, value))}%`,
-            backgroundColor: scoreColor(value),
-          }}
+          className={`h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r ${bgGradient}`}
+          style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
         />
       </div>
     </div>
@@ -62,14 +89,14 @@ function KpiCard({ label, value }) {
 
 function Badge({ children, tone = "neutral" }) {
   const tones = {
-    good: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
-    bad: "bg-red-500/10 text-red-400 border-red-500/30",
-    warn: "bg-amber-500/10 text-amber-400 border-amber-500/30",
-    neutral: "bg-indigo-500/10 text-indigo-300 border-indigo-500/30",
+    good: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
+    bad: "bg-[#FCE7F3] text-[#EC4899] border-[#F9A8D4]",
+    warn: "bg-amber-50 text-amber-700 border-amber-200/60",
+    neutral: "bg-[#E0F2FE] text-[#0284C7] border-[#BAE6FD]",
   };
   return (
     <span
-      className={`inline-block text-xs px-3 py-1 rounded-full border ${tones[tone]} mr-2 mb-2`}
+      className={`inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full border ${tones[tone]} transition-all duration-200 shadow-sm`}
     >
       {children}
     </span>
@@ -108,8 +135,10 @@ function UploadPanel({ onUploaded }) {
         setDragging(false);
         handleFile(e.dataTransfer.files?.[0]);
       }}
-      className={`cp-card p-8 text-center border-dashed transition-colors ${
-        dragging ? "border-[var(--cp-accent)]" : ""
+      className={`bg-white rounded-[24px] p-8 md:p-10 text-center border-2 border-dashed transition-all duration-300 shadow-xl ${
+        dragging
+          ? "border-[#0EA5E9] bg-[#E0F2FE]/40 scale-[1.01]"
+          : "border-slate-200 hover:border-[#BAE6FD] hover:bg-[#E0F2FE]/10"
       }`}
     >
       <input
@@ -119,20 +148,34 @@ function UploadPanel({ onUploaded }) {
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
-      <div className="text-4xl mb-3">📄</div>
-      <p className="font-medium mb-1">CV'nizi yükleyin</p>
-      <p className="text-sm text-[var(--cp-text-dim)] mb-4">
-        PDF veya DOCX formatında dosyanızı sürükleyip bırakın ya da seçin
+      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-[#38BDF8] to-[#0EA5E9] text-white flex items-center justify-center shadow-lg shadow-sky-200 animate-bounce">
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+      </div>
+      <p className="text-xl font-bold text-slate-800 mb-1">CV'nizi Yükleyin ve Analiz Edin</p>
+      <p className="text-sm text-slate-500 mb-6 max-w-md mx-auto">
+        PDF veya DOCX formatındaki özgeçmişinizi buraya sürükleyin ya da cihazınızdan seçin.
       </p>
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="cp-btn-primary"
+        className="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-semibold shadow-lg shadow-sky-200 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50"
       >
-        {uploading ? "Analiz Ediliyor..." : "Dosya Seç"}
+        {uploading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Analiz Ediliyor...
+          </span>
+        ) : (
+          "Dosya Seçin"
+        )}
       </button>
       {error && (
-        <div className="mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 inline-block">
+        <div className="mt-4 text-sm text-[#EC4899] bg-[#FCE7F3] border border-[#F9A8D4] rounded-2xl px-4 py-3 inline-block font-medium">
           {error}
         </div>
       )}
@@ -147,97 +190,101 @@ function OverviewTab({ resume }) {
   }));
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <KpiCard label="Genel Skor" value={resume.overall_score} />
-        <KpiCard label="ATS Skoru" value={resume.ats_score} />
-        <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} />
-        <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} />
+    <div className="space-y-8 animate-fadeIn">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <KpiCard label="Genel Skor" value={resume.overall_score} type="overall" />
+        <KpiCard label="ATS Skoru" value={resume.ats_score} type="ats" />
+        <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} type="recruiter" />
+        <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} type="coach" />
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-1">Aday Özeti</h3>
-        <p className="text-sm text-[var(--cp-text-dim)] mb-4">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Aday Özeti</h3>
+        <p className="text-sm text-slate-600 leading-relaxed mb-6">
           {resume.cv_analytics.candidate_summary}
         </p>
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap gap-2">
           {resume.cv_analytics.job_title_fit.map((title, i) => (
-            <Badge key={i}>{title}</Badge>
+            <Badge key={i} tone="neutral">{title}</Badge>
           ))}
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-4">Bölüm Skorları</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="var(--cp-border)" />
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <h3 className="text-lg font-bold text-slate-900 mb-2">Bölüm Skorları</h3>
+          <ResponsiveContainer width="110%" height={320}>
+            <RadarChart
+              data={radarData}
+              outerRadius="60%" //
+              margin={{ top: 10, right: 30, bottom: 10, left: 30 }}
+            >
+              <PolarGrid stroke="#BAE6FD" />
               <PolarAngleAxis
                 dataKey="section"
-                tick={{ fill: "var(--cp-text-dim)", fontSize: 11 }}
+                tick={{ fill: "#475569", fontSize: 11, fontWeight: 500 }}
               />
               <PolarRadiusAxis
                 angle={30}
                 domain={[0, 100]}
-                tick={{ fill: "var(--cp-text-dim)", fontSize: 10 }}
+                tick={{ fill: "#94A3B8", fontSize: 10 }}
               />
               <Radar
                 dataKey="score"
-                stroke="var(--cp-accent-light)"
-                fill="var(--cp-accent)"
-                fillOpacity={0.4}
+                stroke="#7C3AED"
+                fill="rgba(124, 58, 237, 0.2)"
+                fillOpacity={0.6}
               />
             </RadarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-4">Güçlü ve Zayıf Yönler</h3>
-          <div className="mb-4">
-            <p className="text-xs uppercase tracking-wide text-[var(--cp-text-dim)] mb-2">
-              Güçlü Yönler
-            </p>
-            <div className="flex flex-wrap">
-              {resume.cv_analytics.strengths.map((s, i) => (
-                <Badge key={i} tone="good">
-                  {s}
-                </Badge>
-              ))}
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 mb-6">Güçlü ve Zayıf Yönler</h3>
+            <div className="mb-6">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                Güçlü Yönler
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {resume.cv_analytics.strengths.map((s, i) => (
+                  <Badge key={i} tone="good">{s}</Badge>
+                ))}
+              </div>
             </div>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-[var(--cp-text-dim)] mb-2">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
               Zayıf Yönler
             </p>
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap gap-2">
               {resume.cv_analytics.weaknesses.map((w, i) => (
-                <Badge key={i} tone="bad">
-                  {w}
-                </Badge>
+                <Badge key={i} tone="bad">{w}</Badge>
               ))}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Eksik Bölümler</h3>
-          <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">Eksik Bölümler</h3>
+          <ul className="space-y-3">
             {resume.cv_analytics.missing_sections.map((m, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-red-400">•</span> {m}
+              <li key={i} className="flex items-center gap-3 text-sm text-slate-600 bg-rose-50/50 p-3 rounded-xl border border-rose-100">
+                <span className="w-2 h-2 rounded-full bg-[#EC4899]" />
+                {m}
               </li>
             ))}
           </ul>
         </div>
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Öncelikli İyileştirmeler</h3>
-          <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">Öncelikli İyileştirmeler</h3>
+          <ul className="space-y-3">
             {resume.cv_analytics.top_fixes.map((f, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-emerald-400">{i + 1}.</span> {f}
+              <li key={i} className="flex items-center gap-3 text-sm text-slate-600 bg-sky-50/50 p-3 rounded-xl border border-sky-100">
+                <span className="font-bold text-[#0EA5E9]">{i + 1}.</span>
+                {f}
               </li>
             ))}
           </ul>
@@ -257,85 +304,87 @@ function AtsTab({ resume }) {
       : "bad";
 
   return (
-    <div className="space-y-6">
-      <div className="grid md:grid-cols-3 gap-4">
-        <KpiCard label="ATS Skoru" value={resume.ats_score} />
-        <div className="cp-card p-5">
-          <div className="text-sm text-[var(--cp-text-dim)] mb-2">
+    <div className="space-y-8 animate-fadeIn">
+      <div className="grid md:grid-cols-3 gap-6">
+        <KpiCard label="ATS Skoru" value={resume.ats_score} type="ats" />
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl flex flex-col justify-center items-start">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
             Ayrıştırma Riski
-          </div>
+          </span>
           <Badge tone={riskTone}>{ats.parsing_risk_level.toUpperCase()}</Badge>
         </div>
-        <div className="cp-card p-5">
-          <div className="text-sm text-[var(--cp-text-dim)] mb-2">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl flex flex-col justify-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
             Eksik Anahtar Kelimeler
-          </div>
-          <div className="text-3xl font-bold text-amber-400">
+          </span>
+          <span className="text-4xl font-extrabold text-[#A855F7]">
             {ats.keyword_gaps.length}
-          </div>
+          </span>
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-3">Biçimlendirme Sorunları</h3>
-        <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-4">Biçimlendirme Sorunları</h3>
+        <div className="space-y-3">
           {ats.formatting_issues.map((issue, i) => (
-            <li
+            <div
               key={i}
-              className="flex items-start gap-2 bg-red-500/5 border border-red-500/20 rounded-lg px-3 py-2"
+              className="flex items-start gap-3 bg-[#FCE7F3]/40 border border-[#F9A8D4] rounded-2xl p-4 text-sm text-slate-800"
             >
-              <span className="text-red-400">⚠</span> {issue}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-3">Eksik Anahtar Kelimeler</h3>
-        <div className="flex flex-wrap">
-          {ats.keyword_gaps.map((k, i) => (
-            <Badge key={i} tone="warn">
-              {k}
-            </Badge>
+              <span className="text-[#EC4899] font-bold">⚠</span>
+              <span>{issue}</span>
+            </div>
           ))}
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-4">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-4">Eksik Anahtar Kelimeler</h3>
+        <div className="flex flex-wrap gap-2">
+          {ats.keyword_gaps.map((k, i) => (
+            <Badge key={i} tone="warn">{k}</Badge>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-6">
           Yeniden Yazılmış Madde İşaretleri (X-Y-Z Formülü)
         </h3>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {ats.revised_bullets.map((b, i) => (
-            <div key={i} className="cp-card-light p-4">
-              <p className="text-xs uppercase tracking-wide text-red-400 mb-1">
-                Orijinal
-              </p>
-              <p className="text-sm text-[var(--cp-text-dim)] mb-3 line-through decoration-red-500/50">
-                {b.original}
-              </p>
-              <p className="text-xs uppercase tracking-wide text-emerald-400 mb-1">
-                Revize Edilmiş
-              </p>
-              <p className="text-sm mb-3">{b.revised}</p>
-              <p className="text-xs text-[var(--cp-text-dim)] italic">
-                {b.reason}
+            <div key={i} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 relative">
+              <div className="mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-rose-500 block mb-1">
+                  Orijinal
+                </span>
+                <p className="text-sm text-slate-500 line-through decoration-rose-400/60">
+                  {b.original}
+                </p>
+              </div>
+              <div className="mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 block mb-1">
+                  Revize Edilmiş
+                </span>
+                <p className="text-sm font-medium text-slate-800">{b.revised}</p>
+              </div>
+              <p className="text-xs text-slate-400 italic bg-white p-3 rounded-xl border border-slate-100">
+                💡 {b.reason}
               </p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">ATS Optimizasyon Özeti</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">ATS Optimizasyon Özeti</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">
           {ats.ats_optimization_summary}
         </p>
       </div>
     </div>
   );
 }
-
 
 const ASSISTANT_UI = {
   interview: {
@@ -359,70 +408,80 @@ const ASSISTANT_UI = {
 function SessionResultPanel({ assistantType, result, onBack }) {
   if (assistantType === "interview") {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8 animate-fadeIn">
         <div className="flex justify-between items-center flex-wrap gap-4">
-          <h3 className="font-semibold text-lg">Mülakat Değerlendirmesi</h3>
-          <button onClick={onBack} className="cp-btn-primary">Rapora Dön</button>
+          <h3 className="text-xl font-bold text-slate-900">Mülakat Değerlendirmesi</h3>
+          <button
+            onClick={onBack}
+            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-medium shadow-md hover:scale-105 transition-all"
+          >
+            Rapora Dön
+          </button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <KpiCard label="Genel Performans" value={result.overall_score} />
-          <KpiCard label="İletişim" value={result.communication_score} />
-          <KpiCard label="Teknik Derinlik" value={result.technical_depth_score} />
-          <KpiCard label="Somut Kanıt" value={result.evidence_score} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <KpiCard label="Genel Performans" value={result.overall_score} type="overall" />
+          <KpiCard label="İletişim" value={result.communication_score} type="ats" />
+          <KpiCard label="Teknik Derinlik" value={result.technical_depth_score} type="recruiter" />
+          <KpiCard label="Somut Kanıt" value={result.evidence_score} type="coach" />
         </div>
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-2">Değerlendirme Özeti</h3>
-          <p className="text-sm text-[var(--cp-text-dim)]">{result.evaluation_summary}</p>
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+          <h3 className="text-lg font-bold text-slate-900 mb-2">Değerlendirme Özeti</h3>
+          <p className="text-sm text-slate-600 leading-relaxed">{result.evaluation_summary}</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="cp-card p-6">
-            <h3 className="font-semibold mb-3 text-emerald-400">Güçlü Yönler</h3>
-            <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
-              {result.strengths.map((item, index) => <li key={index}>✓ {item}</li>)}
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+            <h3 className="text-lg font-bold text-emerald-600 mb-4">Güçlü Yönler</h3>
+            <ul className="space-y-2 text-sm text-slate-600">
+              {result.strengths.map((item, index) => <li key={index} className="flex gap-2"><span>✓</span>{item}</li>)}
             </ul>
           </div>
-          <div className="cp-card p-6">
-            <h3 className="font-semibold mb-3 text-amber-400">Gelişim Alanları</h3>
-            <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
-              {result.improvement_areas.map((item, index) => <li key={index}>→ {item}</li>)}
+          <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+            <h3 className="text-lg font-bold text-amber-500 mb-4">Gelişim Alanları</h3>
+            <ul className="space-y-2 text-sm text-slate-600">
+              {result.improvement_areas.map((item, index) => <li key={index} className="flex gap-2"><span>→</span>{item}</li>)}
             </ul>
           </div>
         </div>
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-2">Önerilen Cevap Çerçevesi</h3>
-          <p className="text-sm text-[var(--cp-text-dim)]">{result.recommended_answer_framework}</p>
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+          <h3 className="text-lg font-bold text-slate-900 mb-2">Önerilen Cevap Çerçevesi</h3>
+          <p className="text-sm text-slate-600 leading-relaxed">{result.recommended_answer_framework}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fadeIn">
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h3 className="font-semibold text-lg">Güncellenmiş Kariyer Planı</h3>
-        <button onClick={onBack} className="cp-btn-primary">Yol Haritasına Dön</button>
+        <h3 className="text-xl font-bold text-slate-900">Güncellenmiş Kariyer Planı</h3>
+        <button
+          onClick={onBack}
+          className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-medium shadow-md hover:scale-105 transition-all"
+        >
+          Yol Haritasına Dön
+        </button>
       </div>
-      <KpiCard label="Kariyer Hazırlık Skoru" value={result.coach_score} />
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Kariyer Konumlandırma</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">{result.career_positioning}</p>
+      <KpiCard label="Kariyer Hazırlık Skoru" value={result.coach_score} type="coach" />
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Kariyer Konumlandırma</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">{result.career_positioning}</p>
       </div>
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-4">Görüşmeye Göre Yol Haritası</h3>
-        <div className="relative pl-6 border-l-2 border-[var(--cp-border)] space-y-6">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-6">Görüşmeye Göre Yol Haritası</h3>
+        <div className="space-y-6 relative pl-6 border-l-2 border-sky-100">
           {result.roadmap.map((item, index) => (
             <div key={index} className="relative">
-              <span className="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-[var(--cp-accent)]" />
-              <p className="text-xs uppercase tracking-wide text-[var(--cp-accent-light)] mb-1">{item.timeframe}</p>
-              <p className="text-sm font-medium mb-1">{item.action}</p>
-              <p className="text-sm text-[var(--cp-text-dim)]">{item.expected_outcome}</p>
+              <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#0EA5E9] ring-4 ring-sky-100" />
+              <p className="text-xs font-bold uppercase tracking-wider text-[#0EA5E9] mb-1">{item.timeframe}</p>
+              <p className="text-sm font-semibold text-slate-800 mb-1">{item.action}</p>
+              <p className="text-sm text-slate-500">{item.expected_outcome}</p>
             </div>
           ))}
         </div>
       </div>
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Koç Özeti</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">{result.coach_summary}</p>
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Koç Özeti</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">{result.coach_summary}</p>
       </div>
     </div>
   );
@@ -444,7 +503,7 @@ function AssistantChat({ resume, assistantType, onBack }) {
   function connectWebSocket(sessionId) {
     const token = getToken();
     const wsUrl = getChatWebSocketUrl(sessionId, token);
-    
+
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
@@ -561,7 +620,7 @@ function AssistantChat({ resume, assistantType, onBack }) {
     }
   }
 
-  if (sessionResult) {
+    if (sessionResult) {
     return (
       <SessionResultPanel
         assistantType={assistantType}
@@ -572,92 +631,149 @@ function AssistantChat({ resume, assistantType, onBack }) {
   }
 
   return (
-    <div className="cp-card flex flex-col h-[600px]">
-      {/* Header */}
-      <div className="p-4 border-b border-[var(--cp-border)] flex flex-wrap gap-3 justify-between items-center bg-[var(--cp-panel-light)] rounded-t-xl">
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-          <h4 className="font-semibold text-sm">{ui.title}</h4>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleComplete}
-            disabled={completing || !messages.some((message) => message.role === "user")}
-            className="text-xs text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10 transition-colors disabled:opacity-40"
-          >
-            {completing ? "Rapor Hazırlanıyor..." : ui.completeLabel}
-          </button>
-          <button
-            onClick={onBack}
-            className="text-xs text-[var(--cp-text-dim)] hover:text-white border border-[var(--cp-border)] px-3 py-1.5 rounded-lg hover:bg-[var(--cp-panel)] transition-colors"
-          >
-            {ui.exitLabel}
-          </button>
+  /* 1. Tüm alanı kaplayan ve içeriği ortalayan dış kapsayıcı */
+  <div className="w-full min-h-screen py-8 px-4 flex justify-center items-center">
+
+    {/* 2. Kartı ve ikonları bağlayan merkez konteyner */}
+    <div className="w-full max-w-4xl relative">
+
+      {/* ─── 🟢 EKRANIN SOL DIŞINDAKİ YÜZEN İKONLAR ─── */}
+      <div className="absolute -left-16 top-8 z-20 pointer-events-none hidden xl:block">
+        <div className="animate-bounce" style={{ animationDuration: '4s' }}>
+          <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl border border-sky-200 p-2 shadow-xl flex items-center justify-center text-2xl rotate-[-12deg]">
+            🚀
+          </div>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 cp-scrollbar bg-[var(--cp-panel-dark)]/30">
-        {loading ? (
-          <div className="text-center text-[var(--cp-text-dim)] text-sm py-10 animate-pulse">
-            {ui.loadingLabel}
+      <div className="absolute -left-20 bottom-12 z-20 pointer-events-none hidden xl:block">
+        <div className="animate-pulse" style={{ animationDuration: '2.5s' }}>
+          <div className="w-11 h-11 bg-white/80 backdrop-blur-md rounded-xl border border-indigo-200 p-2 shadow-lg flex items-center justify-center text-xl rotate-[8deg]">
+            ✨
           </div>
-        ) : (
-          messages.map((msg) => {
-            const isUser = msg.role === "user";
-            return (
-              <div
-                key={msg.id}
-                className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
-                    isUser
-                      ? "bg-gradient-to-br from-emerald-500 to-cyan-600 text-white rounded-br-none"
-                      : "bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white rounded-bl-none"
-                  }`}
-                >
-                  <p className="whitespace-pre-line">{msg.content}</p>
-                </div>
-              </div>
-            );
-          })
-        )}
-        {sending && (
-          <div className="flex justify-start">
-            <div className="bg-[var(--cp-panel-light)] border border-[var(--cp-border)] rounded-xl rounded-bl-none px-4 py-3 text-sm text-[var(--cp-text-dim)] italic animate-pulse">
-              {ui.typingLabel}
+        </div>
+      </div>
+
+      {/* ─── 🟢 EKRANIN SAĞ DIŞINDAKİ YÜZEN İKONLAR ─── */}
+      <div className="absolute -right-16 top-16 z-20 pointer-events-none hidden xl:block">
+        <div className="animate-bounce" style={{ animationDuration: '3.5s' }}>
+          <div className="w-16 h-16 bg-white/90 backdrop-blur-md rounded-2xl border border-purple-200 p-2 shadow-xl flex items-center justify-center text-3xl rotate-[15deg]">
+            👾
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute -right-20 bottom-20 z-20 pointer-events-none hidden xl:block">
+        <div className="animate-pulse" style={{ animationDuration: '3s' }}>
+          <div className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl border border-pink-200 p-2 shadow-xl flex items-center justify-center text-2xl rotate-[-10deg]">
+            ⭐
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 🔵 MEVCUT SOHBET KARTI ─── */}
+      <div className="bg-white rounded-[24px] border border-gray-100 shadow-2xl flex flex-col h-[680px] overflow-hidden relative z-10">
+        {/* Header */}
+        <div className="p-6 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+            </span>
+            <h4 className="font-bold text-slate-800 text-base">{ui.title}</h4>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleComplete}
+              disabled={completing || !messages.some((message) => message.role === "user")}
+              className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-full hover:bg-emerald-100 transition-all disabled:opacity-40"
+            >
+              {completing ? "Rapor Hazırlanıyor..." : ui.completeLabel}
+            </button>
+            <button
+              onClick={onBack}
+              className="text-xs font-semibold text-slate-500 border border-slate-200 px-4 py-2 rounded-full hover:bg-slate-100 transition-all"
+            >
+              {ui.exitLabel}
+            </button>
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/30">
+          {loading ? (
+            <div className="text-center text-slate-400 text-sm py-20 animate-pulse">
+              {ui.loadingLabel}
             </div>
-          </div>
-        )}
-        {error && (
-          <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 text-center">
-            Hata: {error}
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          ) : (
+            messages.map((msg) => {
+              const isUser = msg.role === "user";
+              return (
+                <div
+                  key={msg.id}
+                  className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isUser ? "bg-slate-800 text-white" : "bg-gradient-to-tr from-[#38BDF8] to-[#0EA5E9] text-white"}`}>
+                    {isUser ? "Siz" : "AI"}
+                  </div>
+                  <div
+                    className={`max-w-[75%] rounded-[20px] px-5 py-3.5 text-sm leading-relaxed shadow-sm ${
+                      isUser
+                        ? "bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white rounded-tr-none"
+                        : "bg-white border border-slate-100 text-slate-800 rounded-tl-none shadow-md"
+                    }`}
+                  >
+                    <p className="whitespace-pre-line">{msg.content}</p>
+                  </div>
+                </div>
+              );
+            })
+          )}
+          {sending && (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#38BDF8] to-[#0EA5E9] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                AI
+              </div>
+              <div className="bg-white border border-slate-100 rounded-[20px] rounded-tl-none px-5 py-3.5 text-sm text-slate-400 italic shadow-md flex items-center gap-1.5">
+                <span>{ui.typingLabel}</span>
+                <span className="flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
+                </span>
+              </div>
+            </div>
+          )}
+          {error && (
+            <div className="text-xs text-rose-500 bg-rose-50 border border-rose-200 rounded-2xl p-3 text-center">
+              Hata: {error}
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-      {/* Input */}
-      <form onSubmit={handleSend} className="p-4 border-t border-[var(--cp-border)] flex gap-2">
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          disabled={loading || sending || !session}
-          placeholder={ui.inputPlaceholder}
-          className="flex-1 px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm disabled:opacity-60 bg-[var(--cp-panel-light)] text-white"
-        />
-        <button
-          type="submit"
-          disabled={loading || sending || !inputText.trim() || !session}
-          className="cp-btn-primary"
-        >
-          Gönder
-        </button>
-      </form>
+        {/* Input Formu */}
+        <form onSubmit={handleSend} className="p-4 border-t border-slate-100 bg-white flex gap-3">
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder={ui.placeholderLabel || "Mesajınızı yazın..."}
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-sky-400 transition-all text-slate-800"
+          />
+          <button
+            type="submit"
+            disabled={!inputText.trim() || sending}
+            className="bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-medium px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition-all disabled:opacity-40"
+          >
+            Gönder
+          </button>
+        </form>
+
+      </div>
     </div>
-  );
+  </div>
+);
 }
 
 function InterviewTab({ resume }) {
@@ -677,81 +793,85 @@ function InterviewTab({ resume }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fadeIn">
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h3 className="font-semibold text-lg">İşe Alım Uzmanı Raporu</h3>
+        <div>
+          <h3 className="text-xl font-bold text-slate-900">İşe Alım Uzmanı Raporu</h3>
+          <p className="text-xs text-slate-500">CV'nizin IK uzmanları gözüyle detaylı değerlendirmesi</p>
+        </div>
         <button
           onClick={() => setShowSimulator(true)}
-          className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-emerald-950/20"
+          className="px-6 py-3 rounded-full bg-gradient-to-r from-[#A855F7] to-[#7C3AED] text-white font-semibold shadow-lg shadow-purple-200 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
         >
           <span>💬</span> Mülakat Simülasyonu Başlat
         </button>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} />
-        <div className="cp-card p-5">
-          <div className="text-sm text-[var(--cp-text-dim)] mb-2">
+      <div className="grid md:grid-cols-3 gap-6">
+        <KpiCard label="İşe Alım Uzmanı Skoru" value={resume.recruiter_score} type="recruiter" />
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl flex flex-col justify-center items-start">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
             Algılanan Kıdem
-          </div>
+          </span>
           <Badge tone={seniorityTone}>{rec.perceived_seniority}</Badge>
         </div>
-        <div className="cp-card p-5">
-          <div className="text-sm text-[var(--cp-text-dim)] mb-2">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl flex flex-col justify-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
             İşe Alım Riskleri
-          </div>
-          <div className="text-3xl font-bold text-red-400">
+          </span>
+          <span className="text-4xl font-extrabold text-[#EC4899]">
             {rec.hiring_risks.length}
-          </div>
+          </span>
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">İlk İzlenim</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">İlk İzlenim</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">
           {rec.first_impression}
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">İşe Alım Riskleri</h3>
-          <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">İşe Alım Riskleri</h3>
+          <ul className="space-y-3">
             {rec.hiring_risks.map((r, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-red-400">•</span> {r}
+              <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-rose-50/50 p-3 rounded-xl border border-rose-100">
+                <span className="text-[#EC4899] font-bold">•</span> {r}
               </li>
             ))}
           </ul>
         </div>
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Öne Çıkan Sinyaller</h3>
-          <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">Öne Çıkan Sinyaller</h3>
+          <ul className="space-y-3">
             {rec.standout_signals.map((s, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-emerald-400">•</span> {s}
+              <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                <span className="text-emerald-500 font-bold">•</span> {s}
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-4">Olası Mülakat Soruları</h3>
-        <div className="space-y-2">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-4">Olası Mülakat Soruları</h3>
+        <div className="space-y-3">
           {rec.interview_questions.map((q, i) => (
-            <div key={i} className="cp-card-light overflow-hidden">
+            <div key={i} className="border border-slate-200/80 rounded-2xl overflow-hidden transition-all">
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full text-left px-4 py-3 flex items-center justify-between gap-4"
+                className="w-full text-left p-5 flex items-center justify-between gap-4 bg-slate-50/50 hover:bg-slate-50 transition-colors"
               >
-                <span className="text-sm font-medium">{q.question}</span>
-                <span className="text-[var(--cp-text-dim)]">
+                <span className="text-sm font-semibold text-slate-800">{q.question}</span>
+                <span className="text-slate-400 font-bold text-lg">
                   {openIndex === i ? "−" : "+"}
                 </span>
               </button>
               {openIndex === i && (
-                <div className="px-4 pb-4 text-sm text-[var(--cp-text-dim)] border-t border-[var(--cp-border)] pt-3">
+                <div className="p-5 text-sm text-slate-600 bg-white border-t border-slate-100 leading-relaxed">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Neden Sorulabilir?</span>
                   {q.reasoning}
                 </div>
               )}
@@ -760,9 +880,9 @@ function InterviewTab({ resume }) {
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">İşe Alım Uzmanı Özeti</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">İşe Alım Uzmanı Özeti</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">
           {rec.recruiter_summary}
         </p>
       </div>
@@ -785,95 +905,93 @@ function RoadmapTab({ resume }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fadeIn">
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h3 className="font-semibold text-lg">Kişiselleştirilmiş Kariyer Planı</h3>
+        <div>
+          <h3 className="text-xl font-bold text-slate-900">Kişiselleştirilmiş Kariyer Planı</h3>
+          <p className="text-xs text-slate-500">Gelecek hedefleriniz için AI tarafından çizilen strateji</p>
+        </div>
         <button
           onClick={() => setShowCoach(true)}
-          className="px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-indigo-950/20"
+          className="px-6 py-3 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#7C3AED] text-white font-semibold shadow-lg shadow-indigo-200 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
         >
           <span>🧭</span> AI Kariyer Koçuyla Görüş
         </button>
       </div>
 
-      <div className="grid md:grid-cols-1 gap-4">
-        <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} />
+      <div className="grid md:grid-cols-1 gap-6">
+        <KpiCard label="Kariyer Koçu Skoru" value={resume.coach_score} type="coach" />
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Kariyer Konumlandırma</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Kariyer Konumlandırma</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">
           {coach.career_positioning}
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Özgüven Artırıcılar</h3>
-          <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">Özgüven Artırıcılar</h3>
+          <ul className="space-y-3">
             {coach.confidence_boosters.map((c, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-emerald-400">✓</span> {c}
+              <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                <span className="text-emerald-500 font-bold">✓</span> {c}
               </li>
             ))}
           </ul>
         </div>
-        <div className="cp-card p-6">
-          <h3 className="font-semibold mb-3">Gelişim Öncelikleri</h3>
-          <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+        <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">Gelişim Öncelikleri</h3>
+          <ul className="space-y-3">
             {coach.development_priorities.map((d, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-amber-400">→</span> {d}
+              <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-amber-50/50 p-3 rounded-xl border border-amber-100">
+                <span className="text-amber-500 font-bold">→</span> {d}
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-3">Mülakat Hazırlık Planı</h3>
-        <ol className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-4">Mülakat Hazırlık Planı</h3>
+        <ol className="space-y-3">
           {coach.interview_preparation_plan.map((p, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <span className="text-[var(--cp-accent-light)] font-semibold">
-                {i + 1}.
-              </span>{" "}
-              {p}
+            <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-sky-50/50 p-3 rounded-xl border border-sky-100">
+              <span className="font-bold text-[#0EA5E9]">{i + 1}.</span> {p}
             </li>
           ))}
         </ol>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-4">Kariyer Yol Haritası</h3>
-        <div className="relative pl-6 border-l-2 border-[var(--cp-border)] space-y-6">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-8">Kariyer Yol Haritası</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {coach.roadmap.map((item, i) => (
-            <div key={i} className="relative">
-              <span className="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-[var(--cp-accent)]" />
-              <p className="text-xs uppercase tracking-wide text-[var(--cp-accent-light)] mb-1">
+            <div
+              key={i}
+              className="bg-slate-50 border border-slate-200/80 rounded-[20px] p-6 relative hover:-translate-y-1 transition-all shadow-sm overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9]" />
+              <span className="inline-block px-3 py-1 rounded-full bg-[#E0F2FE] text-[#0284C7] text-xs font-bold uppercase tracking-wider mb-3">
                 {item.timeframe}
-              </p>
-              <p className="text-sm font-medium mb-1">{item.action}</p>
-              <p className="text-sm text-[var(--cp-text-dim)]">
-                {item.expected_outcome}
-              </p>
+              </span>
+              <p className="text-base font-bold text-slate-800 mb-2">{item.action}</p>
+              <p className="text-sm text-slate-500 leading-relaxed">{item.expected_outcome}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="cp-card p-6">
-        <h3 className="font-semibold mb-2">Kariyer Koçu Özeti</h3>
-        <p className="text-sm text-[var(--cp-text-dim)]">
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Kariyer Koçu Özeti</h3>
+        <p className="text-sm text-slate-600 leading-relaxed">
           {coach.coach_summary}
         </p>
       </div>
     </div>
   );
 }
-
-
-
 
 const MOCK_LINKEDIN_JOBS = [
   {
@@ -899,15 +1017,14 @@ function JobMatchTab({ resume }) {
   const [selectedJobId, setSelectedJobId] = useState("");
   const [matching, setMatching] = useState(false);
   const [matchResult, setMatchResult] = useState(null);
-  
-  // Form state
+
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
-const fetchJobs = async () => {
+  const fetchJobs = async () => {
     if (jobs.length > 0) return;
     setLoading(true);
     try {
@@ -976,32 +1093,35 @@ const fetchJobs = async () => {
   const selectedJob = jobs.find((j) => j.id === selectedJobId);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fadeIn">
       <div className="flex justify-between items-center">
-        <h3 className="font-semibold text-lg">İş İlanı Eşleştirme</h3>
+        <div>
+          <h3 className="text-xl font-bold text-slate-900">İş İlanı Eşleştirme</h3>
+          <p className="text-xs text-slate-500">CV'nizi hedef iş ilanlarıyla karşılaştırın</p>
+        </div>
         <button
           onClick={() => {
             setShowForm(!showForm);
             setMatchResult(null);
           }}
-          className="cp-btn-primary"
+          className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-semibold shadow-md hover:scale-105 transition-all"
         >
           {showForm ? "İlan Seçimine Dön" : "Yeni İş İlanı Ekle"}
         </button>
       </div>
 
       {error && (
-        <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+        <div className="text-sm text-[#EC4899] bg-[#FCE7F3] border border-[#F9A8D4] rounded-2xl px-4 py-3 font-medium">
           {error}
         </div>
       )}
 
       {showForm ? (
-        <form onSubmit={handleCreateJob} className="cp-card p-6 space-y-4 animate-fadeIn">
-          <div className="flex justify-between items-center border-b border-[var(--cp-border)] pb-3 flex-wrap gap-2">
-            <h4 className="font-semibold text-white">Yeni İş İlanı Bilgileri</h4>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs text-[var(--cp-text-dim)] font-medium">Hızlı Doldur (Mock İlanlar):</span>
+        <form onSubmit={handleCreateJob} className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl space-y-6">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-4 flex-wrap gap-2">
+            <h4 className="font-bold text-slate-800">Yeni İş İlanı Bilgileri</h4>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-slate-400 font-medium">Hızlı Doldur:</span>
               {MOCK_LINKEDIN_JOBS.map((mj, idx) => (
                 <button
                   key={idx}
@@ -1011,96 +1131,96 @@ const fetchJobs = async () => {
                     setCompany(mj.company);
                     setDescription(mj.description);
                   }}
-                  className="px-2.5 py-1 rounded bg-[var(--cp-panel-light)] hover:bg-[var(--cp-accent)]/20 border border-[var(--cp-border)] hover:border-[var(--cp-accent)] text-xs text-[var(--cp-text-dim)] hover:text-white transition-all font-medium"
+                  className="px-3 py-1 rounded-full bg-slate-100 hover:bg-[#E0F2FE] text-xs text-slate-600 hover:text-[#0284C7] transition-all font-medium"
                 >
                   {mj.company}
                 </button>
               ))}
             </div>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">İlan Başlığı</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">İlan Başlığı</label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm text-slate-800"
                 placeholder="Senior React Developer"
               />
             </div>
             <div>
-              <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">Şirket Adı</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Şirket Adı</label>
               <input
                 type="text"
                 required
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm text-slate-800"
                 placeholder="TechCorp"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">İlan Detayı / Açıklaması</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">İlan Detayı / Açıklaması</label>
             <textarea
               required
               rows={6}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm text-slate-800"
               placeholder="Pozisyon gereksinimleri, aranan özellikler, görev tanımı..."
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium transition-colors disabled:opacity-60"
+            className="px-8 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-200 transition-all disabled:opacity-50"
           >
             {loading ? "Kaydediliyor..." : "İlanı Kaydet"}
           </button>
         </form>
       ) : (
-        <div className="space-y-6">
-          <div className="cp-card p-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="flex-1 bg-transparent">
-              <label className="block text-sm mb-1.5 text-[var(--cp-text-dim)]">Eşleştirilecek İş İlanı Seçin</label>
+        <div className="space-y-8">
+          <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="flex-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Eşleştirilecek İş İlanı Seçin</label>
               {jobs.length === 0 ? (
-                <p className="text-sm text-[var(--cp-text-dim)]">Kayıtlı iş ilanı bulunmuyor. Yeni bir tane ekleyerek başlayın.</p>
+                <p className="text-sm text-slate-400">Kayıtlı iş ilanı bulunmuyor. Yeni bir tane ekleyerek başlayın.</p>
               ) : (
                 <div className="relative">
-                  <button 
+                  <button
                     id="job-dropdown-button"
-                    type="button" 
+                    type="button"
                     onClick={() => {
-                       const dd = document.getElementById('job-dropdown');
-                       if (dd) dd.classList.toggle('hidden');
-                    }} 
-                    className="w-full text-left px-4 py-3 rounded-lg cp-card-light focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm border border-[var(--cp-border)] flex justify-between items-center transition-colors hover:border-[var(--cp-accent)]"
+                      const dd = document.getElementById('job-dropdown');
+                      if (dd) dd.classList.toggle('hidden');
+                    }}
+                    className="w-full text-left px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm flex justify-between items-center transition-all hover:border-[#BAE6FD]"
                   >
-                    <span className="text-white font-medium truncate pr-4">
-                      {jobs.find(j => j.id === selectedJobId)?.title || "İlan Seçin..."} - <span className="text-[var(--cp-text-dim)] font-normal">{jobs.find(j => j.id === selectedJobId)?.company}</span>
+                    <span className="text-slate-800 font-semibold truncate pr-4">
+                      {jobs.find(j => j.id === selectedJobId)?.title || "İlan Seçin..."} - <span className="text-slate-400 font-normal">{jobs.find(j => j.id === selectedJobId)?.company}</span>
                     </span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--cp-text-dim)]"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><polyline points="6 9 12 15 18 9" /></svg>
                   </button>
-                  <div id="job-dropdown" className="hidden absolute z-50 w-full mt-2 bg-[var(--cp-panel-light)] border border-[var(--cp-border)] rounded-xl shadow-2xl overflow-hidden animate-fadeIn">
-                    <div className="max-h-60 overflow-y-auto cp-scrollbar">
+                  <div id="job-dropdown" className="hidden absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="max-h-60 overflow-y-auto">
                       {jobs.map((job) => (
-                        <div 
-                          key={job.id} 
-                          onClick={() => { 
-                            setSelectedJobId(job.id); 
-                            setMatchResult(null); 
+                        <div
+                          key={job.id}
+                          onClick={() => {
+                            setSelectedJobId(job.id);
+                            setMatchResult(null);
                             document.getElementById('job-dropdown').classList.add('hidden');
                           }}
-                          className={`px-4 py-3 cursor-pointer text-sm transition-colors border-b border-b-[var(--cp-border)] last:border-b-0 ${
-                            selectedJobId === job.id 
-                              ? "bg-gradient-to-r from-[#10b981]/15 to-[#06b6d4]/15 border-l-2 border-l-[#10b981] text-white" 
-                              : "hover:bg-[var(--cp-panel)] text-[var(--cp-text-dim)] hover:text-white border-l-2 border-l-transparent"
+                          className={`px-5 py-3.5 cursor-pointer text-sm transition-all border-b border-slate-100 last:border-b-0 ${
+                            selectedJobId === job.id
+                              ? "bg-[#E0F2FE] border-l-4 border-l-[#0EA5E9] text-[#0284C7] font-bold"
+                              : "hover:bg-slate-50 text-slate-600"
                           }`}
                         >
-                          <div className="font-medium">{job.title}</div>
+                          <div>{job.title}</div>
                           <div className="text-xs opacity-70 mt-0.5">{job.company}</div>
                         </div>
                       ))}
@@ -1112,41 +1232,48 @@ const fetchJobs = async () => {
             <button
               onClick={handleMatch}
               disabled={matching || !selectedJobId}
-              className="cp-btn-primary whitespace-nowrap"
+              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-semibold shadow-lg shadow-sky-200 hover:scale-105 active:scale-95 transition-all whitespace-nowrap disabled:opacity-50"
             >
               {matching ? "Eşleştiriliyor..." : "Özgeçmişle Eşleştir"}
             </button>
           </div>
 
           {selectedJob && !matchResult && (
-            <div className="cp-card p-6">
-              <h4 className="font-semibold text-md mb-2">{selectedJob.title} @ {selectedJob.company}</h4>
-              <p className="text-xs text-[var(--cp-text-dim)] mb-4">
-                Kayıt Tarihi: {new Date(selectedJob.created_at).toLocaleDateString("tr-TR")}
-              </p>
-              <div className="bg-[var(--cp-panel-light)] rounded-lg p-4 max-h-60 overflow-y-auto cp-scrollbar text-sm whitespace-pre-line text-[var(--cp-text-dim)]">
+            <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h4 className="text-lg font-bold text-slate-800">{selectedJob.title}</h4>
+                  <p className="text-sm font-semibold text-[#0EA5E9]">{selectedJob.company}</p>
+                </div>
+                <span className="text-xs text-slate-400">
+                  {new Date(selectedJob.created_at).toLocaleDateString("tr-TR")}
+                </span>
+              </div>
+              <div className="bg-slate-50 rounded-2xl p-5 max-h-60 overflow-y-auto text-sm whitespace-pre-line text-slate-600 leading-relaxed border border-slate-100">
                 {selectedJob.description}
               </div>
             </div>
           )}
 
           {matchResult && (
-            <div className="space-y-6">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="cp-card p-5">
-                  <div className="text-sm text-[var(--cp-text-dim)] mb-2">Semantik Eşleşme Skoru</div>
-                  <div className="flex items-baseline gap-1">
+            <div className="space-y-8 animate-fadeIn">
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl flex flex-col justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                    Semantik Eşleşme Skoru
+                  </span>
+                  <div className="flex items-baseline gap-1 my-2">
                     <span
-                      className="text-3xl font-bold"
+                      className="text-5xl font-black"
                       style={{ color: scoreColor(matchResult.match_score) }}
                     >
                       {Math.round(matchResult.match_score)}
                     </span>
-                    <span className="text-sm text-[var(--cp-text-dim)]">/ 100</span>
+                    <span className="text-sm font-medium text-slate-400">/ 100</span>
                   </div>
-                  <div className="mt-3 h-1.5 rounded-full bg-[var(--cp-border)] overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all"
+                      className="h-full rounded-full transition-all duration-1000"
                       style={{
                         width: `${matchResult.match_score}%`,
                         backgroundColor: scoreColor(matchResult.match_score),
@@ -1155,44 +1282,46 @@ const fetchJobs = async () => {
                   </div>
                 </div>
 
-                <div className="cp-card p-5 md:col-span-2">
-                  <div className="text-sm text-[var(--cp-text-dim)] mb-2">Eşleşme Özeti</div>
-                  <p className="text-sm text-[var(--cp-text-dim)] leading-relaxed">
+                <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl md:col-span-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+                    Eşleşme Özeti
+                  </span>
+                  <p className="text-sm text-slate-600 leading-relaxed">
                     {matchResult.match_analytics.match_summary}
                   </p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="cp-card p-6">
-                  <h4 className="font-semibold mb-3 text-emerald-400">Güçlü Eşleşmeler</h4>
-                  <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+                  <h4 className="text-lg font-bold text-emerald-600 mb-4">Güçlü Eşleşmeler</h4>
+                  <ul className="space-y-3">
                     {matchResult.match_analytics.strong_fits.map((s, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-emerald-400">✓</span> {s}
+                      <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                        <span className="text-emerald-500 font-bold">✓</span> {s}
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="cp-card p-6">
-                  <h4 className="font-semibold mb-3 text-red-400">Eksik Yetkinlikler / Kelimeler</h4>
-                  <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+                <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+                  <h4 className="text-lg font-bold text-rose-500 mb-4">Eksik Yetkinlikler / Kelimeler</h4>
+                  <ul className="space-y-3">
                     {matchResult.match_analytics.missing_skills.map((m, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-red-400">•</span> {m}
+                      <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-rose-50/50 p-3 rounded-xl border border-rose-100">
+                        <span className="text-rose-500 font-bold">•</span> {m}
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
 
-              <div className="cp-card p-6">
-                <h4 className="font-semibold mb-3 text-amber-400">Özgeçmiş İyileştirme Önerileri</h4>
-                <ul className="space-y-2 text-sm text-[var(--cp-text-dim)]">
+              <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+                <h4 className="text-lg font-bold text-amber-500 mb-4">Özgeçmiş İyileştirme Önerileri</h4>
+                <ul className="space-y-3">
                   {matchResult.match_analytics.improvements.map((imp, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-amber-400">→</span> {imp}
+                    <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-amber-50/50 p-3 rounded-xl border border-amber-100">
+                      <span className="text-amber-500 font-bold">→</span> {imp}
                     </li>
                   ))}
                 </ul>
@@ -1205,23 +1334,22 @@ const fetchJobs = async () => {
   );
 }
 
-
 function AnalysisProgressPanel({ progress, filename }) {
   return (
-    <div className="cp-card p-6 space-y-4">
+    <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl space-y-6 animate-fadeIn">
       <div className="flex justify-between items-center text-sm">
-        <span className="font-medium text-[var(--cp-text-dim)]">
-          Özgeçmiş Analiz Ediliyor: <span className="text-white font-semibold">{filename}</span>
+        <span className="font-semibold text-slate-700">
+          Özgeçmiş Analiz Ediliyor: <span className="text-[#0EA5E9]">{filename}</span>
         </span>
-        <span className="font-semibold text-[var(--cp-accent-light)]">{progress}%</span>
+        <span className="font-extrabold text-[#7C3AED] text-base">{progress}%</span>
       </div>
-      <div className="w-full h-2 rounded-full bg-[var(--cp-border)] overflow-hidden">
+      <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden p-0.5 border border-slate-200/60">
         <div
-          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500"
+          className="h-full rounded-full bg-gradient-to-r from-[#38BDF8] via-[#A855F7] to-[#EC4899] transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <p className="text-xs text-[var(--cp-text-dim)] italic text-center animate-pulse">
+      <p className="text-xs font-semibold text-slate-400 italic text-center animate-pulse">
         {progress < 25 && "Yapay zeka profilinizi inceliyor..."}
         {progress >= 25 && progress < 50 && "Genel CV raporu tamamlandı. ATS uyumluluğu kontrol ediliyor..."}
         {progress >= 50 && progress < 75 && "ATS uyumluluğu tamamlandı. İşe alım uzmanı gözüyle değerlendiriliyor..."}
@@ -1236,35 +1364,35 @@ function HistorySidebar({ history, selectedId, onSelect, onDelete }) {
   if (!history || history.length === 0) return null;
 
   return (
-    <div className="cp-card p-5 h-full max-h-[800px] overflow-y-auto cp-scrollbar animate-fadeIn">
-      <h3 className="font-semibold mb-4 text-lg border-b border-[var(--cp-border)] pb-2 text-white">Geçmiş Özgeçmişler</h3>
+    <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl h-full max-h-[800px] overflow-y-auto space-y-4">
+      <h3 className="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Geçmiş Özgeçmişler</h3>
       <div className="space-y-3">
         {history.map((h) => (
           <div key={h.id} className="group relative">
             <button
               onClick={() => onSelect(h.id)}
-              className={`w-full text-left p-3 pr-8 rounded-lg transition-colors border ${
+              className={`w-full text-left p-4 rounded-2xl transition-all border ${
                 selectedId === h.id
-                  ? "bg-[var(--cp-accent)]/10 border-[var(--cp-accent)] text-[var(--cp-accent-light)]"
-                  : "border-[var(--cp-border)] hover:bg-[var(--cp-panel-light)]"
+                  ? "bg-[#E0F2FE] border-[#38BDF8] text-[#0284C7] shadow-sm font-medium"
+                  : "bg-slate-50/50 border-slate-100 hover:bg-slate-50 text-slate-700"
               }`}
             >
-              <div className="font-medium text-sm truncate text-white" title={h.original_filename || "Özgeçmiş"}>
+              <div className="font-semibold text-sm truncate pr-6" title={h.original_filename || "Özgeçmiş"}>
                 {h.original_filename || "İsimsiz Özgeçmiş"}
               </div>
-              <div className="text-xs text-[var(--cp-text-dim)] mt-1 flex justify-between">
+              <div className="text-xs text-slate-400 mt-2 flex justify-between items-center">
                 {h.overall_score === 0 ? (
-                  <span className="text-[var(--cp-accent-light)] animate-pulse font-semibold">Analiz Ediliyor...</span>
+                  <span className="text-[#0EA5E9] animate-pulse font-semibold">Analiz Ediliyor...</span>
                 ) : (
-                  <span>Skor: <span className="font-semibold">{Math.round(h.overall_score)}</span></span>
+                  <span>Skor: <span className="font-bold text-slate-700">{Math.round(h.overall_score)}</span></span>
                 )}
                 <span>{new Date(h.created_at).toLocaleDateString("tr-TR")}</span>
               </div>
             </button>
-            
+
             <button
               onClick={(e) => onDelete(h.id, e)}
-              className="absolute right-2.5 top-3.5 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 p-1 text-xs transition-opacity focus:opacity-100 bg-transparent border-0 cursor-pointer"
+              className="absolute right-3 top-4 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-[#EC4899] p-1 text-xs transition-all focus:opacity-100"
               title="Sil"
             >
               ✕
@@ -1288,32 +1416,32 @@ function HistoryChart({ history }) {
     }));
 
   return (
-    <div className="cp-card p-6">
-      <h3 className="font-semibold mb-4">Geçmiş Performans</h3>
-      <ResponsiveContainer width="100%" height={280}>
+    <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl">
+      <h3 className="text-lg font-bold text-slate-900 mb-6">Geçmiş Performans</h3>
+      <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--cp-border)" />
-          <XAxis dataKey="name" tick={{ fill: "var(--cp-text-dim)", fontSize: 12 }} />
-          <YAxis domain={[0, 100]} tick={{ fill: "var(--cp-text-dim)", fontSize: 12 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
+          <XAxis dataKey="name" tick={{ fill: "#64748B", fontSize: 12 }} />
+          <YAxis domain={[0, 100]} tick={{ fill: "#64748B", fontSize: 12 }} />
           <Tooltip
             contentStyle={{
-              backgroundColor: "var(--cp-panel-light)",
-              border: "1px solid var(--cp-border)",
-              borderRadius: 8,
-              color: "var(--cp-text)",
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #E2E8F0",
+              borderRadius: "16px",
+              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              color: "#0F172A",
             }}
           />
           <Legend />
-          <Bar dataKey="Genel" fill="#6366f1" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="ATS" fill="#34d399" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="Ise Alim" fill="#fbbf24" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="Koc" fill="#f87171" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="Genel" fill="#0EA5E9" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="ATS" fill="#EC4899" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Ise Alim" fill="#A855F7" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="Koc" fill="#38BDF8" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
-
 
 function ProfileTab() {
   const [profile, setProfile] = useState(null);
@@ -1374,85 +1502,87 @@ function ProfileTab() {
   }
 
   if (loading) {
-    return <div className="text-center text-[var(--cp-text-dim)] py-10">Profil yükleniyor...</div>;
+    return <div className="text-center text-slate-400 py-16">Profil yükleniyor...</div>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fadeIn">
       {profile && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fadeIn">
-          <div className="cp-card p-5 text-center">
-            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Yüklenen CV Sayısı</span>
-            <span className="text-2xl font-bold text-[var(--cp-accent-light)]">{profile.total_resumes}</span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl text-center">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Yüklenen CV</span>
+            <span className="text-3xl font-extrabold text-[#0EA5E9]">{profile.total_resumes}</span>
           </div>
-          <div className="cp-card p-5 text-center">
-            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Eklenen İlanlar</span>
-            <span className="text-2xl font-bold text-indigo-400">{profile.total_jobs}</span>
+          <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl text-center">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">İlanlar</span>
+            <span className="text-3xl font-extrabold text-[#A855F7]">{profile.total_jobs}</span>
           </div>
-          <div className="cp-card p-5 text-center">
-            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">Yapılan Eşleşmeler</span>
-            <span className="text-2xl font-bold text-emerald-400">{profile.total_matches}</span>
+          <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl text-center">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Eşleşmeler</span>
+            <span className="text-3xl font-extrabold text-emerald-500">{profile.total_matches}</span>
           </div>
-          <div className="cp-card p-5 text-center">
-            <span className="text-xs text-[var(--cp-text-dim)] block mb-1">AI Asistan Oturumları</span>
-            <span className="text-2xl font-bold text-pink-400">{profile.total_chats}</span>
+          <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl text-center">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">AI Chat</span>
+            <span className="text-3xl font-extrabold text-[#EC4899]">{profile.total_chats}</span>
           </div>
         </div>
       )}
 
-      <div className="cp-card p-6 max-w-2xl mx-auto space-y-6 animate-fadeIn">
-        <h3 className="font-semibold text-lg border-b border-[var(--cp-border)] pb-3">Profil Ayarları</h3>
-        
+      <div className="bg-white rounded-[24px] p-8 border border-gray-100 shadow-xl max-w-2xl mx-auto space-y-6">
+        <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4">Profil Ayarları</h3>
+
         {error && (
-          <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-2 text-center">
+          <div className="text-sm text-[#EC4899] bg-[#FCE7F3] border border-[#F9A8D4] rounded-2xl p-4 text-center font-medium">
             {error}
           </div>
         )}
 
         {successMsg && (
-          <div className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-2 text-center">
+          <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center font-medium">
             {successMsg}
           </div>
         )}
 
-        <form onSubmit={handleUpdate} className="space-y-4">
+        <form onSubmit={handleUpdate} className="space-y-5">
           <div>
-            <label className="text-xs text-[var(--cp-text-dim)] font-medium block mb-1.5 font-semibold text-white">Ad Soyad</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">Ad Soyad</label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white"
+              className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm text-slate-800"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs text-[var(--cp-text-dim)] font-medium block mb-1.5 font-semibold text-white">E-posta Adresi</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">E-posta Adresi</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white"
+              className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm text-slate-800"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs text-[var(--cp-text-dim)] font-medium block mb-1.5 font-semibold text-white">Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın)</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">
+              Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın)
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--cp-accent)] text-sm bg-[var(--cp-panel-light)] border border-[var(--cp-border)] text-white"
+              className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] text-sm text-slate-800"
             />
           </div>
 
           <button
             type="submit"
             disabled={updating}
-            className="cp-btn-primary w-full"
+            className="w-full py-4 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-semibold shadow-lg shadow-sky-200 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50"
           >
             {updating ? "Güncelleniyor..." : "Profil Bilgilerini Güncelle"}
           </button>
@@ -1481,7 +1611,6 @@ export default function CareerPilotDashboard() {
       setDashboard(data);
       if (data && data.latest) {
         setSelectedResume(data.latest);
-        // If the latest resume is still being analyzed
         let isAnalyzing = !data.latest.cv_analytics || !data.latest.ats_analytics || !data.latest.recruiter_analytics || !data.latest.coach_analytics;
         if (isAnalyzing) {
           setAnalyzingResumeId(data.latest.id);
@@ -1504,14 +1633,13 @@ export default function CareerPilotDashboard() {
     loadDashboard();
   }, []);
 
-  // Poll for analyzing resume progress
   useEffect(() => {
     if (!analyzingResumeId) return;
 
     let intervalId = setInterval(async () => {
       try {
         const data = await getResumeById(analyzingResumeId);
-        
+
         let progress = 0;
         if (data.cv_analytics) progress += 25;
         if (data.ats_analytics) progress += 25;
@@ -1521,7 +1649,6 @@ export default function CareerPilotDashboard() {
         setAnalysisProgress(progress);
         setSelectedResume(data);
 
-        // Update in dashboard local state so history gets updated scores
         setDashboard((prev) => {
           if (!prev) return prev;
           return {
@@ -1543,7 +1670,6 @@ export default function CareerPilotDashboard() {
 
         if (progress === 100) {
           setAnalyzingResumeId(null);
-          // Complete reload to make sure everything is in sync
           const dashData = await getDashboard();
           setDashboard(dashData);
         }
@@ -1567,8 +1693,7 @@ export default function CareerPilotDashboard() {
 
     try {
       await deleteResume(resumeId);
-      
-      // Update local state history
+
       setDashboard((prev) => {
         if (!prev) return prev;
         const newHistory = prev.history.filter((h) => h.id !== resumeId);
@@ -1583,11 +1708,9 @@ export default function CareerPilotDashboard() {
         };
       });
 
-      // Update selectedResume if it was the one deleted
       if (selectedResume && selectedResume.id === resumeId) {
         setAnalyzingResumeId(null);
-        
-        // Find if we have another resume left to select
+
         const remaining = dashboard.history.filter((h) => h.id !== resumeId);
         if (remaining.length > 0) {
           handleSelectHistory(remaining[0].id);
@@ -1603,13 +1726,12 @@ export default function CareerPilotDashboard() {
   async function handleSelectHistory(id) {
     setLoadingResume(true);
     setError("");
-    setAnalyzingResumeId(null); // Stop current polling if user clicks another CV
+    setAnalyzingResumeId(null);
     try {
       const data = await getResumeById(id);
       setSelectedResume(data);
       setActiveTab("overview");
-      
-      // If the selected CV is still being analyzed, start polling it
+
       let isAnalyzing = !data.cv_analytics || !data.ats_analytics || !data.recruiter_analytics || !data.coach_analytics;
       if (isAnalyzing) {
         setAnalyzingResumeId(data.id);
@@ -1620,7 +1742,7 @@ export default function CareerPilotDashboard() {
         if (data.coach_analytics) progress += 25;
         setAnalysisProgress(progress);
       }
-      
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(err.message);
@@ -1665,16 +1787,19 @@ export default function CareerPilotDashboard() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-16 text-center text-[var(--cp-text-dim)]">
-        Panel yükleniyor...
+      <div className="min-h-screen bg-gradient-to-b from-[#E0F2FE] via-[#FCE7F3] to-white flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[24px] shadow-2xl border border-slate-100 text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-[#0EA5E9] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm font-semibold text-slate-600">Kariyer Paneli Yükleniyor...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 max-w-xl mx-auto text-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#E0F2FE] via-[#FCE7F3] to-white flex items-center justify-center p-6">
+        <div className="text-sm text-[#EC4899] bg-white rounded-[24px] border border-[#F9A8D4] p-8 shadow-2xl max-w-xl text-center font-medium">
           {error}
         </div>
       </div>
@@ -1685,32 +1810,38 @@ export default function CareerPilotDashboard() {
   const isSelectedResumeAnalyzing = selectedResume && (!selectedResume.cv_analytics || !selectedResume.ats_analytics || !selectedResume.recruiter_analytics || !selectedResume.coach_analytics);
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-b from-[#E0F2FE] via-[#FCE7F3] to-white text-slate-800 antialiased font-sans">
       {deleteConfirm.open && (
-        <div className="cp-modal-backdrop" onClick={() => setDeleteConfirm({ open: false, resumeId: null })}>
-          <div className="cp-modal-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 rounded-full bg-red-500/15 flex items-center justify-center flex-shrink-0">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setDeleteConfirm({ open: false, resumeId: null })}
+        >
+          <div
+            className="bg-white rounded-[24px] p-8 max-w-md w-full shadow-2xl border border-slate-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#FCE7F3] flex items-center justify-center flex-shrink-0 text-[#EC4899] font-bold text-xl">
+                ⚠
               </div>
               <div>
-                <h3 className="font-semibold text-white text-base">Özgeçmişi Sil</h3>
-                <p className="text-xs text-[var(--cp-text-dim)]">Bu işlem geri alınamaz</p>
+                <h3 className="font-bold text-slate-900 text-lg">Özgeçmişi Sil</h3>
+                <p className="text-xs text-slate-400">Bu işlem geri alınamaz</p>
               </div>
             </div>
-            <p className="text-sm text-[var(--cp-text-dim)] leading-relaxed mb-6">
+            <p className="text-sm text-slate-600 leading-relaxed mb-6">
               Bu özgeçmiş ve bağlı tüm veriler (mülakat geçmişi, iş ilanı eşleşmeleri) kalıcı olarak silinecek. Devam etmek istiyor musunuz?
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setDeleteConfirm({ open: false, resumeId: null })}
-                className="cp-btn-secondary"
+                className="px-6 py-2.5 rounded-full border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-all"
               >
                 Vazgeç
               </button>
               <button
                 onClick={confirmDeleteResume}
-                className="cp-btn-danger"
+                className="px-6 py-2.5 rounded-full bg-[#EC4899] hover:bg-rose-600 text-white font-semibold text-sm shadow-md transition-all"
               >
                 Evet, Sil
               </button>
@@ -1718,82 +1849,88 @@ export default function CareerPilotDashboard() {
           </div>
         </div>
       )}
-      <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar */}
-        {dashboard && dashboard.history && dashboard.history.length > 0 && (
-          <div className="w-full md:w-1/4 shrink-0">
-            <HistorySidebar 
-              history={dashboard.history} 
-              selectedId={selectedResume?.id} 
-              onSelect={handleSelectHistory} 
-              onDelete={handleDeleteResume}
-            />
-          </div>
-        )}
 
-        {/* Main Content */}
-        <div className="flex-1 space-y-8 min-w-0">
-          <div>
-            <h1 className="text-2xl font-semibold">Kariyer Paneli</h1>
-            <p className="text-sm text-[var(--cp-text-dim)]">
-              CV analizlerinizi görüntüleyin ve yeni bir analiz başlatın.
-            </p>
-          </div>
 
-          <UploadPanel onUploaded={handleUploaded} />
-
-          <div className="flex gap-2 overflow-x-auto cp-scrollbar pb-1 border-b border-[var(--cp-border)] pt-2">
-            {TABS.map((tab) => {
-              // Hide tabs that require a resume if there isn't one
-              if (!hasResume && tab.id !== "profile") return null;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === tab.id
-                      ? "cp-tab-active"
-                      : "cp-card-light text-[var(--cp-text-dim)] hover:text-white"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {activeTab === "profile" ? (
-            <ProfileTab />
-          ) : loadingResume ? (
-            <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
-              Seçilen CV yükleniyor...
+      <main className="max-w-7xl mx-auto px-6 md:px-12 py-10">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Sidebar */}
+          {dashboard && dashboard.history && dashboard.history.length > 0 && (
+            <div className="w-full md:w-1/4 shrink-0">
+              <HistorySidebar
+                history={dashboard.history}
+                selectedId={selectedResume?.id}
+                onSelect={handleSelectHistory}
+                onDelete={handleDeleteResume}
+              />
             </div>
-          ) : !hasResume ? (
-            <div className="cp-card p-10 text-center text-[var(--cp-text-dim)]">
-              Henüz bir CV analizi yok. Başlamak için yukarıdan bir dosya yükleyin.
-            </div>
-          ) : isSelectedResumeAnalyzing ? (
-            <AnalysisProgressPanel 
-              progress={analysisProgress} 
-              filename={selectedResume.original_filename} 
-            />
-          ) : (
-            <>
-              {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
-              {activeTab === "ats" && <AtsTab resume={selectedResume} />}
-              {activeTab === "jobmatch" && <JobMatchTab resume={selectedResume} />}
-              {activeTab === "interview" && <InterviewTab resume={selectedResume} />}
-              {activeTab === "roadmap" && <RoadmapTab resume={selectedResume} />}
-
-              {dashboard && dashboard.history.length > 1 && (
-                <HistoryChart history={dashboard.history} />
-              )}
-            </>
           )}
+
+          {/* Main Content */}
+          <div className="flex-1 space-y-8 min-w-0">
+            <div className="flex justify-between items-end">
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Kariyer Paneli</h1>
+                <p className="text-sm text-slate-500 mt-1">
+                  CV analizlerinizi görüntüleyin ve yeni bir analiz başlatın.
+                </p>
+              </div>
+            </div>
+
+            <UploadPanel onUploaded={handleUploaded} />
+
+            {/* Navigation Tabs */}
+            <div className="bg-white/80 backdrop-blur-md p-1.5 rounded-full border border-slate-200/80 shadow-sm flex gap-1 overflow-x-auto">
+              {TABS.map((tab) => {
+                if (!hasResume && tab.id !== "profile") return null;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white shadow-md scale-105"
+                        : "text-slate-500 hover:text-slate-900 hover:bg-[#E0F2FE]/50"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Tab Views */}
+            {activeTab === "profile" ? (
+              <ProfileTab />
+            ) : loadingResume ? (
+              <div className="bg-white rounded-[24px] p-12 text-center text-slate-400 border border-gray-100 shadow-xl">
+                Seçilen CV yükleniyor...
+              </div>
+            ) : !hasResume ? (
+              <div className="bg-white rounded-[24px] p-12 text-center text-slate-400 border border-gray-100 shadow-xl">
+                Henüz bir CV analizi yok. Başlamak için yukarıdan bir dosya yükleyin.
+              </div>
+            ) : isSelectedResumeAnalyzing ? (
+              <AnalysisProgressPanel
+                progress={analysisProgress}
+                filename={selectedResume.original_filename}
+              />
+            ) : (
+              <>
+                {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
+                {activeTab === "ats" && <AtsTab resume={selectedResume} />}
+                {activeTab === "jobmatch" && <JobMatchTab resume={selectedResume} />}
+                {activeTab === "interview" && <InterviewTab resume={selectedResume} />}
+                {activeTab === "roadmap" && <RoadmapTab resume={selectedResume} />}
+
+                {dashboard && dashboard.history.length > 1 && (
+                  <HistoryChart history={dashboard.history} />
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
-    </>
   );
 }

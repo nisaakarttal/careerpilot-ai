@@ -2,25 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────
+   CareerPilot AI - Global Styles
+───────────────────────────────────────────── */
+
 :root {
-  --cp-bg: #0b0f1a;
-  --cp-panel: #121829;
-  --cp-panel-light: #1a2338;
-  --cp-border: #26304a;
-  --cp-text: #e8ecf7;
-  --cp-text-dim: #9aa4c0;
-  --cp-accent: #10b981;
-  --cp-accent-light: #34d399;
-  --cp-good: #34d399;
-  --cp-warn: #fbbf24;
-  --cp-bad: #f87171;
+  /* Renk Sistemi */
+  --cp-bg: #eef7ff;
+  --cp-panel: rgba(255, 255, 255, 0.75);
+  --cp-panel-light: rgba(255, 255, 255, 0.9);
+  --cp-border: rgba(224, 242, 254, 0.8);
+
+  --cp-text: #0f172a;
+  --cp-text-dim: #475569;
+
+  --cp-accent: #0284c7;
+  --cp-accent-light: #38bdf8;
+
+  --cp-good: #10b981;
+  --cp-warn: #f59e0b;
+  --cp-bad: #ef4444;
 }
 
+/* Sayfa */
 html,
 body {
-  background-color: var(--cp-bg);
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
   color: var(--cp-text);
-  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* TEK ARKA PLAN */
+  background:
+    radial-gradient(
+      circle at top,
+      #ffffff 0%,
+      #eef7ff 55%,
+      #eef7ff 100%
+    );
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 * {
@@ -28,187 +52,306 @@ body {
 }
 
 ::selection {
-  background-color: var(--cp-accent);
+  background: #38bdf8;
   color: white;
 }
 
+/* ───────── Glass Cards ───────── */
+
 .cp-card {
-  background-color: var(--cp-panel);
-  border: 1px solid var(--cp-border);
-  border-radius: 1rem;
+  background: var(--cp-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+
+  box-shadow:
+    0 20px 40px rgba(14, 165, 233, 0.10);
 }
 
 .cp-card-light {
-  background-color: var(--cp-panel-light);
-  border: 1px solid var(--cp-border);
-  border-radius: 0.75rem;
+  background: var(--cp-panel-light);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
 }
 
-.cp-scrollbar::-webkit-scrollbar {
+/* ───────── Scrollbar ───────── */
+
+::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.cp-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--cp-border);
+::-webkit-scrollbar-track {
+  background: #eef7ff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #7dd3fc;
   border-radius: 999px;
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
+/* ───────── Gradient Text ───────── */
+
 .cp-gradient-text {
-  background: linear-gradient(135deg, #34d399, #06b6d4);
+  background: linear-gradient(
+    135deg,
+    #0284c7,
+    #06b6d4
+  );
+
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* ─── Premium Button System ─── */
+/* ───────── Primary Button ───────── */
+
 .cp-btn-primary {
   position: relative;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: 0.5rem;
-  padding: 0.625rem 1.5rem;
-  border-radius: 0.75rem;
+
+  padding: 0.65rem 1.5rem;
+
+  border: none;
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  color: white;
   font-weight: 600;
   font-size: 0.875rem;
-  color: white;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
-  cursor: pointer;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0284c7,
+      #06b6d4
+    );
+
+  transition: 0.3s;
+
   overflow: hidden;
+
+  box-shadow:
+    0 6px 18px rgba(2, 132, 199, 0.25);
 }
 
 .cp-btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.25),
+      transparent
+    );
+
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: 0.3s;
 }
 
-.cp-btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.35), 0 0 40px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+.cp-btn-primary:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 25px rgba(2, 132, 199, 0.30);
 }
 
 .cp-btn-primary:hover::before {
   opacity: 1;
 }
 
-.cp-btn-primary:active:not(:disabled) {
-  transform: translateY(0);
+.cp-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.cp-btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-}
+/* ───────── Secondary Button ───────── */
 
 .cp-btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: 0.5rem;
-  padding: 0.625rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: var(--cp-text);
-  background: var(--cp-panel-light);
-  border: 1px solid var(--cp-border);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
+
+  padding: 0.65rem 1.5rem;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  border: 1px solid rgba(186, 230, 253, 0.9);
+
+  backdrop-filter: blur(10px);
+
+  transition: 0.3s;
+
+  color: #334155;
 }
 
 .cp-btn-secondary:hover {
-  border-color: var(--cp-accent);
-  background: rgba(16, 185, 129, 0.08);
-  color: white;
+  background: white;
+  border-color: #38bdf8;
+  color: #0284c7;
 }
+
+/* ───────── Danger Button ───────── */
 
 .cp-btn-danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: 0.5rem;
-  padding: 0.625rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: white;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.2);
+
+  padding: 0.65rem 1.5rem;
+
   border: none;
+  border-radius: 12px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f43f5e,
+      #e11d48
+    );
+
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  transition: 0.3s;
 }
 
 .cp-btn-danger:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
+  transform: translateY(-2px);
 }
 
-/* ─── Tab Buttons ─── */
+/* ───────── Active Tab ───────── */
+
 .cp-tab-active {
-  background: linear-gradient(135deg, #10b981, #06b6d4) !important;
+  background:
+    linear-gradient(
+      135deg,
+      #0284c7,
+      #06b6d4
+    ) !important;
+
   color: white !important;
-  font-weight: 600 !important;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+
+  box-shadow:
+    0 6px 18px rgba(2, 132, 199, 0.25);
 }
 
-/* ─── Modal System ─── */
+/* ───────── Modal ───────── */
+
 .cp-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
+
+  z-index: 9999;
+
+  background: rgba(15, 23, 42, 0.30);
+
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  animation: cpFadeIn 0.2s ease-out;
 }
 
 .cp-modal-panel {
-  background: var(--cp-panel);
-  border: 1px solid var(--cp-border);
-  border-radius: 1.25rem;
-  padding: 2rem;
-  max-width: 420px;
   width: 90%;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(16, 185, 129, 0.05);
-  animation: cpSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 420px;
+
+  padding: 2rem;
+
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.88);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  box-shadow:
+    0 30px 60px rgba(14, 165, 233, 0.15);
 }
 
-@keyframes cpFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* ───────── Autofill Fix ───────── */
 
-@keyframes cpSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* ─── Fix Browser Autofill Background ─── */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 50px var(--cp-panel-light) inset !important;
-    -webkit-text-fill-color: var(--cp-text) !important;
-    transition: background-color 5000s ease-in-out 0s;
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow:
+    0 0 0 50px rgba(255, 255, 255, 0.8) inset !important;
+
+  -webkit-text-fill-color:
+    var(--cp-text) !important;
+}
+
+/* ───────── Glassmorphism Floating Icons & Glow Animations ───────── */
+
+@keyframes cp-float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(6deg);
+  }
+}
+
+@keyframes cp-float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-6deg);
+  }
+}
+
+.animate-cp-float-slow {
+  animation: cp-float-slow 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-cp-float-reverse {
+  animation: cp-float-reverse 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Glassmorphism Icon Tile Style */
+.cp-glass-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.08);
+  user-select: none;
+  pointer-events: none;
+
+  /* Donanım ivmelendirmesi (Hardware Acceleration) optimizasyonu */
+  will-change: transform;
+  transform: translateZ(0);
 }
