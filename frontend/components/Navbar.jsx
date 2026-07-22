@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { clearToken, getUser, isAuthenticated } from "@/lib/auth";
 
 export default function Navbar() {
@@ -20,55 +21,63 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="border-b border-[var(--cp-border)] bg-[var(--cp-bg)]/80 backdrop-blur sticky top-0 z-30">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2">
-          <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-emerald-400 flex items-center justify-center font-bold text-sm text-black">
+    <nav className="border-b border-sky-200/50 bg-gradient-to-r from-sky-100/90 via-blue-100/90 to-cyan-100/90 backdrop-blur-xl sticky top-0 z-50 shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center font-black text-sm text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
             CP
           </span>
-          <span className="text-lg font-semibold tracking-tight">
-            CareerPilot <span className="cp-gradient-text">AI</span>
+          <span className="text-xl font-extrabold tracking-tight text-slate-900">
+            CareerPilot{" "}
+            <span className="bg-gradient-to-r from-sky-600 to-cyan-600 bg-clip-text text-transparent">
+              AI
+            </span>
           </span>
-        </a>
+        </Link>
 
-        <div className="flex items-center gap-4">
+        {/* Sağ Menü Linkleri & Butonlar */}
+        <div className="flex items-center gap-4 sm:gap-6">
           {authed ? (
             <>
-              <a
+              <Link
                 href="/dashboard"
-                className="text-sm text-[var(--cp-text-dim)] hover:text-white transition-colors"
+                className="text-sm font-semibold text-slate-700 hover:text-sky-700 transition-colors"
               >
                 Panel
-              </a>
+              </Link>
               {user?.full_name && (
-                <span className="text-sm text-[var(--cp-text-dim)] hidden sm:inline hover:text-white transition-colors cursor-default">
+                <span className="text-sm font-medium text-slate-700 hidden sm:inline cursor-default bg-white/70 backdrop-blur-sm px-3.5 py-1.5 rounded-xl border border-sky-100 shadow-sm">
                   {user.full_name}
                 </span>
               )}
               <button
                 onClick={handleLogout}
-                className="text-sm px-4 py-2 rounded-lg border border-[var(--cp-border)] hover:border-red-400 hover:text-red-400 transition-colors"
+                type="button"
+                className="text-sm font-semibold px-4 py-2 rounded-xl border border-sky-200/80 bg-white/50 text-slate-700 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 transition-all duration-200 active:scale-95 cursor-pointer shadow-sm"
               >
                 Çıkış Yap
               </button>
             </>
           ) : (
             <>
-              <a
+              <Link
                 href="/login"
-                className="text-sm text-[var(--cp-text-dim)] hover:text-white transition-colors"
+                className="text-sm font-semibold text-slate-700 hover:text-sky-700 transition-colors"
               >
                 Giriş Yap
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/register"
-                className="cp-btn-primary px-4 py-2 text-sm"
+                className="bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white text-sm font-semibold px-5 py-2 rounded-xl shadow-md shadow-sky-500/20 hover:shadow-lg hover:shadow-sky-500/30 transition-all duration-200 active:scale-95"
               >
                 Kayıt Ol
-              </a>
+              </Link>
             </>
           )}
         </div>
+
       </div>
     </nav>
   );
