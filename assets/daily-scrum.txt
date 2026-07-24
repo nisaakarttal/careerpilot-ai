@@ -68,7 +68,7 @@ GitHub deposu başarıyla oluşturulmuş, ekip organizasyonu tamamlanmış ve pr
 
 =================================================================
 
-02 Temmuz 2026 – Daily Scrum 3: Sprint Planlama ve Görev Dağılımı
+27 Temmuz 2026 – Daily Scrum 3: Sprint Planlama ve Görev Dağılımı
 
 Nisa Kartal (Scrum Master)
 
@@ -98,13 +98,73 @@ Günlük Özet:
 Sprint 1 kapsamındaki görevler ekip üyelerine dengeli şekilde dağıtılmış, tüm ekip üyeleri GitHub reposuna eklenmiş ve Sprint Board hazırlıkları tamamlanmıştır.
 
 =================================================================
+01 Temmuz 2026 – Daily Scrum 4: Teknik Altyapı 
 
-03 Temmuz 2026 – Daily Scrum 4: Teknik Altyapı ve Sprint 1 Kapanışı
+Nisa Kartal (Scrum Master)
+
+Projenin backend altyapısı oluşturuldu ve FastAPI servisleri yapılandırıldı.
+PostgreSQL veritabanı bağlantısı kurularak temel veritabanı yapısı hazırlandı.
+SQLAlchemy modelleri oluşturuldu ve tablolar arasında ilişkiler tanımlandı.
+JWT tabanlı kimlik doğrulama sistemi geliştirildi.
+Kullanıcı kayıt ve giriş (Register/Login) API'leri geliştirildi.
+Şifrelerin güvenli şekilde hashlenmesi sağlandı.
+Kullanıcı yetkilendirme mekanizması oluşturuldu.
+Swagger API dokümantasyonu yapılandırıldı.
+Frontend ve backend haberleşmesi yapılandırılarak ilk entegrasyon tamamlandı.
+Proje klasör yapısı düzenlenerek sürdürülebilir bir mimari oluşturuldu.
+
+=================================================================
+02 Temmuz 2026 – Daily Scrum 4: Teknik Altyapı 
+
+Nisa Kartal (Scrum Master)
+Dashboard ekranlarının geliştirilmesi üzerine çalışıldı.
+Dashboard bileşenlerinin responsive yapısı iyileştirildi.
+React Query cache yönetimi optimize edildi.
+Bildirim (Notification) bileşeninin mevcut çalışma mantığı analiz edildi.
+Bildirimlerin okunma durumu yönetimi geliştirildi.
+Framer Motion animasyonları optimize edildi.
+UI bileşenlerinde performans iyileştirmeleri yapıldı.
+Dashboard kartları ve istatistik bileşenlerinde düzenlemeler gerçekleştirildi.
+Kod tekrarlarını azaltmak amacıyla bazı componentler yeniden düzenlendi.
+Genel kullanıcı deneyimini iyileştirmeye yönelik arayüz güncellemeleri yapıldı.
+
+=================================================================
+03 Temmuz 2026 – Daily Scrum 4: Teknik Altyapı 
+
+Nisa Kartal (Scrum Master)
+
+Bildirim sistemi üzerinde geliştirmeler gerçekleştirildi.
+Bildirimlerin kullanıcı rolüne göre yönlendirilmesi planlandı.
+Admin ve personel kullanıcı senaryoları analiz edildi.
+Bildirim tıklama sonrası yönlendirme algoritması yeniden tasarlandı.
+React Router yönlendirme mantığı güncellendi.
+Mevcut UI yapısı korunarak yalnızca yönlendirme mekanizması revize edildi.
+Framer Motion animasyonlarının mevcut davranışı korunacak şekilde gerekli düzenlemeler yapıldı.
+React Query invalidate ve cache güncelleme işlemleri test edildi.
+Bildirimlerin okunma durumları farklı kullanıcı rollerinde test edildi.
+Kodun mevcut tasarım yapısını bozmadan gerekli refaktör çalışmaları gerçekleştirildi.
+
+=================================================================
+04 Temmuz 2026 – Daily Scrum 4: Teknik Altyapı 
+
+Nisa Kartal (Scrum Master)
+Yapılan geliştirmeler farklı kullanıcı senaryolarında test edildi.
+Admin kullanıcı için bildirim yönlendirmeleri doğrulandı.
+Personel kullanıcı için bildirim yönlendirmeleri test edildi.
+Yetkilendirme kontrolleri gözden geçirildi.
+Frontend ve backend entegrasyonu tekrar doğrulandı.
+Hata yönetimi (error handling) iyileştirildi.
+Kod düzenlemeleri sonrasında oluşabilecek regresyonlar kontrol edildi.
+Genel performans ve kullanıcı deneyimi açısından son kontroller gerçekleştirildi.
+Git üzerinde yapılan geliştirmeler commit edilerek sürüm kontrol sistemine aktarıldı.
+Projenin sonraki geliştirme aşamaları planlanarak teknik değerlendirme yapıldı.
+
+=================================================================
+05 Temmuz 2026 – Daily Scrum 4: Sprint 1 Kapanışı
 
 Nisa Kartal (Scrum Master)
 
 Tamamlanan:
-- Backend ve frontend için temel proje mimarisini oluşturdu.
 - Trello Sprint Board'unu tamamladı.
 - Sprint Board ve ürün durumu ekran görüntülerini hazırladı.
 - WhatsApp üzerinden yürütülen asenkron toplantıları dokümante etti.
