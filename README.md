@@ -223,7 +223,25 @@ careerpilot-ai/
 ---
 
 ## Sprint Retrospective
-Sprint boyunca teknik hedeflerin büyük kısmı tamamlanmış olsa da takım içi iletişim istenilen seviyede sağlanamadı. Görev paylaşımı ve ilerleme durumlarının düzenli olarak aktarılmaması zaman zaman koordinasyon sorunlarına neden oldu. Bir sonraki sprintte daha düzenli iletişim kurulması, görev takibinin sıklaştırılması ve ekip üyeleri arasında daha etkin iş birliği sağlanması hedeflenmektedir.Daily Scrum toplantıları istenen şekilde gerçekleşmedi.
+
+Sprint sürecinde takım içi iletişim ve koordinasyon açısından bazı aksaklıklar yaşanmıştır. Özellikle Daily Scrum toplantıları planlanan düzen ve sıklıkta gerçekleştirilememiş, bu nedenle ekip üyeleri arasında günlük ilerleme durumlarının paylaşılması ve görevlerin takibi istenilen seviyeye ulaşamamıştır.
+
+Sprint başlangıcında görev dağılımının ekip üyeleriyle ortak şekilde planlanması hedeflenmiş, ancak bazı ekip üyelerinden zamanında geri dönüş alınamadığı için görev atamaları projenin ilerleyebilmesi adına mevcut durum göz önünde bulundurularak yapılmıştır. Görev dağılımlarının daha sonra ekip üyelerinin görüşleri doğrultusunda yeniden düzenlenebileceği belirtilmiş ve bu konuda gerekli esnekliğin sağlanacağı ifade edilmiştir.
+
+Görev durumlarının düzenli olarak paylaşılmaması ve iletişim eksiklikleri nedeniyle zaman zaman koordinasyon sorunları yaşanmış, yapılan çalışmaların takibi zorlaşmıştır. Buna rağmen sprint hedeflerinin aksatılmaması için teknik geliştirme çalışmalarına plan doğrultusunda devam edilmiştir.
+
+Bir sonraki sprintte;
+
+-Daily Scrum toplantılarının her gün düzenli olarak gerçekleştirilmesi,
+-Görev dağılımlarının ekip üyelerinin aktif katılımıyla netleştirilmesi,
+-Yapılan çalışmaların günlük olarak paylaşılması,
+-Proje yönetim aracındaki görev durumlarının düzenli güncellenmesi,
+-İletişimin daha aktif ve sürekli sürdürülmesi,
+-Karşılaşılan engellerin zaman kaybetmeden ekip ile paylaşılması
+
+hedeflenmektedir.
+
+Bu iyileştirmeler ile ekip içi koordinasyonun güçlendirilmesi, görev dağılımlarının daha şeffaf yürütülmesi ve sprint hedeflerine planlanan süre içerisinde daha verimli şekilde ulaşılması amaçlanmaktadır.
 
 
 ### Daily Scrum
@@ -326,6 +344,17 @@ Bu sprint boyunca **CareerPilot AI** projesinde yapay zekâ altyapısı, sistem 
 - Gemini API geçişi nedeniyle AI servis katmanının yeniden düzenlenmesi.
 - PostgreSQL timezone problemi.
 - Çoklu AI analizlerinde performans optimizasyonu ihtiyacı.
+
+## Takım Süreci Değerlendirmesi
+
+Sprint sürecinde teknik geliştirme çalışmalarında aktif olarak **Hayrunnisa Kartal, Utku Akkuşoğlu ve Yiğit Emir Saatçi** görev almıştır.
+
+**Sati Bıldırcın**, proje ekibine **4. haftanın sonunda** dahil olmuş ve bu süreçte geliştirilen modüllerin test edilmesi, hata kontrollerinin gerçekleştirilmesi ve sistem doğrulama çalışmalarına katkı sağlamıştır.
+
+Ayrıca, Sprint 3 başlamadan önce **Sprint 3'ün ikinci haftasında aktif olarak görev alamayacağını** ekip ile önceden paylaşmış ve bu durum görev planlamasında dikkate alınmıştır.
+
+Sprint sürecinde Daily Scrum toplantıları planlanan düzen ve sıklıkta gerçekleştirilememiştir. Bunun sonucunda ekip üyeleri arasında günlük ilerleme durumlarının paylaşılması ve görev takibi istenilen seviyeye ulaşamamıştır. Bir sonraki sprintte düzenli Daily Scrum toplantılarının yapılması, görev durumlarının daha sık güncellenmesi ve ekip içi iletişimin güçlendirilmesi hedeflenmektedir.
+
 
 ### Öğrenilenler
 
