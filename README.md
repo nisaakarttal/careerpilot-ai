@@ -224,6 +224,8 @@ careerpilot-ai/
 
 ## Sprint Retrospective
 
+Sprint sürecinde teknik geliştirme çalışmalarında aktif olarak Hayrunnisa Kartal, Utku Akkuşoğlu ve Yiğit Emir Saatçi görev almıştır.
+
 Sprint sürecinde takım içi iletişim ve koordinasyon açısından bazı aksaklıklar yaşanmıştır. Özellikle Daily Scrum toplantıları planlanan düzen ve sıklıkta gerçekleştirilememiş, bu nedenle ekip üyeleri arasında günlük ilerleme durumlarının paylaşılması ve görevlerin takibi istenilen seviyeye ulaşamamıştır.
 
 Sprint başlangıcında görev dağılımının ekip üyeleriyle ortak şekilde planlanması hedeflenmiş, ancak bazı ekip üyelerinden zamanında geri dönüş alınamadığı için görev atamaları projenin ilerleyebilmesi adına mevcut durum göz önünde bulundurularak yapılmıştır. Görev dağılımlarının daha sonra ekip üyelerinin görüşleri doğrultusunda yeniden düzenlenebileceği belirtilmiş ve bu konuda gerekli esnekliğin sağlanacağı ifade edilmiştir.
