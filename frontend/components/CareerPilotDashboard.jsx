@@ -182,6 +182,38 @@ function UploadPanel({ onUploaded }) {
   );
 }
 
+const renderRadarTick = ({ payload, x, y, cx, cy }) => {
+  const text = payload.value || "";
+  const words = text.split(" ");
+  
+  let line1 = text;
+  let line2 = "";
+  
+  if (words.length > 1) {
+    const mid = Math.ceil(words.length / 2);
+    line1 = words.slice(0, mid).join(" ");
+    line2 = words.slice(mid).join(" ");
+  }
+
+  let textAnchor = "middle";
+  if (x > cx + 10) textAnchor = "start";
+  else if (x < cx - 10) textAnchor = "end";
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        textAnchor={textAnchor}
+        fill="#475569"
+        fontSize={10.5}
+        fontWeight={600}
+      >
+        <tspan x={0} dy={line2 ? "-0.3em" : "0.3em"}>{line1}</tspan>
+        {line2 && <tspan x={0} dy="1.15em">{line2}</tspan>}
+      </text>
+    </g>
+  );
+};
+
 function OverviewTab({ resume }) {
   const radarData = resume.cv_analytics.section_scores.map((s) => ({
     section: s.section_name,
@@ -216,12 +248,12 @@ function OverviewTab({ resume }) {
             <RadarChart
               data={radarData}
               outerRadius="55%"
-              margin={{ top: 10, right: 55, bottom: 10, left: 55 }}
+              margin={{ top: 15, right: 35, bottom: 15, left: 35 }}
             >
               <PolarGrid stroke="#BAE6FD" />
               <PolarAngleAxis
                 dataKey="section"
-                tick={{ fill: "#475569", fontSize: 11, fontWeight: 500 }}
+                tick={renderRadarTick}
               />
               <PolarRadiusAxis
                 angle={30}
