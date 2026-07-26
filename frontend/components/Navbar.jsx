@@ -11,8 +11,13 @@ export default function Navbar() {
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
-    setUser(getUser());
-    setAuthed(isAuthenticated());
+    const loadUser = () => {
+      setUser(getUser());
+      setAuthed(isAuthenticated());
+    };
+    loadUser();
+    window.addEventListener("profileUpdated", loadUser);
+    return () => window.removeEventListener("profileUpdated", loadUser);
   }, []);
 
   function handleLogout() {
@@ -45,13 +50,21 @@ export default function Navbar() {
                 href="/dashboard"
                 className="text-sm font-semibold text-slate-700 hover:text-sky-700 transition-colors"
               >
-                Panel
+                {user?.full_name ? `Merhaba. ${user.full_name}` : "Panel"}
               </Link>
-              {user?.full_name && (
-                <span className="text-sm font-medium text-slate-700 hidden sm:inline cursor-default bg-white/70 backdrop-blur-sm px-3.5 py-1.5 rounded-xl border border-sky-100 shadow-sm">
-                  {user.full_name}
-                </span>
-              )}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (window.location.pathname !== "/dashboard") {
+                    router.push("/dashboard?tab=profile");
+                  } else {
+                    window.dispatchEvent(new CustomEvent("switch-tab", { detail: "profile" }));
+                  }
+                }}
+                className="text-sm font-medium text-slate-700 hidden sm:inline cursor-pointer hover:bg-sky-50 bg-white/70 backdrop-blur-sm px-3.5 py-1.5 rounded-xl border border-sky-100 shadow-sm transition-colors"
+              >
+                Profil ve Ayarlar
+              </button>
               <button
                 onClick={handleLogout}
                 type="button"

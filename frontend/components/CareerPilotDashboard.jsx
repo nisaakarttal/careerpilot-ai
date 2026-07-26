@@ -33,7 +33,7 @@ import {
   updateMyProfile,
   deleteResume,
 } from "@/lib/api";
-import { getToken } from "@/lib/auth";
+import { getToken, getUser, setUser } from "@/lib/auth";
 
 const TABS = [
   { id: "overview", label: "Genel Bakış" },
@@ -41,7 +41,6 @@ const TABS = [
   { id: "jobmatch", label: "İş İlanı Eşleştirme" },
   { id: "interview", label: "Mülakat Simülatörü" },
   { id: "roadmap", label: "Kariyer Yol Haritası" },
-  { id: "profile", label: "Profil ve Ayarlar" },
 ];
 
 function scoreColor(score) {
@@ -1494,6 +1493,9 @@ function ProfileTab() {
       setProfile(updated);
       setSuccessMsg("Profil bilgileriniz başarıyla güncellendi.");
       setPassword("");
+      const currentUser = getUser() || {};
+      setUser({ ...currentUser, ...updated });
+      window.dispatchEvent(new Event("profileUpdated"));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -1597,6 +1599,20 @@ export default function CareerPilotDashboard() {
   const [error, setError] = useState("");
   const [dashboard, setDashboard] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
+
+  useEffect(() => {
+    const handleSwitchTab = (e) => {
+      setActiveTab(e.detail);
+    };
+    window.addEventListener("switch-tab", handleSwitchTab);
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tab") === "profile") {
+      setActiveTab("profile");
+    }
+
+    return () => window.removeEventListener("switch-tab", handleSwitchTab);
+  }, []);
   const [selectedResume, setSelectedResume] = useState(null);
   const [loadingResume, setLoadingResume] = useState(false);
   const [analyzingResumeId, setAnalyzingResumeId] = useState(null);
