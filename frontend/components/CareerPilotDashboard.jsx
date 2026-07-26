@@ -212,11 +212,11 @@ function OverviewTab({ resume }) {
       <div className="grid md:grid-cols-2 gap-8">
         <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl hover:-translate-y-1 transition-all duration-300">
           <h3 className="text-lg font-bold text-slate-900 mb-2">Bölüm Skorları</h3>
-          <ResponsiveContainer width="110%" height={320}>
+          <ResponsiveContainer width="100%" height={320}>
             <RadarChart
               data={radarData}
-              outerRadius="60%" //
-              margin={{ top: 10, right: 30, bottom: 10, left: 30 }}
+              outerRadius="55%"
+              margin={{ top: 10, right: 55, bottom: 10, left: 55 }}
             >
               <PolarGrid stroke="#BAE6FD" />
               <PolarAngleAxis
