@@ -30,7 +30,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href={authed ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
           <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center font-black text-sm text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
             CP
           </span>
@@ -50,7 +50,7 @@ export default function Navbar() {
                 href="/dashboard"
                 className="text-sm font-semibold text-slate-700 hover:text-sky-700 transition-colors"
               >
-                {user?.full_name ? `Merhaba. ${user.full_name}` : "Panel"}
+                {user?.full_name ? `Merhaba, ${user.full_name}` : "Panel"}
               </Link>
               <button
                 onClick={(e) => {
@@ -61,7 +61,7 @@ export default function Navbar() {
                     window.dispatchEvent(new CustomEvent("switch-tab", { detail: "profile" }));
                   }
                 }}
-                className="text-sm font-medium text-slate-700 hidden sm:inline cursor-pointer hover:bg-sky-50 bg-white/70 backdrop-blur-sm px-3.5 py-1.5 rounded-xl border border-sky-100 shadow-sm transition-colors"
+                className="text-sm font-medium text-slate-700 hidden sm:inline cursor-pointer bg-white/70 backdrop-blur-sm px-3.5 py-1.5 rounded-xl border border-sky-100 shadow-sm transition-all hover:bg-sky-50 hover:text-sky-700 hover:border-sky-300 hover:shadow-md"
               >
                 Profil ve Ayarlar
               </button>
