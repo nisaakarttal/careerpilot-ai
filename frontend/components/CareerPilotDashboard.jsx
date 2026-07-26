@@ -1442,7 +1442,7 @@ function HistoryChart({ history }) {
   );
 }
 
-function ProfileTab() {
+function ProfileTab({ onBack }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -1509,6 +1509,36 @@ function ProfileTab() {
 
   return (
     <div className="space-y-8 animate-fadeIn">
+      {/* Top Bar with Home Button */}
+      <div className="flex items-center justify-between bg-white/70 backdrop-blur-md px-6 py-4 rounded-[24px] border border-gray-100 shadow-md">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              type="button"
+              className="w-10 h-10 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-600 flex items-center justify-center transition-all shadow-sm active:scale-95 group border border-sky-100"
+              title="Ana Sayfaya Dön"
+            >
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </button>
+          )}
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Profil ve Ayarlar</h2>
+            <p className="text-xs text-slate-500">Hesap bilgilerinizi ve tercihlerinizi yönetin.</p>
+          </div>
+        </div>
+        {onBack && (
+          <button
+            onClick={onBack}
+            type="button"
+            className="text-xs font-semibold px-4 py-2 rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 transition-colors"
+          >
+            Panele Dön
+          </button>
+        )}
+      </div>
       {profile && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-xl text-center">
@@ -1866,87 +1896,90 @@ export default function CareerPilotDashboard() {
         </div>
       )}
 
-
-      <main className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Sidebar */}
-          {dashboard && dashboard.history && dashboard.history.length > 0 && (
-            <div className="w-full md:w-1/4 shrink-0">
-              <HistorySidebar
-                history={dashboard.history}
-                selectedId={selectedResume?.id}
-                onSelect={handleSelectHistory}
-                onDelete={handleDeleteResume}
-              />
-            </div>
-          )}
-
-          {/* Main Content */}
-          <div className="flex-1 space-y-8 min-w-0">
-            <div className="flex justify-between items-end">
-              <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Kariyer Paneli</h1>
-                <p className="text-sm text-slate-500 mt-1">
-                  CV analizlerinizi görüntüleyin ve yeni bir analiz başlatın.
-                </p>
+      {activeTab === "profile" ? (
+        <main className="max-w-4xl mx-auto px-6 md:px-12 py-10">
+          <ProfileTab onBack={() => setActiveTab("overview")} />
+        </main>
+      ) : (
+        <main className="max-w-7xl mx-auto px-6 md:px-12 py-10">
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Sidebar */}
+            {dashboard && dashboard.history && dashboard.history.length > 0 && (
+              <div className="w-full md:w-1/4 shrink-0">
+                <HistorySidebar
+                  history={dashboard.history}
+                  selectedId={selectedResume?.id}
+                  onSelect={handleSelectHistory}
+                  onDelete={handleDeleteResume}
+                />
               </div>
-            </div>
-
-            <UploadPanel onUploaded={handleUploaded} />
-
-            {/* Navigation Tabs */}
-            <div className="bg-white/80 backdrop-blur-md p-1.5 rounded-full border border-slate-200/80 shadow-sm flex gap-1 overflow-x-auto">
-              {TABS.map((tab) => {
-                if (!hasResume && tab.id !== "profile") return null;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${
-                      isActive
-                        ? "bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white shadow-md scale-105"
-                        : "text-slate-500 hover:text-slate-900 hover:bg-[#E0F2FE]/50"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Tab Views */}
-            {activeTab === "profile" ? (
-              <ProfileTab />
-            ) : loadingResume ? (
-              <div className="bg-white rounded-[24px] p-12 text-center text-slate-400 border border-gray-100 shadow-xl">
-                Seçilen CV yükleniyor...
-              </div>
-            ) : !hasResume ? (
-              <div className="bg-white rounded-[24px] p-12 text-center text-slate-400 border border-gray-100 shadow-xl">
-                Henüz bir CV analizi yok. Başlamak için yukarıdan bir dosya yükleyin.
-              </div>
-            ) : isSelectedResumeAnalyzing ? (
-              <AnalysisProgressPanel
-                progress={analysisProgress}
-                filename={selectedResume.original_filename}
-              />
-            ) : (
-              <>
-                {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
-                {activeTab === "ats" && <AtsTab resume={selectedResume} />}
-                {activeTab === "jobmatch" && <JobMatchTab resume={selectedResume} />}
-                {activeTab === "interview" && <InterviewTab resume={selectedResume} />}
-                {activeTab === "roadmap" && <RoadmapTab resume={selectedResume} />}
-
-                {dashboard && dashboard.history.length > 1 && (
-                  <HistoryChart history={dashboard.history} />
-                )}
-              </>
             )}
+
+            {/* Main Content */}
+            <div className="flex-1 space-y-8 min-w-0">
+              <div className="flex justify-between items-end">
+                <div>
+                  <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Kariyer Paneli</h1>
+                  <p className="text-sm text-slate-500 mt-1">
+                    CV analizlerinizi görüntüleyin ve yeni bir analiz başlatın.
+                  </p>
+                </div>
+              </div>
+
+              <UploadPanel onUploaded={handleUploaded} />
+
+              {/* Navigation Tabs */}
+              <div className="bg-white/80 backdrop-blur-md p-2 rounded-full border border-slate-200/80 shadow-sm flex items-center justify-between gap-2 w-full">
+                {TABS.map((tab) => {
+                  if (!hasResume && tab.id !== "profile") return null;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex-1 py-3 px-3 rounded-full text-sm font-bold transition-all duration-300 text-center whitespace-nowrap ${
+                        isActive
+                          ? "bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white shadow-md scale-[1.02]"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-[#E0F2FE]/50"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Tab Views */}
+              {loadingResume ? (
+                <div className="bg-white rounded-[24px] p-12 text-center text-slate-400 border border-gray-100 shadow-xl">
+                  Seçilen CV yükleniyor...
+                </div>
+              ) : !hasResume ? (
+                <div className="bg-white rounded-[24px] p-12 text-center text-slate-400 border border-gray-100 shadow-xl">
+                  Henüz bir CV analizi yok. Başlamak için yukarıdan bir dosya yükleyin.
+                </div>
+              ) : isSelectedResumeAnalyzing ? (
+                <AnalysisProgressPanel
+                  progress={analysisProgress}
+                  filename={selectedResume.original_filename}
+                />
+              ) : (
+                <>
+                  {activeTab === "overview" && <OverviewTab resume={selectedResume} />}
+                  {activeTab === "ats" && <AtsTab resume={selectedResume} />}
+                  {activeTab === "jobmatch" && <JobMatchTab resume={selectedResume} />}
+                  {activeTab === "interview" && <InterviewTab resume={selectedResume} />}
+                  {activeTab === "roadmap" && <RoadmapTab resume={selectedResume} />}
+
+                  {dashboard && dashboard.history.length > 1 && (
+                    <HistoryChart history={dashboard.history} />
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      )}
     </div>
   );
 }
