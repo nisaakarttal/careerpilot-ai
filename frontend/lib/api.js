@@ -42,13 +42,40 @@ function extractErrorMessage(error) {
     msg = "Bir sorun oluştu. Lütfen tekrar deneyin.";
   }
 
+  const normalizedMessage =
+    typeof msg === "string" ? msg : JSON.stringify(msg);
+  const lowerMessage = normalizedMessage.toLowerCase();
+
+  if (
+    lowerMessage.includes("resource_exhausted") ||
+    lowerMessage.includes("monthly spending cap") ||
+    lowerMessage.includes("quota") ||
+    error.response?.status === 429
+  ) {
+    return "Yapay zekâ kullanım kotası doldu. Lütfen daha sonra tekrar deneyin veya proje API kotasını kontrol edin.";
+  }
+  if (
+    lowerMessage.includes("embedding") &&
+    (lowerMessage.includes("not_found") ||
+      lowerMessage.includes("not found") ||
+      lowerMessage.includes("not supported"))
+  ) {
+    return "İş ilanı eşleştirme servisi geçici olarak kullanılamıyor. Embedding model yapılandırmasının kontrol edilmesi gerekiyor.";
+  }
+  if (
+    lowerMessage.includes("api_key") ||
+    lowerMessage.includes("api key")
+  ) {
+    return "Yapay zekâ servisi için API anahtarı yapılandırılmamış veya geçersiz.";
+  }
+
   if (msg === "Invalid email or password.") {
     return "E-posta adresi veya şifre hatalı. Lütfen bilgilerinizi kontrol edip tekrar deneyin.";
   }
   if (msg === "A user with this email already exists.") {
     return "Bu e-posta adresi ile zaten kayıtlı bir hesap mevcut.";
   }
-  return msg;
+  return normalizedMessage;
 }
 
 export async function registerUser({ email, fullName, password }) {

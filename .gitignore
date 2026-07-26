@@ -1,5 +1,6 @@
 __pycache__/
 .venv/
+.test-venv/
 node_modules/
 frontend/node_modules/
 .next/

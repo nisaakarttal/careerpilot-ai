@@ -391,5 +391,12 @@ Sprint sürecinde Daily Scrum toplantıları planlanan düzen ve sıklıkta ger�
 
 **Sonraki adımlar:** staging deployment, performans/yük testleri ve AI servisleri için merkezi monitoring/loglama.
 
+### Test ve Kalite Güvencesi
+
+- 26 Temmuz 2026 tarihli sistem, CV parser, AI servis, chat ve frontend derleme kontrolleri tamamlandı.
+- Şifreli PDF yükleme senaryosu güvenli `422` yanıtıyla ele alındı.
+- Gemini kota ve embedding yapılandırma hataları kullanıcı dostu Türkçe mesajlara dönüştürüldü.
+- Ayrıntılı sonuçlar: [Sistem Test Raporu](docs/TEST_REPORT_2026-07-26.md)
+
 ## Lisans
 Bu proje Yapay Zeka ve Teknoloji Akademisi 5. Dönem Bootcamp kapsamında eğitim amacıyla geliştirilmektedir.

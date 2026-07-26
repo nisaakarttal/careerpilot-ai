@@ -4,7 +4,7 @@ import re
 import docx2txt
 from fastapi import HTTPException, UploadFile, status
 from PyPDF2 import PdfReader
-from PyPDF2.errors import PdfReadError
+from PyPDF2.errors import FileNotDecryptedError, PdfReadError
 
 
 class ResumeParseError(Exception):
@@ -53,7 +53,13 @@ def _extract_pdf_text(file_bytes: bytes) -> str:
 
     if reader.is_encrypted:
         try:
-            reader.decrypt("")
+            decrypt_result = reader.decrypt("")
+            if decrypt_result == 0:
+                raise ResumeParseError(
+                    "The uploaded PDF file is password protected."
+                )
+        except ResumeParseError:
+            raise
         except Exception as exc:
             raise ResumeParseError(
                 "The uploaded PDF file is password protected."
@@ -61,8 +67,13 @@ def _extract_pdf_text(file_bytes: bytes) -> str:
 
     text_parts = []
 
-    for page in reader.pages:
-        text_parts.append(page.extract_text() or "")
+    try:
+        for page in reader.pages:
+            text_parts.append(page.extract_text() or "")
+    except FileNotDecryptedError as exc:
+        raise ResumeParseError(
+            "The uploaded PDF file is password protected."
+        ) from exc
 
     text = "\n".join(text_parts).strip()
 
