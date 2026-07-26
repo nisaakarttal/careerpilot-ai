@@ -30,7 +30,16 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
 
         {/* Logo */}
-        <Link href={authed ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
+        <Link 
+          href={authed ? "/dashboard" : "/"} 
+          onClick={(e) => {
+            if (authed && window.location.pathname === "/dashboard") {
+              e.preventDefault();
+              window.dispatchEvent(new CustomEvent("switch-tab", { detail: "overview" }));
+            }
+          }}
+          className="flex items-center gap-2.5 group"
+        >
           <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center font-black text-sm text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
             CP
           </span>
