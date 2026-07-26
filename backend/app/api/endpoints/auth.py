@@ -56,7 +56,7 @@ async def login(payload: LoginRequest, session: AsyncSession = Depends(get_sessi
     if user is None or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password.",
+            detail="E-posta adresi veya şifre hatalı. Lütfen bilgilerinizi kontrol edip tekrar deneyin.",
         )
 
     if not user.is_active:

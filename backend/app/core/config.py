@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # Gemini + LangChain
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash-latest")
-    GEMINI_EMBEDDING_MODEL: str = os.getenv("GEMINI_EMBEDDING_MODEL", "models/text-embedding-004")
+    GEMINI_EMBEDDING_MODEL: str = os.getenv("GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-001")
 
     # Keep recent messages in the prompt while the full conversation remains in PostgreSQL.
     CHAT_MEMORY_MAX_MESSAGES: int = max(

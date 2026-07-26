@@ -19,7 +19,10 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    const isAuthLoginEndpoint = error.config?.url?.includes("/auth/login");
+    const isLoginPage = typeof window !== "undefined" && window.location.pathname === "/login";
+
+    if (error.response && error.response.status === 401 && !isAuthLoginEndpoint && !isLoginPage) {
       clearToken();
       if (typeof window !== "undefined") {
         window.location.href = "/login";
@@ -30,13 +33,22 @@ apiClient.interceptors.response.use(
 );
 
 function extractErrorMessage(error) {
+  let msg = "";
   if (error.response && error.response.data && error.response.data.detail) {
-    return error.response.data.detail;
+    msg = error.response.data.detail;
+  } else if (error.message) {
+    msg = error.message;
+  } else {
+    msg = "Bir sorun oluştu. Lütfen tekrar deneyin.";
   }
-  if (error.message) {
-    return error.message;
+
+  if (msg === "Invalid email or password.") {
+    return "E-posta adresi veya şifre hatalı. Lütfen bilgilerinizi kontrol edip tekrar deneyin.";
   }
-  return "An unexpected error occurred.";
+  if (msg === "A user with this email already exists.") {
+    return "Bu e-posta adresi ile zaten kayıtlı bir hesap mevcut.";
+  }
+  return msg;
 }
 
 export async function registerUser({ email, fullName, password }) {
