@@ -349,11 +349,9 @@ Bu sprint boyunca **CareerPilot AI** projesinde yapay zekâ altyapısı, sistem 
 
 ## Takım Süreci Değerlendirmesi
 
-Sprint sürecinde teknik geliştirme çalışmalarında aktif olarak **Hayrunnisa Kartal, Utku Akkuşoğlu ve Yiğit Emir Saatçi** görev almıştır.
+Sprint sürecindeki teknik geliştirme ve kalite güvence çalışmalarında **Hayrunnisa Kartal, Utku Akkuşoğlu, Yiğit Emir Saatçi ve Sati Bıldırcın** aktif olarak görev almıştır.
 
-**Sati Bıldırcın**, proje ekibine **4. haftanın sonunda** dahil olmuş ve bu süreçte geliştirilen modüllerin test edilmesi, hata kontrollerinin gerçekleştirilmesi ve sistem doğrulama çalışmalarına katkı sağlamıştır.
-
-Ayrıca, Sprint 3 başlamadan önce **Sprint 3'ün ikinci haftasında aktif olarak görev alamayacağını** ekip ile önceden paylaşmış ve bu durum görev planlamasında dikkate alınmıştır.
+**Sati Bıldırcın**; CI/CD altyapısının kurulması, otomatik backend ve frontend kontrollerinin hazırlanması, CV parser regresyon testlerinin geliştirilmesi, hata yönetiminin iyileştirilmesi, sistem doğrulama çalışmalarının yürütülmesi ve test sonuçlarının dokümante edilmesine katkı sağlamıştır.
 
 Sprint sürecinde Daily Scrum toplantıları planlanan düzen ve sıklıkta gerçekleştirilememiştir. Bunun sonucunda ekip üyeleri arasında günlük ilerleme durumlarının paylaşılması ve görev takibi istenilen seviyeye ulaşamamıştır. Bir sonraki sprintte düzenli Daily Scrum toplantılarının yapılması, görev durumlarının daha sık güncellenmesi ve ekip içi iletişimin güçlendirilmesi hedeflenmektedir.
 
