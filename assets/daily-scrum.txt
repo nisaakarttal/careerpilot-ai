@@ -617,3 +617,31 @@ Engeller:
 
 Günlük Özet:
 Sprint 3 kapsamında AI Career Coach, AI Interview Assistant ve LangChain Memory geliştirmeleri tamamlanmış; kalıcı sohbet yönetimi, yapılandırılmış değerlendirme çıktıları, frontend entegrasyonu ve Docker çalışma ortamı test edilerek kullanıcı kabul testine hazır hale getirilmiştir.
+
+=================================================================
+
+26 Temmuz 2026 – Daily Scrum 2: Sistem Testleri ve Hata Kontrolleri
+
+Sati Bıldırcın (Developer)
+
+Tamamlanan:
+- Güncel main branch üzerinden backend test ortamını sıfırdan kurdu.
+- AI servisleri, ATS ve iş eşleştirme algoritması, mülakat/kariyer koçu zincirleri, chat API yaşam döngüsü, health endpoint ve yeni CV parser senaryoları dahil 38 backend testini çalıştırdı; testlerin tamamı başarılı sonuçlandı.
+- PB-07 CV yükleme ve PB-08 CV Parser için dosya uzantısı, boş dosya, boyut sınırı, bozuk DOCX ve şifreli PDF senaryolarını kapsayan regresyon testleri geliştirdi.
+- Şifreli PDF yüklemelerinde oluşabilecek kontrolsüz hatayı gidererek güvenli 422 doğrulama yanıtı dönülmesini sağladı.
+- Frontend production build kontrolünü gerçekleştirdi; kaynak kod derlemesi, lint/tip kontrolleri ve 7 statik sayfa üretimi başarıyla tamamlandı.
+- İş ilanı eşleştirmede kullanılan eski Gemini embedding modelinin güncel `models/gemini-embedding-001` değeriyle değiştirildiğini doğruladı.
+- Gemini kota, API anahtarı ve embedding model hataları için kullanıcı dostu Türkçe frontend bildirimleri geliştirdi.
+- Test sonuçlarını ve kalan kullanıcı kabul adımlarını sistem test raporunda belgeledi.
+
+Sonraki Adımlar:
+- Yeni regresyon testlerini CI ortamında doğrulamak.
+- Geçerli AI kotasıyla mülakat simülasyonu ve kariyer koçu için canlı kullanıcı kabul testi gerçekleştirmek.
+- Örnek sohbet ekran görüntülerini ve üç dakikalık ürün videosunu hazırlamak.
+
+Engeller:
+- Gemini projesinin aylık harcama/kullanım kotası dolduğu için canlı AI görüşmeleri tamamlanamamıştır.
+- Windows ve OneDrive ortamındaki sembolik bağlantı kısıtı nedeniyle frontend standalone paketlemenin son kopyalama adımı yerelde tamamlanamamış; kaynak kod derleme ve statik sayfa üretimi başarıyla geçmiştir.
+
+Günlük Özet:
+Backend otomatik testleri ve frontend production derleme kontrolleri tamamlanmış; CV parser güvenliği ile kullanıcıya gösterilen AI hata mesajları iyileştirilmiş ve proje canlı API kotası açıldıktan sonra yapılacak son kullanıcı kabul testine hazır hale getirilmiştir.
