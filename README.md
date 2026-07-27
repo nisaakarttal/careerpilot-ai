@@ -54,7 +54,7 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
 | Frontend | Next.js |
 | UI | Tailwind CSS |
 | Grafik | Recharts |
-| AI | OpenAI GPT-4o |
+| AI | Google Gemini API |
 | Prompt | LangChain |
 | Container | Docker |
 | API Docs | Swagger |
