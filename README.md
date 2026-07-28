@@ -377,6 +377,18 @@ Sprint sürecinde Daily Scrum toplantıları planlanan düzen ve sıklıkta ger�
 
 ### Sprint 3 (20 Temmuz 2026 – 02 Ağustos 2026)
 
+## Backlog Düzeni ve Story Seçimleri
+
+Proje süresince Product Backlog, iş önceliği ve bağımlılıklar dikkate alınarak düzenlenmiştir. Öncelikle kullanıcı kayıt, giriş, yetkilendirme, veritabanı altyapısı ve temel sistem mimarisi gibi platformun çalışması için gerekli temel kullanıcı hikâyeleri geliştirilmiş ve tamamlanmıştır. Ardından yapay zekâ analiz altyapısı, ATS uyumluluk analizi, recruiter geri bildirimi, raporlama ve kullanıcı arayüzü geliştirmeleri gerçekleştirilmiştir. Son aşamada ise Career Coach, CV yükleme ve ayrıştırma (Parser), dashboard ekranları, analiz geçmişi, mülakat simülasyonu ve CV–iş ilanı eşleştirme gibi kullanıcıya doğrudan değer sağlayan özellikler tamamlanmıştır.
+
+Story seçimleri yapılırken kullanıcıya en fazla değer sağlayacak, sistemin temel işlevlerini oluşturacak ve birbirine bağımlı geliştirmeler önceliklendirilmiştir. İlk olarak altyapı ve kimlik doğrulama süreçleri tamamlanmış, ardından yapay zekâ destekli analiz modülleri ve raporlama özellikleri geliştirilmiş, son olarak ise kullanıcı deneyimini iyileştiren gelişmiş analiz, kariyer koçluğu ve eşleştirme modülleri geliştirilmiştir. Her kullanıcı hikâyesi bağımsız olarak test edilebilir ve tamamlandığında kullanıcıya anlamlı bir iş değeri sunacak şekilde planlanmıştır.
+
+Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sistem Testleri, Performans İyileştirmeleri ve Son Optimizasyonlar maddeleri bırakılmıştır. Bu çalışmalar, temel fonksiyonların tamamlanmasının ardından gerçekleştirilecek kalite güvence ve sistem iyileştirme faaliyetleri kapsamında değerlendirilmiştir. Böylece öncelik sıralaması, çalışan bir ürünün erken aşamada ortaya çıkarılması ve sonraki aşamalarda kalite ile performansın artırılması hedefi doğrultusunda oluşturulmuştur.
+
+### Trello İş Planı
+
+![Trello İş Planı](assets/trello4.png)
+
 **Sati Bıldırcın - Test, Dağıtım ve Sistem Optimizasyonu**
 
 - Pull request ve `main` güncellemelerinde backend testlerini otomatik çalıştıran GitHub Actions CI iş akışı hazırlandı.
