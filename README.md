@@ -389,6 +389,75 @@ Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sis
 
 ![Trello İş Planı](assets/trello4.png)
 
+# Sprint 3 Review
+
+## Sprint Hedefi
+Sprint 3 kapsamında kullanıcı arayüzünün geliştirilmesi, yapay zekâ sohbet altyapısının tamamlanması, sistem yapılandırmasının iyileştirilmesi, test süreçlerinin güçlendirilmesi ve uygulamanın production ortamına hazırlanması hedeflenmiştir.
+
+## Tamamlanan Çalışmalar
+
+### UI/UX ve Frontend
+- Uygulamanın genel tema yapısı modernleştirildi.
+- Dashboard, Navbar ve Profil ekranları yeniden tasarlandı.
+- Responsive tasarım ve kullanıcı deneyimi iyileştirildi.
+- Radar grafikleri, animasyonlar ve görsel bileşenler optimize edildi.
+- Kullanıcı dostu hata uyarıları geliştirildi.
+
+### Yapay Zekâ ve Backend
+- AI Career Coach ve AI Interview Assistant modülleri tamamlandı.
+- OpenAI ve Gemini destekli ortak AI mimarisi geliştirildi.
+- LangChain Memory ile PostgreSQL konuşma geçmişi entegre edildi.
+- Sohbet oturumlarının kalıcı olarak saklanması sağlandı.
+- REST API ve WebSocket altyapıları ortak AI servisleriyle entegre edildi.
+
+### DevOps ve Sistem
+- Docker geliştirme süreçleri iyileştirildi.
+- Yapılandırma (config) yönetimi güncellendi.
+- GitHub Actions CI süreçleri geliştirildi.
+- Production build ve Docker sağlık kontrolleri tamamlandı.
+
+### Test ve Kalite Güvencesi
+- Backend, frontend ve AI servis testleri gerçekleştirildi.
+- Sistem, chat ve API kontrolleri doğrulandı.
+- Hata yönetimi ve kullanıcı geri bildirimleri iyileştirildi.
+
+---
+
+### Proje Durumu
+
+**Giriş Sayfası**
+![Giriş Sayfası](assets/login1.png)
+
+**Kayıt Sayfası**
+![Kayıt Sayfası](assets/kayit1.png)
+
+**Ana Sayfa**
+![Ana Sayfa](assets/anasayfa1.png)
+
+**CV Yükleme**
+![CV Yükleme](assets/cv-yükleme1.png)
+
+**CV Analizleri**
+![CV Analizleri](assets/cv7.png)
+
+![CV Analizleri](assets/cv8.png)
+
+![CV Analizleri](assets/cv9.png)
+
+![CV Analizleri](assets/cv10.png)
+
+![CV Analizleri](assets/cv511.png)
+
+![CV Analizleri](assets/cv12.png)
+
+
+---
+
+# Sprint 3 Retrospective
+
+## Takım Süreci Değerlendirmesi
+Sprint 3 boyunca ekip üyeleri planlanan görevleri zamanında tamamlayarak koordineli bir çalışma yürüttü. Düzenli iletişim ve kod entegrasyonları sayesinde teknik sorunlar hızlıca çözüldü ve sprint hedefleri başarıyla tamamlandı.
+
 ## Sprint Retrospective
 
 ### Başarılı Olan Noktalar
