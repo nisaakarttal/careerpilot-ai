@@ -389,9 +389,9 @@ Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sis
 
 ![Trello İş Planı](assets/trello4.png)
 
-### Sprint Retrospective
+## Sprint Retrospective
 
-# Başarılı Olan Noktalar
+### Başarılı Olan Noktalar
 
 - Yapay zekâ destekli Career Coach ve Interview Assistant modülleri başarıyla tamamlandı.
 - Kullanıcı arayüzü modernleştirilerek uygulamanın profesyonel görünümü önemli ölçüde iyileştirildi.
@@ -401,7 +401,7 @@ Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sis
 - Docker ve CI süreçleri geliştirilerek dağıtım süreci daha güvenilir hale getirildi.
 - Test süreçleri genişletilerek sistem kararlılığı artırıldı.
 
-# Karşılaşılan Zorluklar
+### Karşılaşılan Zorluklar
 
 - Gemini model değişikliklerinden kaynaklanan yapılandırma uyumsuzlukları giderildi.
 - Responsive arayüz geliştirmeleri sırasında bazı görsel uyumluluk problemleri çözüldü.
@@ -409,12 +409,12 @@ Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sis
 - AI servisleri ile frontend entegrasyonu sırasında oturum yönetimi optimize edildi.
 - Docker ve production ortamlarında platform bağımlılıklarına yönelik düzenlemeler gerçekleştirildi.
 
-# Takım Süreci Değerlendirmesi
+### Takım Süreci Değerlendirmesi
 
 - Sprint sürecindeki teknik geliştirme ve kalite güvence çalışmalarında Hayrunnisa Kartal, Utku Akkuşoğlu, Yiğit Emir Saatçi ve Sati Bıldırcın aktif olarak görev almıştır.
 - Sprint boyunca ekip üyeleri planlanan görevleri zamanında tamamlayarak koordineli bir çalışma yürütmüştür. Günlük iletişim ve düzenli kod entegrasyonları sayesinde karşılaşılan teknik sorunlar hızlı bir şekilde çözülmüş, geliştirme süreci kesintisiz ilerlemiştir. Sprint hedefleri başarıyla tamamlanmış olup ekip içi iş birliği ve görev paylaşımı verimli bir şekilde gerçekleştirilmiştir.
 
-# Öğrenilenler
+### Öğrenilenler
 
 - Ortak AI servis mimarisi sayesinde farklı sağlayıcıların tek yapı üzerinden yönetilmesi sürdürülebilirliği artırmaktadır.
 - LangChain Memory kullanımı uzun süreli sohbet yönetiminde önemli avantaj sağlamaktadır.
