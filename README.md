@@ -389,15 +389,38 @@ Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sis
 
 ![Trello İş Planı](assets/trello4.png)
 
-**Sati Bıldırcın - Test, Dağıtım ve Sistem Optimizasyonu**
+### Sprint Retrospective
 
-- Pull request ve `main` güncellemelerinde backend testlerini otomatik çalıştıran GitHub Actions CI iş akışı hazırlandı.
-- Next.js production build kontrolü CI sürecine eklendi.
-- Backend ve frontend Docker imajları için smoke build kontrolü eklendi.
-- Aynı branch için eski CI çalışmasını iptal eden concurrency ayarıyla gereksiz kaynak tüketimi azaltıldı.
-- Sağlık endpoint'i için temel regresyon testi eklendi.
+# Başarılı Olan Noktalar
 
-**Sonraki adımlar:** staging deployment, performans/yük testleri ve AI servisleri için merkezi monitoring/loglama.
+- Yapay zekâ destekli Career Coach ve Interview Assistant modülleri başarıyla tamamlandı.
+- Kullanıcı arayüzü modernleştirilerek uygulamanın profesyonel görünümü önemli ölçüde iyileştirildi.
+- Dashboard ve navigasyon yapısı daha kullanıcı dostu hale getirildi.
+- LangChain tabanlı sohbet altyapısı başarıyla sisteme entegre edildi.
+- PostgreSQL üzerinde kalıcı sohbet yönetimi başarıyla gerçekleştirildi.
+- Docker ve CI süreçleri geliştirilerek dağıtım süreci daha güvenilir hale getirildi.
+- Test süreçleri genişletilerek sistem kararlılığı artırıldı.
+
+# Karşılaşılan Zorluklar
+
+- Gemini model değişikliklerinden kaynaklanan yapılandırma uyumsuzlukları giderildi.
+- Responsive arayüz geliştirmeleri sırasında bazı görsel uyumluluk problemleri çözüldü.
+- Radar grafiklerinde uzun metinlerden kaynaklanan görüntüleme sorunları giderildi.
+- AI servisleri ile frontend entegrasyonu sırasında oturum yönetimi optimize edildi.
+- Docker ve production ortamlarında platform bağımlılıklarına yönelik düzenlemeler gerçekleştirildi.
+
+# Takım Süreci Değerlendirmesi
+
+- Sprint sürecindeki teknik geliştirme ve kalite güvence çalışmalarında Hayrunnisa Kartal, Utku Akkuşoğlu, Yiğit Emir Saatçi ve Sati Bıldırcın aktif olarak görev almıştır.
+- Sprint boyunca ekip üyeleri planlanan görevleri zamanında tamamlayarak koordineli bir çalışma yürütmüştür. Günlük iletişim ve düzenli kod entegrasyonları sayesinde karşılaşılan teknik sorunlar hızlı bir şekilde çözülmüş, geliştirme süreci kesintisiz ilerlemiştir. Sprint hedefleri başarıyla tamamlanmış olup ekip içi iş birliği ve görev paylaşımı verimli bir şekilde gerçekleştirilmiştir.
+
+# Öğrenilenler
+
+- Ortak AI servis mimarisi sayesinde farklı sağlayıcıların tek yapı üzerinden yönetilmesi sürdürülebilirliği artırmaktadır.
+- LangChain Memory kullanımı uzun süreli sohbet yönetiminde önemli avantaj sağlamaktadır.
+- UI/UX çalışmalarının kullanıcı deneyimine doğrudan olumlu katkı sağladığı gözlemlenmiştir.
+- CI/CD süreçlerinin erken aşamada kurulması yazılım kalitesini artırmaktadır.
+- Docker tabanlı geliştirme ortamı ekip üyeleri arasında tutarlı çalışma ortamı oluşturmaktadır.
 
 ### Test ve Kalite Güvencesi
 
