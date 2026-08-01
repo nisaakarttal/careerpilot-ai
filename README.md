@@ -426,18 +426,21 @@ Sprint 3 kapsamında kullanıcı arayüzünün geliştirilmesi, yapay zekâ sohb
 ### Proje Durumu
 
 **Giriş Sayfası**
-![Giriş Sayfası](assets/login1.png)
+![Giriş Sayfası](assets/giris_1.png)
 
 **Kayıt Sayfası**
-![Kayıt Sayfası](assets/kayit1.png)
+![Kayıt Sayfası](assets/kayit_1.png)
 
 **Ana Sayfa**
-![Ana Sayfa](assets/anasayfa1.png)
+![Ana Sayfa](assets/anasayfa(1).png)
+
+![Ana Sayfa](assets/anasayfa(2).png)
 
 **CV Yükleme**
 ![CV Yükleme](assets/cv-yükleme1.png)
 
 **CV Analizleri**
+
 ![CV Analizleri](assets/cv7.png)
 
 ![CV Analizleri](assets/cv8.png)
@@ -450,6 +453,17 @@ Sprint 3 kapsamında kullanıcı arayüzünün geliştirilmesi, yapay zekâ sohb
 
 ![CV Analizleri](assets/cv12.png)
 
+![CV Analizleri](assets/cv13.png)
+
+![CV Analizleri](assets/cv14.png)
+
+![CV Analizleri](assets/cv15.png)
+
+![CV Analizleri](assets/cv16.png)
+
+**Ayarlar**
+
+![CV Analizleri](assets/ayarlar.png)
 
 ---
 
