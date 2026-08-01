@@ -47,9 +47,6 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
 # Kullanılan Teknolojiler
 
 | Katman | Teknoloji |
-|---------|-----------|
-| Katman | Teknoloji |
-|---------|-----------|
 | Frontend | Next.js 15 |
 | Frontend | React 18 |
 | Frontend | TypeScript |
