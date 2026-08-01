@@ -505,12 +505,10 @@ Sprint 3 boyunca ekip üyeleri planlanan görevleri zamanında tamamlayarak koor
 - CI/CD süreçlerinin erken aşamada kurulması yazılım kalitesini artırmaktadır.
 - Docker tabanlı geliştirme ortamı ekip üyeleri arasında tutarlı çalışma ortamı oluşturmaktadır.
 
-### Test ve Kalite Güvencesi
 
-- 26 Temmuz 2026 tarihli sistem, CV parser, AI servis, chat ve frontend derleme kontrolleri tamamlandı.
-- Şifreli PDF yükleme senaryosu güvenli `422` yanıtıyla ele alındı.
-- Gemini kota ve embedding yapılandırma hataları kullanıcı dostu Türkçe mesajlara dönüştürüldü.
-- Ayrıntılı sonuçlar: [Sistem Test Raporu](docs/TEST_REPORT_2026-07-26.md)
+### Daily Scrum
+![Daily Scrum](assets/DAILY_SCRUM.pdf)
+
 
 ## Lisans
 Bu proje Yapay Zeka ve Teknoloji Akademisi 5. Dönem Bootcamp kapsamında eğitim amacıyla geliştirilmektedir.
