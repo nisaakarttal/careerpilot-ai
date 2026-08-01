@@ -449,7 +449,7 @@ Sprint 3 kapsamında kullanıcı arayüzünün geliştirilmesi, yapay zekâ sohb
 
 ![CV Analizleri](assets/cv10.png)
 
-![CV Analizleri](assets/cv511.png)
+![CV Analizleri](assets/cv11.png)
 
 ![CV Analizleri](assets/cv12.png)
 
