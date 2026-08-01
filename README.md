@@ -48,16 +48,29 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
 
 | Katman | Teknoloji |
 |---------|-----------|
+| Katman | Teknoloji |
+|---------|-----------|
+| Frontend | Next.js 15 |
+| Frontend | React 18 |
+| Frontend | TypeScript |
+| Frontend | Tailwind CSS |
+| Frontend | Framer Motion |
+| Frontend | Axios |
 | Backend | FastAPI |
-| ORM | SQLModel |
-| Database | PostgreSQL |
-| Frontend | Next.js |
-| UI | Tailwind CSS |
-| Grafik | Recharts |
-| AI | Google Gemini API |
-| Prompt | LangChain |
-| Container | Docker |
-| API Docs | Swagger |
+| Backend | Python 3.11 |
+| Backend | SQLAlchemy |
+| Backend | Alembic |
+| Backend | Pydantic |
+| Backend | JWT Authentication |
+| Veritabanı | PostgreSQL |
+| Yapay Zekâ | Google Gemini API |
+| Yapay Zekâ | LangChain |
+| Web Sunucusu | Nginx |
+| Konteyner | Docker |
+| Orkestrasyon | Docker Compose |
+| Versiyon Kontrol | Git & GitHub |
+| API Dokümantasyonu | Swagger UI (OpenAPI) |
+| API Dokümantasyonu | ReDoc |
 
 ---
 
@@ -89,201 +102,141 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
 
 # Proje Yapısı
 
-```text
-careerpilot-ai/
+careerpilot-ai
+│
+├── backend
+│   ├── alembic
+│   ├── app
+│   │   ├── api
+│   │   ├── core
+│   │   ├── models
+│   │   ├── repositories
+│   │   ├── schemas
+│   │   ├── services
+│   │   ├── ai
+│   │   └── utils
+│   ├── uploads
+│   └── requirements.txt
+│
+├── frontend
+│   ├── app
+│   ├── components
+│   ├── hooks
+│   ├── lib
+│   ├── public
+│   └── package.json
+│
+├── nginx
 ├── docker-compose.yml
-├── README.md
-├── assets/
-├── backend/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   ├── .env.example
-│   └── app/
-│       ├── main.py
-│       ├── core/
-│       │   ├── config.py
-│       │   ├── database.py
-│       │   └── security.py
-│       ├── api/
-│       │   ├── deps.py
-│       │   └── endpoints/
-│       │       ├── auth.py
-│       │       └── resume.py
-│       ├── models/
-│       │   ├── user.py
-│       │   └── resume.py
-│       ├── schemas/
-│       │   ├── aioutputs.py
-│       │   ├── auth.py
-│       │   └── resume.py
-│       └── services/
-│           ├── parser.py
-│           └── aiservice.py
-└── frontend/
-    ├── Dockerfile
-    ├── package.json
-    ├── next.config.js
-    ├── postcss.config.js
-    ├── tailwind.config.js
-    ├── jsconfig.json
-    ├── .env.local.example
-    ├── app/
-    │   ├── layout.jsx
-    │   ├── page.jsx
-    │   ├── globals.css
-    │   ├── login/
-    │   │   └── page.jsx
-    │   ├── register/
-    │   │   └── page.jsx
-    │   └── dashboard/
-    │       └── page.jsx
-    ├── components/
-    │   ├── Navbar.jsx
-    │   ├── AuthForm.jsx
-    │   └── CareerPilotDashboard.jsx
-    └── lib/
-        ├── api.js
-        └── auth.js
+└── README.md
+
 ```
 
-# Kurulum ve Çalıştırma
+# Kurulum
 
-## Docker ile Çalıştırma (Önerilen)
+## Gereksinimler
 
-### 1. Projeyi klonlayın
+Projeyi çalıştırmadan önce aşağıdaki yazılımların sisteminizde kurulu olduğundan emin olun.
 
-```bash
-git clone <repository-url>
-cd careerpilot-ai
-```
-
-### 2. Ortam değişkenlerini oluşturun
-
-```bash
-cp backend/.env.example backend/.env
-```
-
-`backend/.env` dosyasını açarak gerekli alanları düzenleyin.
-
-Özellikle aşağıdaki değişkenlerin doğru şekilde tanımlandığından emin olun:
-
-* `OPENAI_API_KEY`
-* `JWT_SECRET_KEY`
-
-### 3. Uygulamayı başlatın
-
-```bash
-docker compose up --build
-```
-
-### Servis Adresleri
-
-| Servis                       | Adres                      |
-| ---------------------------- | -------------------------- |
-| Frontend                     | http://localhost:3000      |
-| Backend API                  | http://localhost:8000      |
-| API Dokümantasyonu (Swagger) | http://localhost:8000/docs |
-| PostgreSQL                   | localhost:5432             |
-
-### Varsayılan PostgreSQL Bilgileri
-
-| Alan          | Değer         |
-| ------------- | ------------- |
-| Veritabanı    | `careerpilot` |
-| Kullanıcı Adı | `careerpilot` |
-| Şifre         | `careerpilot` |
+- Python 3.11 veya üzeri
+- Node.js 20 veya üzeri
+- PostgreSQL 16 veya üzeri
+- Git
+- Docker Desktop (Opsiyonel)
+- Docker Compose (Opsiyonel)
 
 ---
 
-# Docker Kullanmadan Çalıştırma
+## 1. Projeyi Klonlayın
 
-## Backend
+```bash
+git clone https://github.com/kullaniciadi/careerpilot-ai.git
+cd careerpilot-ai
+```
 
-Backend klasörüne geçin.
+---
+
+## 2. Backend Kurulumu
+
+Backend dizinine geçin.
 
 ```bash
 cd backend
 ```
 
-### Sanal ortam oluşturun ve etkinleştirin
-
-**Windows**
+Sanal ortam oluşturun.
 
 ```bash
 python -m venv venv
+```
+
+### Windows
+
+```bash
 venv\Scripts\activate
 ```
 
-**Linux / macOS**
+### Linux / macOS
 
 ```bash
-python -m venv venv
 source venv/bin/activate
 ```
 
-### Gerekli bağımlılıkları yükleyin
+Gerekli paketleri yükleyin.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Ortam değişkenlerini oluşturun
+Ortam değişkenlerini oluşturun.
 
 ```bash
 cp .env.example .env
 ```
 
-> Windows kullanıcıları `copy .env.example .env` komutunu kullanabilir.
+> Windows kullanıyorsanız `.env.example` dosyasını kopyalayarak adını `.env` olarak değiştirin.
 
-`.env` dosyasında aşağıdaki alanları kendi ortamınıza göre düzenleyin:
-
-* `DATABASE_URL`
-* `OPENAI_API_KEY`
-* `JWT_SECRET_KEY`
-
-Yerel PostgreSQL servisinizin çalıştığından emin olduktan sonra backend uygulamasını başlatın.
+Veritabanı migrationlarını çalıştırın.
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+alembic upgrade head
+```
+
+Backend sunucusunu başlatın.
+
+```bash
+uvicorn app.main:app --reload
 ```
 
 Backend aşağıdaki adreste çalışacaktır.
 
-```text
+```
 http://localhost:8000
 ```
 
-API dokümantasyonu:
+Swagger API dokümantasyonu:
 
-```text
+```
 http://localhost:8000/docs
 ```
 
 ---
 
-## Frontend
+## 3. Frontend Kurulumu
 
-Frontend klasörüne geçin.
+Frontend dizinine geçin.
 
 ```bash
-cd frontend
+cd ../frontend
 ```
 
-### Gerekli bağımlılıkları yükleyin
+Bağımlılıkları yükleyin.
 
 ```bash
 npm install
 ```
 
-### Ortam değişkenlerini oluşturun
-
-```bash
-cp .env.local.example .env.local
-```
-
-> Windows kullanıcıları `copy .env.local.example .env.local` komutunu kullanabilir.
-
-### Geliştirme sunucusunu başlatın
+Geliştirme sunucusunu başlatın.
 
 ```bash
 npm run dev
@@ -291,46 +244,43 @@ npm run dev
 
 Frontend aşağıdaki adreste çalışacaktır.
 
-```text
+```
 http://localhost:3000
 ```
 
 ---
 
-# Ortam Değişkenleri
+## 4. Docker ile Kurulum
 
-## Backend (`backend/.env.example`)
+Tüm servisleri Docker kullanarak başlatabilirsiniz.
 
-```env
-DATABASE_URL=postgresql+asyncpg://careerpilot:careerpilot@db:5432/careerpilot
-
-JWT_SECRET_KEY=replace-this-with-a-long-random-secret-string
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-
-OPENAI_API_KEY=sk-your-openai-api-key
-OPENAI_MODEL=gpt-4o-2024-08-06
-
-CORS_ORIGINS=http://localhost:3000
-
-MAX_UPLOAD_SIZE_MB=10
+```bash
+docker compose up --build
 ```
 
-## Frontend (`frontend/.env.local.example`)
+Arka planda çalıştırmak için:
 
-```env
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
+```bash
+docker compose up -d
+```
+
+Servisleri durdurmak için:
+
+```bash
+docker compose down
 ```
 
 ---
 
-# Varsayılan Portlar
+## Çalışan Servisler
 
-| Servis      | Port     |
-| ----------- | -------- |
-| Frontend    | **3000** |
-| Backend API | **8000** |
-| PostgreSQL  | **5432** |
+| Servis | Adres |
+|--------|-------|
+| Frontend | http://localhost:3000 |
+| Backend | http://localhost:8000 |
+| Swagger | http://localhost:8000/docs |
+| PostgreSQL | localhost:5432 |
+
 
 
 # Ürün İş Listesi (Product Backlog)
