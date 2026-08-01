@@ -146,7 +146,192 @@ careerpilot-ai/
         └── auth.js
 ```
 
+# Kurulum ve Çalıştırma
+
+## Docker ile Çalıştırma (Önerilen)
+
+### 1. Projeyi klonlayın
+
+```bash
+git clone <repository-url>
+cd careerpilot-ai
+```
+
+### 2. Ortam değişkenlerini oluşturun
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+`backend/.env` dosyasını açarak gerekli alanları düzenleyin.
+
+Özellikle aşağıdaki değişkenlerin doğru şekilde tanımlandığından emin olun:
+
+* `OPENAI_API_KEY`
+* `JWT_SECRET_KEY`
+
+### 3. Uygulamayı başlatın
+
+```bash
+docker compose up --build
+```
+
+### Servis Adresleri
+
+| Servis                       | Adres                      |
+| ---------------------------- | -------------------------- |
+| Frontend                     | http://localhost:3000      |
+| Backend API                  | http://localhost:8000      |
+| API Dokümantasyonu (Swagger) | http://localhost:8000/docs |
+| PostgreSQL                   | localhost:5432             |
+
+### Varsayılan PostgreSQL Bilgileri
+
+| Alan          | Değer         |
+| ------------- | ------------- |
+| Veritabanı    | `careerpilot` |
+| Kullanıcı Adı | `careerpilot` |
+| Şifre         | `careerpilot` |
+
 ---
+
+# Docker Kullanmadan Çalıştırma
+
+## Backend
+
+Backend klasörüne geçin.
+
+```bash
+cd backend
+```
+
+### Sanal ortam oluşturun ve etkinleştirin
+
+**Windows**
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**Linux / macOS**
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+### Gerekli bağımlılıkları yükleyin
+
+```bash
+pip install -r requirements.txt
+```
+
+### Ortam değişkenlerini oluşturun
+
+```bash
+cp .env.example .env
+```
+
+> Windows kullanıcıları `copy .env.example .env` komutunu kullanabilir.
+
+`.env` dosyasında aşağıdaki alanları kendi ortamınıza göre düzenleyin:
+
+* `DATABASE_URL`
+* `OPENAI_API_KEY`
+* `JWT_SECRET_KEY`
+
+Yerel PostgreSQL servisinizin çalıştığından emin olduktan sonra backend uygulamasını başlatın.
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Backend aşağıdaki adreste çalışacaktır.
+
+```text
+http://localhost:8000
+```
+
+API dokümantasyonu:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+## Frontend
+
+Frontend klasörüne geçin.
+
+```bash
+cd frontend
+```
+
+### Gerekli bağımlılıkları yükleyin
+
+```bash
+npm install
+```
+
+### Ortam değişkenlerini oluşturun
+
+```bash
+cp .env.local.example .env.local
+```
+
+> Windows kullanıcıları `copy .env.local.example .env.local` komutunu kullanabilir.
+
+### Geliştirme sunucusunu başlatın
+
+```bash
+npm run dev
+```
+
+Frontend aşağıdaki adreste çalışacaktır.
+
+```text
+http://localhost:3000
+```
+
+---
+
+# Ortam Değişkenleri
+
+## Backend (`backend/.env.example`)
+
+```env
+DATABASE_URL=postgresql+asyncpg://careerpilot:careerpilot@db:5432/careerpilot
+
+JWT_SECRET_KEY=replace-this-with-a-long-random-secret-string
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+OPENAI_API_KEY=sk-your-openai-api-key
+OPENAI_MODEL=gpt-4o-2024-08-06
+
+CORS_ORIGINS=http://localhost:3000
+
+MAX_UPLOAD_SIZE_MB=10
+```
+
+## Frontend (`frontend/.env.local.example`)
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
+```
+
+---
+
+# Varsayılan Portlar
+
+| Servis      | Port     |
+| ----------- | -------- |
+| Frontend    | **3000** |
+| Backend API | **8000** |
+| PostgreSQL  | **5432** |
+
 
 # Ürün İş Listesi (Product Backlog)
 
@@ -375,7 +560,7 @@ Sprint sürecinde Daily Scrum toplantıları planlanan düzen ve sıklıkta ger�
 ### Daily Scrum
 ![Daily Scrum](assets/daily-scrum.txt)
 
-### Sprint 3 (20 Temmuz 2026 – 02 Ağustos 2026)
+# Sprint 3 (20 Temmuz 2026 – 02 Ağustos 2026)
 
 ## Backlog Düzeni ve Story Seçimleri
 
@@ -389,7 +574,7 @@ Proje sonunda Product Backlog'da yalnızca Hata Yönetimi ve Bildirimler ile Sis
 
 ![Trello İş Planı](assets/trello4.png)
 
-# Sprint 3 Review
+# Sprint Review
 
 ## Sprint Hedefi
 Sprint 3 kapsamında kullanıcı arayüzünün geliştirilmesi, yapay zekâ sohbet altyapısının tamamlanması, sistem yapılandırmasının iyileştirilmesi, test süreçlerinin güçlendirilmesi ve uygulamanın production ortamına hazırlanması hedeflenmiştir.
@@ -466,11 +651,6 @@ Sprint 3 kapsamında kullanıcı arayüzünün geliştirilmesi, yapay zekâ sohb
 ![CV Analizleri](assets/ayarlar.png)
 
 ---
-
-# Sprint 3 Retrospective
-
-## Takım Süreci Değerlendirmesi
-Sprint 3 boyunca ekip üyeleri planlanan görevleri zamanında tamamlayarak koordineli bir çalışma yürüttü. Düzenli iletişim ve kod entegrasyonları sayesinde teknik sorunlar hızlıca çözüldü ve sprint hedefleri başarıyla tamamlandı.
 
 ## Sprint Retrospective
 
