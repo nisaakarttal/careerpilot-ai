@@ -98,34 +98,34 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
 ---
 
 # Proje Yapısı
-
-careerpilot-ai
-│
-├── backend
-│   ├── alembic
-│   ├── app
-│   │   ├── api
-│   │   ├── core
-│   │   ├── models
-│   │   ├── repositories
-│   │   ├── schemas
-│   │   ├── services
-│   │   ├── ai
-│   │   └── utils
-│   ├── uploads
-│   └── requirements.txt
-│
-├── frontend
-│   ├── app
-│   ├── components
-│   ├── hooks
-│   ├── lib
-│   ├── public
-│   └── package.json
-│
-├── nginx
-├── docker-compose.yml
-└── README.md
+```text
+    careerpilot-ai
+    │
+    ├── backend
+    │   ├── alembic
+    │   ├── app
+    │   │   ├── api
+    │   │   ├── core
+    │   │   ├── models
+    │   │   ├── repositories
+    │   │   ├── schemas
+    │   │   ├── services
+    │   │   ├── ai
+    │   │   └── utils
+    │   ├── uploads
+    │   └── requirements.txt
+    │
+    ├── frontend
+    │   ├── app
+    │   ├── components
+    │   ├── hooks
+    │   ├── lib
+    │   ├── public
+    │   └── package.json
+    │
+    ├── nginx
+    ├── docker-compose.yml
+    └── README.md
 
 ```
 
