@@ -44,30 +44,30 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
 ---
 ##  Kullanılan Teknolojiler & Mimari Yapı
 
-# Kullanılan Teknolojiler
-
-| Katman | Teknoloji |
-| Frontend | Next.js 15 |
-| Frontend | React 18 |
-| Frontend | TypeScript |
-| Frontend | Tailwind CSS |
-| Frontend | Framer Motion |
-| Frontend | Axios |
-| Backend | FastAPI |
-| Backend | Python 3.11 |
-| Backend | SQLAlchemy |
-| Backend | Alembic |
-| Backend | Pydantic |
-| Backend | JWT Authentication |
-| Veritabanı | PostgreSQL |
-| Yapay Zekâ | Google Gemini API |
-| Yapay Zekâ | LangChain |
-| Web Sunucusu | Nginx |
-| Konteyner | Docker |
-| Orkestrasyon | Docker Compose |
-| Versiyon Kontrol | Git & GitHub |
-| API Dokümantasyonu | Swagger UI (OpenAPI) |
-| API Dokümantasyonu | ReDoc |
+### Kullanılan Teknolojiler
+```text
+  | Katman | Teknoloji |
+  | Frontend | Next.js 15 |
+  | Frontend | React 18 |
+  | Frontend | TypeScript |
+  | Frontend | Tailwind CSS |
+  | Frontend | Framer Motion |
+  | Frontend | Axios |
+  | Backend | FastAPI |
+  | Backend | Python 3.11 |
+  | Backend | SQLAlchemy |
+  | Backend | Alembic |
+  | Backend | Pydantic |
+  | Backend | JWT Authentication |
+  | Veritabanı | PostgreSQL |
+  | Yapay Zekâ | Google Gemini API |
+  | Yapay Zekâ | LangChain |
+  | Web Sunucusu | Nginx |
+  | Konteyner | Docker |
+  | Orkestrasyon | Docker Compose |
+  | Versiyon Kontrol | Git & GitHub |
+  | API Dokümantasyonu | Swagger UI (OpenAPI) |
+  | API Dokümantasyonu | ReDoc |
 
 ---
 
