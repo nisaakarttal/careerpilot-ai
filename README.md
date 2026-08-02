@@ -69,9 +69,10 @@ CareerPilot AI, yapay zekanın gücünü kullanarak aday ile iş dünyası aras�
   | API Dokümantasyonu | Swagger UI (OpenAPI) |
   | API Dokümantasyonu | ReDoc |
 
+```
 ---
 
-# Sistem Mimarisi
+### Sistem Mimarisi
 
 ```text
                 +----------------------+
